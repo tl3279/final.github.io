@@ -1,0 +1,332 @@
+---
+title: "ds_final"
+output: html_document
+date: "2024-11-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(haven)
+library(readxl)
+library(plotly)
+library(sf)
+library(VGAM)
+```
+
+### brfss dataset 
+```{r}
+brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
+  janitor::clean_names()
+```
+
+```{r}
+zipcode = 
+  brfss_22 |>
+  filter(zipcode1 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
+```
+
+```{r}
+county = 
+  brfss_22 |>
+  filter(ctycode2 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
+```
+
+### subset dataset cleaning
+```{r}
+cleaned_df = 
+  brfss_22 |>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|>
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)
+```
+
+```{r}
+cleaned_df = 
+  cleaned_df |>
+  mutate(
+    income = case_when(
+      incomg1 %in% c("Less than $15,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
+      incomg1 == "$50,000 to < $100,000" ~ "50,000 ~ 100,000",
+      incomg1 %in% c ("$100,000 to < $200,000" , "$200,000 or more") ~ ">100,000",
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == "Did not graduate High School" ~ "Less than high school",
+      educag == "Graduated High School" ~ "High school or GED",
+      educag == "Attended College or Technical School" ~ "Some post-high school",
+      educag == "Graduated from College or Technical School" ~ "College graduate"
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c("Rarely","Sometimes","Usually", "Always") ~ 1,
+      strsmeal_sa == "Never" ~ 0)
+   )|>
+  filter(!is.na(income), !is.na(education))|>
+  select(-incomg1, -educag, -strsmeal_sa)
+
+```
+
+```{r}
+ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
+  geom_bar() +
+  labs(
+    title = "Distribution of Race/Ethnicity",
+    x = "Race/Ethnicity",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+```{r}
+ggplot(cleaned_df, aes(x = "", fill = education)) +
+  geom_bar(width = 1, stat = "count") +
+  coord_polar(theta = "y") +
+  labs(
+    title = "Distribution of Education Levels",
+    fill = "Education Level"
+  ) +
+  theme_void() +
+  theme(legend.position = "right")
+```
+
+```{r}
+ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
+  geom_bar() +
+  scale_fill_manual(values = c("0" = "lightblue", "1" = "pink"), labels = c("Not Food Insecure", "Food Insecure")) +
+  labs(
+    title = "Distribution of Food Insecurity",
+    x = "Food Insecurity",
+    y = "Count",
+    fill = "Status"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+cleaned_df = 
+  cleaned_df |>
+  mutate(
+    imprace = as.factor(imprace),
+    income = as.factor(income),
+    education = as.factor(education),
+    genhlth = as.factor(genhlth)
+  )
+```
+
+
+### is income associated with food insecure? 
+```{r}
+logit_income = 
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
+```
+
+```{r}
+summary(logit_income)
+```
+
+```{r}
+exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+print(exp_income)
+```
+
+### making confident interval
+```{r}
+ci_income = as.data.frame(exp_income)
+ci_income = 
+  ci_income |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") 
+```
+
+```{r}
+ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Income Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
+
+
+### is race associated with food insecure?
+```{r}
+logit_race = 
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
+```
+
+```{r}
+summary(logit_race)
+```
+
+```{r}
+exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+print(exp_race)
+```
+
+### making CI
+```{r}
+ci_race = as.data.frame(exp_race)
+ci_race = 
+  ci_race |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") 
+```
+
+```{r}
+ggplot(ci_race, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Income Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
+
+
+
+
+### is education associated with food insecure?
+```{r}
+logit_edu = 
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)
+```
+
+```{r}
+summary(logit_edu)
+```
+
+```{r}
+exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+print(exp_edu)
+```
+
+### making CI
+```{r}
+ci_edu = as.data.frame(exp_edu)
+ci_edu = 
+  ci_edu |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") 
+```
+
+```{r}
+ggplot(ci_edu, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Income Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
+
+
+### are race, education, and income associated with food insecure?
+```{r}
+logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+```
+
+```{r}
+summary(logit_all)
+```
+
+```{r}
+exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+print(exp_all)
+```
+
+### making CI
+```{r}
+ci_all = as.data.frame(exp_all)
+ci_all = 
+  ci_all |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") 
+```
+
+```{r}
+ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Income Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
+
+
+### is food insecure associated with general health?
+```{r}
+mlogit_health = 
+  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = "Fair"))
+```
+
+```{r}
+summary(mlogit_health)
+```
+
+```{r}
+exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+
+print(exp_health)
+```
+
+```{r}
+coefs <- coef(summary(mlogit_health))
+odds_ratios <- exp(coefs[, "Estimate"]) # Convert coefficients to odds ratios
+lower_ci <- exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std. Error"]) # Lower 95% CI
+upper_ci <- exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std. Error"]) # Upper 95% CI
+
+# Combine into a tidy data frame
+ci_data <- data.frame(
+  Variable = rownames(coefs),
+  OR = odds_ratios,
+  Lower = lower_ci,
+  Upper = upper_ci
+) |>
+  filter(!grepl("(Intercept)", Variable)) |> # Exclude intercepts
+  separate(Variable, into = c("Outcome", "Predictor"), sep = ": ", fill = "right")
+```
+
+
+```{r}
+ggplot(ci_data, aes(y = Outcome, x = OR, xmin = Lower, xmax = Upper, color = Predictor)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Outcome (General Health)",
+    color = "Predictor"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
