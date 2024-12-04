@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2024-11-20" />
+
+<title>ds_final</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="plots.html">Food Deserts</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="http://github.com/tl3279/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ds_final</h1>
+<h4 class="date">2024-11-20</h4>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(haven)
+library(readxl)
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;
+## 
+## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## 
+## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(sf)</code></pre>
+<pre><code>## Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
+<pre class="r"><code>library(VGAM)</code></pre>
+<pre><code>## Loading required package: stats4
+## Loading required package: splines</code></pre>
+<div id="brfss-dataset" class="section level3">
+<h3>brfss dataset</h3>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()</code></pre>
+<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for details,
+## e.g.:
+##   dat &lt;- vroom(...)
+##   problems(dat)</code></pre>
+<pre><code>## Rows: 17800 Columns: 343
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (303): _STATE, IDATE, IMONTH, IDAY, RESPSLCT, SEXVAR, GENHLTH, PHYSHLTH,...
+## dbl  (38): FMONTH, IYEAR, SEQNO, _PSU, CELPHON1, COLGSEX1, NUMADULT, LANDSEX...
+## lgl   (2): CANHOWUSE_F, TELE_USE_F
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>zipcode = 
+  brfss_22 |&gt;
+  filter(zipcode1 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)</code></pre>
+<pre class="r"><code>county = 
+  brfss_22 |&gt;
+  filter(ctycode2 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)</code></pre>
+</div>
+<div id="subset-dataset-cleaning" class="section level3">
+<h3>subset dataset cleaning</h3>
+<pre class="r"><code>cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)</code></pre>
+<pre class="r"><code>cleaned_df = 
+  cleaned_df |&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0)
+   )|&gt;
+  filter(!is.na(income), !is.na(education))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
+<pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Race/Ethnicity&quot;,
+    x = &quot;Race/Ethnicity&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(cleaned_df, aes(x = &quot;&quot;, fill = education)) +
+  geom_bar(width = 1, stat = &quot;count&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  labs(
+    title = &quot;Distribution of Education Levels&quot;,
+    fill = &quot;Education Level&quot;
+  ) +
+  theme_void() +
+  theme(legend.position = &quot;right&quot;)</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
+  geom_bar() +
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;lightblue&quot;, &quot;1&quot; = &quot;pink&quot;), labels = c(&quot;Not Food Insecure&quot;, &quot;Food Insecure&quot;)) +
+  labs(
+    title = &quot;Distribution of Food Insecurity&quot;,
+    x = &quot;Food Insecurity&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Status&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>cleaned_df = 
+  cleaned_df |&gt;
+  mutate(
+    imprace = as.factor(imprace),
+    income = as.factor(income),
+    education = as.factor(education),
+    genhlth = as.factor(genhlth)
+  )</code></pre>
+</div>
+<div id="is-income-associated-with-food-insecure"
+class="section level3">
+<h3>is income associated with food insecure?</h3>
+<pre class="r"><code>logit_income = 
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)</code></pre>
+<pre class="r"><code>summary(logit_income)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = food_insecure ~ income, family = binomial, data = cleaned_df)
+## 
+## Coefficients:
+##                        Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)             0.15825    0.04214   3.756 0.000173 ***
+## income&gt;100,000         -1.79779    0.07055 -25.484  &lt; 2e-16 ***
+## income50,000 ~ 100,000 -1.05163    0.06343 -16.580  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8531.8  on 6720  degrees of freedom
+## Residual deviance: 7767.5  on 6718  degrees of freedom
+##   (14 observations deleted due to missingness)
+## AIC: 7773.5
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>print(exp_income)</code></pre>
+<pre><code>##                               OR     2.5 %    97.5 %
+## (Intercept)            1.1714559 1.0786807 1.2724394
+## income&gt;100,000         0.1656645 0.1441346 0.1900589
+## income50,000 ~ 100,000 0.3493678 0.3084065 0.3954708</code></pre>
+</div>
+<div id="making-confident-interval" class="section level3">
+<h3>making confident interval</h3>
+<pre class="r"><code>ci_income = as.data.frame(exp_income)
+ci_income = 
+  ci_income |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) </code></pre>
+<pre class="r"><code>ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Income Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="is-race-associated-with-food-insecure" class="section level3">
+<h3>is race associated with food insecure?</h3>
+<pre class="r"><code>logit_race = 
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)</code></pre>
+<pre class="r"><code>summary(logit_race)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = food_insecure ~ imprace, family = binomial, data = cleaned_df)
+## 
+## Coefficients:
+##                                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)                       0.4700     0.3291   1.428  0.15330    
+## impraceAsian, Non-Hispanic       -1.1448     0.3494  -3.277  0.00105 ** 
+## impraceBlack, Non-Hispanic       -0.6395     0.3388  -1.888  0.05907 .  
+## impraceHispanic                  -0.1845     0.3368  -0.548  0.58379    
+## impraceOther race, Non-Hispanic  -0.8530     0.3817  -2.235  0.02544 *  
+## impraceWhite, Non-Hispanic       -1.4665     0.3307  -4.434 9.25e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8531.8  on 6720  degrees of freedom
+## Residual deviance: 8193.8  on 6715  degrees of freedom
+##   (14 observations deleted due to missingness)
+## AIC: 8205.8
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>print(exp_race)</code></pre>
+<pre><code>##                                        OR     2.5 %    97.5 %
+## (Intercept)                     1.6000000 0.8482021 3.1174422
+## impraceAsian, Non-Hispanic      0.3182870 0.1573729 0.6250436
+## impraceBlack, Non-Hispanic      0.5275735 0.2660540 1.0145649
+## impraceHispanic                 0.8315217 0.4208835 1.5927584
+## impraceOther race, Non-Hispanic 0.4261364 0.1982346 0.8920934
+## impraceWhite, Non-Hispanic      0.2307309 0.1180762 0.4366356</code></pre>
+</div>
+<div id="making-ci" class="section level3">
+<h3>making CI</h3>
+<pre class="r"><code>ci_race = as.data.frame(exp_race)
+ci_race = 
+  ci_race |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) </code></pre>
+<pre class="r"><code>ggplot(ci_race, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Income Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="is-education-associated-with-food-insecure"
+class="section level3">
+<h3>is education associated with food insecure?</h3>
+<pre class="r"><code>logit_edu = 
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)</code></pre>
+<pre class="r"><code>summary(logit_edu)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = food_insecure ~ education, family = binomial, data = cleaned_df)
+## 
+## Coefficients:
+##                                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)                    -1.17472    0.03990  -29.44   &lt;2e-16 ***
+## educationHigh school or GED     0.89353    0.06799   13.14   &lt;2e-16 ***
+## educationLess than high school  1.65655    0.12013   13.79   &lt;2e-16 ***
+## educationSome post-high school  0.75108    0.06534   11.49   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8531.8  on 6720  degrees of freedom
+## Residual deviance: 8181.7  on 6717  degrees of freedom
+##   (14 observations deleted due to missingness)
+## AIC: 8189.7
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>print(exp_edu)</code></pre>
+<pre><code>##                                       OR     2.5 %    97.5 %
+## (Intercept)                    0.3089064 0.2855101 0.3338597
+## educationHigh school or GED    2.4437471 2.1388216 2.7921872
+## educationLess than high school 5.2412235 4.1483184 6.6458564
+## educationSome post-high school 2.1192858 1.8644532 2.4088344</code></pre>
+</div>
+<div id="making-ci-1" class="section level3">
+<h3>making CI</h3>
+<pre class="r"><code>ci_edu = as.data.frame(exp_edu)
+ci_edu = 
+  ci_edu |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) </code></pre>
+<pre class="r"><code>ggplot(ci_edu, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Income Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+</div>
+<div id="are-race-education-and-income-associated-with-food-insecure"
+class="section level3">
+<h3>are race, education, and income associated with food insecure?</h3>
+<pre class="r"><code>logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)</code></pre>
+<pre class="r"><code>summary(logit_all)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = food_insecure ~ education + income + imprace, family = binomial, 
+##     data = cleaned_df)
+## 
+## Coefficients:
+##                                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)                      0.53189    0.35172   1.512 0.130472    
+## educationHigh school or GED      0.33709    0.07560   4.459 8.25e-06 ***
+## educationLess than high school   0.51381    0.13410   3.832 0.000127 ***
+## educationSome post-high school   0.39938    0.07067   5.652 1.59e-08 ***
+## income&gt;100,000                  -1.47996    0.07716 -19.181  &lt; 2e-16 ***
+## income50,000 ~ 100,000          -0.82727    0.06720 -12.310  &lt; 2e-16 ***
+## impraceAsian, Non-Hispanic      -0.61142    0.37016  -1.652 0.098582 .  
+## impraceBlack, Non-Hispanic      -0.35711    0.35843  -0.996 0.319098    
+## impraceHispanic                 -0.02493    0.35628  -0.070 0.944225    
+## impraceOther race, Non-Hispanic -0.50427    0.40436  -1.247 0.212367    
+## impraceWhite, Non-Hispanic      -0.95198    0.35036  -2.717 0.006584 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8531.8  on 6720  degrees of freedom
+## Residual deviance: 7556.1  on 6710  degrees of freedom
+##   (14 observations deleted due to missingness)
+## AIC: 7578.1
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))</code></pre>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<pre class="r"><code>print(exp_all)</code></pre>
+<pre><code>##                                        OR     2.5 %    97.5 %
+## (Intercept)                     1.7021419 0.8647852 3.4657343
+## educationHigh school or GED     1.4008627 1.2075946 1.6242264
+## educationLess than high school  1.6716442 1.2863633 2.1766833
+## educationSome post-high school  1.4909056 1.2977759 1.7120630
+## income&gt;100,000                  0.2276472 0.1955464 0.2646223
+## income50,000 ~ 100,000          0.4372422 0.3831784 0.4986752
+## impraceAsian, Non-Hispanic      0.5425790 0.2575868 1.1083291
+## impraceBlack, Non-Hispanic      0.6996939 0.3394655 1.3960468
+## impraceHispanic                 0.9753822 0.4750575 1.9375440
+## impraceOther race, Non-Hispanic 0.6039454 0.2687842 1.3203476
+## impraceWhite, Non-Hispanic      0.3859749 0.1900830 0.7577675</code></pre>
+</div>
+<div id="making-ci-2" class="section level3">
+<h3>making CI</h3>
+<pre class="r"><code>ci_all = as.data.frame(exp_all)
+ci_all = 
+  ci_all |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) </code></pre>
+<pre class="r"><code>ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Income Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+</div>
+<div id="is-food-insecure-associated-with-general-health"
+class="section level3">
+<h3>is food insecure associated with general health?</h3>
+<pre class="r"><code>mlogit_health = 
+  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = &quot;Fair&quot;))</code></pre>
+<pre class="r"><code>summary(mlogit_health)</code></pre>
+<pre><code>## Call:
+## vglm(formula = genhlth ~ food_insecure, family = multinomial(refLevel = &quot;Fair&quot;), 
+##     data = cleaned_df)
+## 
+## Coefficients: 
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept):1   -4.59512    0.50252  -9.144  &lt; 2e-16 ***
+## (Intercept):2    0.85806    0.05997  14.309  &lt; 2e-16 ***
+## (Intercept):3    1.17943    0.05746  20.526  &lt; 2e-16 ***
+## (Intercept):4   -1.62471    0.12388 -13.115  &lt; 2e-16 ***
+## (Intercept):5   -4.37198    0.45003  -9.715  &lt; 2e-16 ***
+## (Intercept):6    1.51023    0.05552  27.199  &lt; 2e-16 ***
+## food_insecure:1 -1.31568    1.12033  -1.174  0.24025    
+## food_insecure:2 -1.12341    0.09919 -11.325  &lt; 2e-16 ***
+## food_insecure:3 -0.40687    0.08522  -4.774 1.81e-06 ***
+## food_insecure:4  0.46750    0.16333   2.862  0.00421 ** 
+## food_insecure:5 -1.53882    1.09779  -1.402  0.16099    
+## food_insecure:6 -0.93792    0.08557 -10.961  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Number of linear predictors:  6 
+## 
+## Names of linear predictors: log(mu[,1]/mu[,3]), log(mu[,2]/mu[,3]), 
+## log(mu[,4]/mu[,3]), log(mu[,5]/mu[,3]), log(mu[,6]/mu[,3]), log(mu[,7]/mu[,3])
+## 
+## Residual deviance: 18580.58 on 40314 degrees of freedom
+## 
+## Log-likelihood: -9290.288 on 40314 degrees of freedom
+## 
+## Number of Fisher scoring iterations: 9 
+## 
+## Warning: Hauck-Donner effect detected in the following estimate(s):
+## &#39;(Intercept):1&#39;, &#39;(Intercept):5&#39;
+## 
+## 
+## Reference group is level  3  of the response</code></pre>
+<pre class="r"><code>exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+
+print(exp_health)</code></pre>
+<pre><code>##                         OR       2.5 %     97.5 %
+## (Intercept):1   0.01010101 0.003772419 0.02704641
+## (Intercept):2   2.35858586 2.097048973 2.65274074
+## (Intercept):3   3.25252525 2.906100626 3.64024577
+## (Intercept):4   0.19696970 0.154509167 0.25109877
+## (Intercept):5   0.01262626 0.005226491 0.03050278
+## (Intercept):6   4.52777778 4.060902015 5.04832954
+## food_insecure:1 0.26829268 0.029852690 2.41120527
+## food_insecure:2 0.32516843 0.267715812 0.39495056
+## food_insecure:3 0.66573246 0.563321566 0.78676149
+## food_insecure:4 1.59599750 1.158793351 2.19815553
+## food_insecure:5 0.21463415 0.024960941 1.84559617
+## food_insecure:6 0.39144097 0.331001377 0.46291660</code></pre>
+<pre class="r"><code>coefs &lt;- coef(summary(mlogit_health))
+odds_ratios &lt;- exp(coefs[, &quot;Estimate&quot;]) # Convert coefficients to odds ratios
+lower_ci &lt;- exp(coefs[, &quot;Estimate&quot;] - 1.96 * coefs[, &quot;Std. Error&quot;]) # Lower 95% CI
+upper_ci &lt;- exp(coefs[, &quot;Estimate&quot;] + 1.96 * coefs[, &quot;Std. Error&quot;]) # Upper 95% CI
+
+# Combine into a tidy data frame
+ci_data &lt;- data.frame(
+  Variable = rownames(coefs),
+  OR = odds_ratios,
+  Lower = lower_ci,
+  Upper = upper_ci
+) |&gt;
+  filter(!grepl(&quot;(Intercept)&quot;, Variable)) |&gt; # Exclude intercepts
+  separate(Variable, into = c(&quot;Outcome&quot;, &quot;Predictor&quot;), sep = &quot;: &quot;, fill = &quot;right&quot;)</code></pre>
+<pre class="r"><code>ggplot(ci_data, aes(y = Outcome, x = OR, xmin = Lower, xmax = Upper, color = Predictor)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Outcome (General Health)&quot;,
+    color = &quot;Predictor&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
