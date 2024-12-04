@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Report</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="plots.html">Food Deserts</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="http://github.com/tl3279/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Report</h1>
+
+</div>
+
+
+<div id="data-sources-and-cleaning" class="section level2">
+<h2>Data Sources and Cleaning</h2>
+<pre class="r"><code>population_data =
+  read_excel(&quot;nyc2020_census_blocks.xlsx&quot;) |&gt;
+  slice(-c(1:6)) |&gt;
+  mutate(
+    borough_code = as.numeric(substr(GeoID, 1, 1)), 
+    tract_number = substr(GeoID, 2, 7),
+    fips_county = case_when(
+      borough_code == 1 ~ &quot;061&quot;,
+      borough_code == 2 ~ &quot;005&quot;,
+      borough_code == 3 ~ &quot;047&quot;,
+      borough_code == 4 ~ &quot;081&quot;,
+      borough_code == 5 ~ &quot;085&quot; 
+    ),
+    geoid = paste0(&quot;36&quot;, fips_county, tract_number)
+  ) |&gt;
+  group_by(geoid) |&gt;
+  summarize(total_population = sum(Pop1, na.rm = TRUE)) 
+
+nyc_tracts = 
+  st_read(
+    &quot;2020 Census Tracts/geo_export_ae979acf-b46a-42af-a79f-874d7b450fc8.shp&quot;,
+    quiet = TRUE)|&gt;
+  left_join(population_data, by = &quot;geoid&quot;) |&gt;
+  mutate(
+    pop_bins = cut(
+      total_population,
+      breaks = c(0, 1000, 5000, 10000, 15000, 200000),
+      labels = c(&quot;0 - 1,000&quot;, &quot;1,001 - 5,000&quot;, &quot;5,001 - 10,000&quot;, &quot;10,000 - 15,000&quot;, &quot;15,001 - 20,000&quot;),
+      include.lowest = TRUE
+    )
+  )
+
+retail_stores = 
+  read_csv(&quot;Retail_Food_Stores.csv&quot;) |&gt;
+  janitor::clean_names() |&gt;
+  filter(county %in% c(&quot;BRONX&quot;, &quot;KINGS&quot;, &quot;NEW YORK&quot;, &quot;RICHMOND&quot;, &quot;QUEENS&quot;),
+         !str_detect(establishment_type, &quot;B|C|D&quot;)) |&gt;
+  mutate(county = recode(county,
+    &quot;BRONX&quot; = &quot;Bronx&quot;,
+    &quot;KINGS&quot; = &quot;Brooklyn&quot;,
+    &quot;NEW YORK&quot; = &quot;Manhattan&quot;,
+    &quot;RICHMOND&quot; = &quot;Staten Island&quot;,
+    &quot;QUEENS&quot; = &quot;Queens&quot;
+  )) |&gt;
+  mutate(geometry = st_as_sfc(georeference)) |&gt;
+  st_as_sf() |&gt;
+  st_set_crs(4326)
+
+retail_stores =
+  retail_stores |&gt;
+  filter(square_footage &gt;= 2000) |&gt;
+  mutate(
+    category = case_when(
+      square_footage &lt; 5000 ~ &quot;Small&quot;,
+      square_footage &lt;= 9000 ~ &quot;Medium&quot;,
+      square_footage &gt; 9000 ~ &quot;Large&quot;
+    )
+  )
+buffered_stores = 
+  retail_stores |&gt;
+  st_transform(crs = 2263) |&gt;
+  mutate(
+    buffer_radius = case_when(
+      category == &quot;Small&quot; ~ 5280*0.15,
+      category == &quot;Medium&quot; ~ 5280*0.25,
+      category == &quot;Large&quot; ~ 5280*0.35
+    )
+  ) |&gt;
+  mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
+<div id="nyc-2020-census-tract-dataset" class="section level3">
+<h3>NYC 2020 Census Tract Dataset</h3>
+<p>Exported Shapefile from <a
+href="https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data">NYC
+Open Data</a>. This dataset includes the 2020 Census Tracts from the US
+Census for New York City. The boundary files are derived from the US
+Census Bureau’s TIGER data products and have been geographically
+modified to align with the New York City base map. The Shapefile was
+imported using <code>st_read()</code> from the <code>sf</code> package.
+Population data, aggregated at the census tract level, was joined to the
+shapefile using the common <code>geoid</code> identifier. Census tracts
+were classified into population bins based on total population for
+improved visualization.</p>
+</div>
+<div id="nyc-2020-decennial-census-data" class="section level3">
+<h3>NYC 2020 Decennial Census Data</h3>
+<p>Downloaded the Excel file from <a
+href="https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page">2020
+Census - DCP</a> provided by the NYC Department of City Planning. This
+dataset includes basic demographic and housing characteristics, such as
+total population, race/ethnicity, age, housing tenure, and household
+composition for NYC’s census blocks.The dataset was imported using
+<code>read_excel()</code> and the first six rows, which contained
+summary population information for the five counties and NYC as a whole,
+were removed. A new variable, <code>geoid</code>, was created by
+combining borough codes and tract numbers to ensure compatibility with
+the NYC census tract dataset. Total population was aggregated across
+unique <code>geoid</code> values to calculate the total population for
+each census tract. The cleaned population dataset was then merged with
+the NYC census tract dataset using the <code>geoid</code> variable.</p>
+</div>
+<div id="retail-store-dataset" class="section level3">
+<h3>Retail Store Dataset</h3>
+<p>Exported CSV file from <a
+href="https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data">Open
+Data NY</a>. This dataset provides a listing of all retail food stores
+licensed by the Department of Agriculture and Markets. The dataset
+includes variables such as store location, type, and square footage. The
+dataset was imported using <code>read_csv()</code> and column names were
+cleaned using the <code>janitor::clean_names()</code> function. Only
+relevant counties (Bronx, Kings, New York, Richmond, and Queens) were
+selected for the analysis. Establishment types were filtered to include
+only type <code>B</code> (Bakery), <code>C</code> (Food Manufacturer),
+and <code>D</code> (Food Warehouse). County names were recoded for
+consistency with other datasets.Stores with square footage below 2,000
+sqft were excluded due to insufficent nutrition providance
+consideration.Stores were categorized into the following size
+groups:<br />
+- <strong>Small</strong>: Less than 5,000 sqft<br />
+- <strong>Medium</strong>: Between 5,000 and 9,000 sqft<br />
+- <strong>Large</strong>: Greater than 9,000 sqft<br />
+To visualize the coverage of retail stores by adding coverage zones
+based on store size. The geometry was transform the CRS to
+<code>EPSG:2263</code> for accurate distance-based calculations.Coverage
+zones were created around store locations using
+<code>st_buffer()</code>. The coverage radii were categorized into the
+following size groups:<br />
+- <strong>Small</strong>: 0.15 miles (792 ft)<br />
+- <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
+- <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
+</div>
+</div>
+<div id="identifying-food-desert" class="section level2">
+<h2>Identifying Food Desert</h2>
+<p>Food deserts are areas with limited access to affordable and
+nutritious food options, particularly fresh fruits and vegetables. To
+identify food deserts, we examined the distribution of retail stores
+across New York City. This analysis combines population density data
+with the spatial distribution of retail stores. To enhance visualization
+and clarity, the analysis is divided into two geographic regions:
+<strong>Manhattan + Bronx</strong> and <strong>Brooklyn + Queens +
+Staten Island.</strong></p>
+<div id="manhattan-and-bronx" class="section level3">
+<h3>Manhattan and Bronx</h3>
+<div id="retail-store-dirtributions" class="section level4">
+<h4>Retail store dirtributions</h4>
+<p>Retail stores are heavily concentrated in central and lower
+Manhattan, which aligns with areas of higher population density and
+commercial activity. This clustering likely reflects the demand for
+retail services in densely populated and economically vibrant
+neighborhoods. The Bronx shows a more evenly distributed pattern of
+retail stores. However, northern and central Bronx census tracts with
+higher populations have fewer stores, indicating possible underserved
+areas.</p>
+<p>The combination of population density and retail store distribution
+in this visualization provides insights into potential gaps in food
+accessibility. Areas with sparse retail store coverage and relatively
+high populations might be indicative of underserved communities,
+highlighting regions where interventions or additional resources may be
+required to improve access to nutritious food.</p>
+</div>
+<div id="add-coverage-zones" class="section level4">
+<h4>Add coverage zones</h4>
+<p>This graph shows the retail store distribution and their respective
+coverage zones in Manhattan and the Bronx. The store categories are
+classified by square footage:<br />
+- Small stores: Represented in yellow with a coverage radius of 0.15
+miles.<br />
+- Medium stores: Represented in green with a coverage radius of 0.25
+miles.<br />
+- Large stores: Represented in blue with a coverage radius of 0.35
+miles.</p>
+<p>A dense clustering of retail stores is evident in central and lower
+Manhattan. Overlapping coverage zones indicate high accessibility,
+suggesting these areas are well-served by retail options. Retail stores
+are less densely distributed, especially in the upper-left corner of the
+Bronx, where coverage zones are sparse or absent. This highlights
+potential food desert areas with limited access to retail stores.</p>
+</div>
+</div>
+<div id="brooklyn-queens-and-staten-island" class="section level3">
+<h3>Brooklyn, Queens, and Staten Island</h3>
+<div id="retail-store-dirtributions-1" class="section level4">
+<h4>Retail store dirtributions</h4>
+<p>Brooklyn has a high density of retail stores, particularly in areas
+of moderate to high population density. This reflects a pattern of urban
+development and commercial activity aligning with residential areas.
+Queens also displays significant coverage of retail stores, though there
+are noticeable gaps in the central and eastern parts of the borough.
+These gaps might indicate areas of potential food deserts.Staten Island
+has retail stores distributed relatively loosely, and the southernmost
+tracts with lower population density have limited retail store
+presence.</p>
+<p>These findings suggest that while Brooklyn and parts of Queens enjoy
+relatively good retail store coverage, some areas, particularly in
+Staten Island and parts of Queens, may lack sufficient access to stores
+that provide fresh and nutritious food options.</p>
+</div>
+<div id="add-coverage-zones-1" class="section level4">
+<h4>Add coverage zones</h4>
+<p>Same as above, the retail stores are categorized into Small, Medium,
+and Large, represented by yellow, green, and blue buffer zones,
+respectively.</p>
+<p>For Brooklyn, the coverage zones overlap significantly in densely
+populated areas, ensuring better coverage for residents. However, small
+gaps remain in the eastern parts. Queens has a mix of small and medium
+store buffers, indicating for moderate coverage. Sparse large store
+buffers in some areas leave room for improvement, especially in central
+and eastern Queens. For Staten Island, the central and southernmost
+tracts have very few store buffers, indicating limited accessibility to
+nutritious food options for residents in these regions. This combined
+map highlights potential food deserts and areas requiring improved
+access to retail stores offering fresh and nutritious food.</p>
+</div>
+</div>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<div id="food-desert" class="section level3">
+<h3>Food Desert</h3>
+<p>Based on the visualizations and observations, we identify significant
+disparities in the availability of retail food stores across New York
+City’s boroughs. The analysis highlights areas with limited access to
+nutritious food options, also known as food deserts, particularly in
+regions with sparse retail store coverage.</p>
+<p>Manhattan shows dense retail store coverage in central and lower
+regions but limited access in northern tracts. The Bronx, particularly
+its upper-left corner, has sparse coverage despite moderate population
+density. Brooklyn and Queens demonstrate a mix of small and medium store
+buffers, but gaps exist in eastern Brooklyn and Queens. Staten Island
+has the most limited coverage, with southern tracts particularly
+underserved.</p>
+<p>The analysis underscores the need for tailored policies and
+interventions to address food deserts, focusing on areas with:<br />
+- High population density but sparse retail store coverage (e.g., parts
+of the Bronx, eastern Queens, and southern Staten Island).<br />
+- Limited presence of medium and large retail stores, which are more
+likely to offer fresh and nutritious food options.</p>
+<p>Efforts could include incentivizing grocery stores to open in
+underserved areas, enhancing transportation options to food hubs, and
+supporting local farmers’ markets to improve accessibility to nutritious
+food in food deserts. These actions could help bridge the food access
+gap and promote equitable food security across New York City.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
