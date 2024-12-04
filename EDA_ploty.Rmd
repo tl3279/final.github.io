@@ -1,0 +1,309 @@
+---
+title: "ds_final_EDA + Ploty"
+output: html_document
+date: "2024-11-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(haven)
+library(readxl)
+library(plotly)
+library(sf)
+library(VGAM)
+```
+
+
+```{r}
+farmer_markets20 = 
+  read_excel("EDA+Ploty/Historical_FarmersMarkets_2009-2020.xlsx", sheet = "2020")|>
+  janitor::clean_names()
+```
+
+```{r}
+farmer_markets20 = farmer_markets20 |>
+  mutate(borough = as.character(borough))
+ 
+```
+
+
+### calculate operation time 
+```{r}
+farmer_markets20 =
+  farmer_markets20 |>
+  mutate(hours_of_operations = str_replace_all(hours_of_operations, "\\.", ""))|>
+  separate(hours_of_operations, into = c("open_time", "close_time"), sep = "\\s*-\\s*")
+```
+
+
+```{r}
+plot_ly(
+  farmer_markets20,
+  x = ~latitude,
+  y = ~longitude,
+  type = 'scatter',
+  mode = 'markers',
+  color = ~ borough,
+  text = ~paste("Market:", farmers_market, "<br>Borough:", borough)
+)
+```
+
+### bar chart of numbers of store in each borough
+```{r}
+farmer_markets20 |>
+  count(borough)|>
+  mutate(borough = fct_reorder(borough, n))|>
+  plot_ly(x = ~ borough, y = ~n, color = ~borough, type = "bar", colors = "viridis")
+```
+
+
+### creating operation time
+```{r}
+farmer_markets20 = 
+  farmer_markets20 |>
+  mutate(
+    open_time = str_remove(open_time, "(am|pm)"),
+    
+    open_time_hours = as.numeric(str_extract(open_time, "^[0-9]+")),       # Extract hour part
+    open_time_minutes = as.numeric(str_remove(str_extract(open_time, ":[0-9]+"), ":")),
+    
+    open_time_decimal = open_time_hours + if_else(is.na(open_time_minutes), 0, open_time_minutes / 60)
+  ) |>
+  select(-open_time_hours, -open_time_minutes)
+  
+```
+
+
+```{r}
+farmer_markets20 = 
+  farmer_markets20 |>
+  mutate(
+    close_time = str_remove(close_time, "(am|pm|p\\.m\\.)"),
+    
+    # Split Close_Time into hours and minutes
+    close_time_hours = as.numeric(str_extract(close_time, "^[0-9]+")), # Extract hour part
+    close_time_minutes = as.numeric(str_remove(str_extract(open_time, ":[0-9]+"), ":")), # Extract minute part
+    
+    # Add 12 to hours if the value is not 10
+    close_time_hours = if_else(close_time_hours != 10, close_time_hours + 12, close_time_hours),
+    
+    # Combine hours and minutes into final Close_Time
+    close_time_decimal = close_time_hours + if_else(is.na(close_time_minutes), 0, close_time_minutes / 60)
+           # Combine hours and minutes
+  ) |>
+  select(-close_time_hours, -close_time_minutes) 
+  
+```
+
+
+```{r}
+farmer_markets20 = 
+  farmer_markets20 |>
+  mutate(
+    operation_time = close_time_decimal - open_time_decimal
+  )|> # calculating the operation time for each store
+  select(-close_time_decimal, -open_time_decimal)
+```
+
+### average operation time bar plot
+```{r}
+ggplot(farmer_markets20, aes(x = borough, y = operation_time, fill = borough)) +
+  geom_bar(stat = "summary", fun = "mean", show.legend = FALSE) +
+  labs(
+    title = "Average Operation Time by Borough",
+    x = "Borough",
+    y = "Average Operation Time (hours)"
+  ) +
+  theme_minimal()
+```
+
+
+### boxplot of operation time
+```{r}
+ggplot(farmer_markets20, aes(x = borough, y = operation_time, fill = borough)) +
+  geom_boxplot(show.legend = FALSE) +
+  labs(
+    title = "Distribution of Operation Time by Borough",
+    x = "Borough",
+    y = "Operation Time (hours)"
+  ) +
+  theme_minimal()
+```
+
+ploty
+```{r}
+plot_ly(
+  data = farmer_markets20,
+  x = ~borough,
+  y = ~operation_time,
+  type = "box",
+  color = ~borough,
+  name = "Operation Time"
+) %>%
+  layout(
+    title = "Distribution of Operation Time by Borough",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Operation Time (hours)")
+  )
+```
+
+
+### heatmap of operation time
+ploty
+```{r}
+plot_ly(
+  data = farmer_markets20,
+  x = ~borough,
+  y = ~operation_time,
+  z = ~operation_time,
+  type = "heatmap",
+  colorscale = "Viridis",
+  text = ~paste("Borough: ", borough, "<br>Operation Time: ", operation_time, " hours"),
+  hoverinfo = "text"
+) %>%
+  layout(
+    title = "Heatmap of Operation Time by Borough",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Operation Time (hours)")
+  )
+```
+
+### trying geom_sf
+```{r}
+farmer_markets_sf <- farmer_markets20 |>
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) 
+```
+
+```{r}
+plot_ly(
+  data = farmer_markets_sf,
+  type = "scattermapbox",
+  mode = "markers",
+  marker = list(
+    size = ~operation_time, 
+    color = ~operation_time, 
+    colorscale = "Viridis"
+  ),
+  text = ~paste(
+    "Store: ", farmers_market, "<br>",
+    "Operation Time: ", operation_time, " hours"
+  ),  # Replace `Store_Name` with your store name column
+  hoverinfo = "text"
+) %>%
+  layout(
+    mapbox = list(
+      style = "carto-positron",  # Base map style
+      center = list(lon = -74, lat = 40.7),  # Adjust center to your region
+      zoom = 10
+    ),
+    title = "Operation Time of Farmer Markets on the Map"
+  )
+```
+
+
+
+### retail food stores dataset
+```{r}
+retail_df = read_csv("EDA+Ploty/Retail_Food_Stores_20241120.csv")|>
+  janitor::clean_names()|>
+  mutate(across(where(is.character), tolower))|>
+  mutate(georeference = str_remove_all(georeference, "point\\s*\\(|\\)")) |> # Remove "point(" and ")"
+  separate(georeference, into = c("longitude", "latitude"), sep = "\\s", convert = TRUE) 
+
+```
+
+### filtering nyc stores
+```{r}
+nyc_retail = 
+  retail_df |>
+  filter(county %in% c("bronx", "kings", "new york", "queens", "richmond"))
+```
+
+```{r}
+type_df = 
+  nyc_retail |>
+  group_by(establishment_type)|>
+  summarize(type_count = n())
+```
+
+### making a ploty
+```{r}
+plot_ly(
+  data = nyc_retail, 
+  x = ~longitude, 
+  y = ~latitude, 
+  type = 'scatter', 
+  mode = 'markers',
+  color = ~ county,
+  text = ~paste("Store Name:", dba_name),
+  marker = list(size = 5, opacity = 0.8)
+) |>
+  layout(
+    title = "NYC Retail Stores",
+    xaxis = list(title = "Longitude"),
+    yaxis = list(title = "Latitude")
+  )
+```
+
+### number of store
+```{r}
+store_in_county = 
+  nyc_retail |>
+  group_by(county)|>
+  summarize(store_count = n())
+```
+
+```{r}
+plot_ly(
+  data = store_in_county,
+  x = ~ reorder(county,store_count),
+  y = ~store_count,
+  color = ~ county,
+  type = 'bar',
+  colors = "viridis" # Set color and transparency
+) |>
+  layout(
+    title = "Number of Stores by County in NYC",
+    xaxis = list(title = "County"),
+    yaxis = list(title = "Number of Stores"),
+    barmode = "group"
+  )
+```
+
+### footstorage 
+```{r}
+square_footage_range =
+  nyc_retail |>
+  pull(square_footage) |>
+  range(na.rm = TRUE)
+```
+
+```{r}
+plot_ly(
+  data = nyc_retail,
+  x = ~longitude, 
+  y = ~latitude, 
+  type = 'scatter', 
+  mode = 'markers',
+  text = ~paste("Store Name:", dba_name, "<br>Square Footage:", square_footage),
+  marker = list(
+    size = 10,
+    color = ~square_footage, # Map square footage to the color scale
+    colorscale = "Viridis", # Use the Viridis color scale
+    showscale = TRUE, # Display the color scale
+    opacity = 0.7,
+    cmin = 0, # min
+    cmax = 23000 # max
+  )
+) |>
+  layout(
+    title = "Food Storage Capacity of NYC Retail Stores",
+    xaxis = list(title = "Longitude"),
+    yaxis = list(title = "Latitude")
+  )
+```
