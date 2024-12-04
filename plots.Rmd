@@ -1,5 +1,5 @@
 ---
-title: "Identifying Food Desserts"
+title: "Identifying Food Deserts"
 output: 
   html_document:
     toc: false

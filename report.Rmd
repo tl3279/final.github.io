@@ -107,7 +107,7 @@ To visualize the coverage of retail stores by adding coverage zones based on sto
   - **Medium**: 0.25 miles (1,320 ft)   
   - **Large**: 0.35 miles (1,848 ft)   
       
-## Identifying Food Dessert   
+## Identifying Food Desert   
 Food deserts are areas with limited access to affordable and nutritious food options, particularly fresh fruits and vegetables. To identify food deserts, we examined the distribution of retail stores across New York City. This analysis combines population density data with the spatial distribution of retail stores. To enhance visualization and clarity, the analysis is divided into two geographic regions: **Manhattan + Bronx** and **Brooklyn + Queens + Staten Island.** 
    
 ### Manhattan and Bronx    
@@ -137,7 +137,7 @@ For Brooklyn, the coverage zones overlap significantly in densely populated area
    
 ## Discussion
    
-### Food Dessert   
+### Food Desert   
 Based on the visualizations and observations, we identify significant disparities in the availability of retail food stores across New York City's boroughs. The analysis highlights areas with limited access to nutritious food options, also known as food deserts, particularly in regions with sparse retail store coverage.
 
 Manhattan shows dense retail store coverage in central and lower regions but limited access in northern tracts. The Bronx, particularly its upper-left corner, has sparse coverage despite moderate population density. Brooklyn and Queens demonstrate a mix of small and medium store buffers, but gaps exist in eastern Brooklyn and Queens. Staten Island has the most limited coverage, with southern tracts particularly underserved.

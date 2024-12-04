@@ -11,7 +11,7 @@
 
 
 
-<title>Identifying Food Desserts</title>
+<title>Identifying Food Deserts</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -252,7 +252,7 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="plots.html">Food Desserts</a>
+  <a href="plots.html">Food Deserts</a>
 </li>
 <li>
   <a href="report.html">Report</a>
@@ -280,7 +280,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Identifying Food Desserts</h1>
+<h1 class="title toc-ignore">Identifying Food Deserts</h1>
 
 </div>
 
@@ -289,9 +289,7 @@ $(document).ready(function () {
 <h2>Data Importing and Cleaning</h2>
 <p>Visit <a href="report.html">this page</a> for detailed steps on how
 the data is cleaned.</p>
-<pre class="r"><code># Load the population census dataset and filter out the counties corresponding to nyc.
-# Create geoid match that can match with the nyc census tract dataset.
-population_data =
+<pre class="r"><code>population_data =
   read_excel(&quot;nyc2020_census_blocks.xlsx&quot;) |&gt;
   slice(-c(1:6)) |&gt;
   mutate(
@@ -349,7 +347,7 @@ retail_stores =
       square_footage &gt; 9000 ~ &quot;Large&quot;
     )
   )
-buffered_stores &lt;- 
+buffered_stores = 
   retail_stores |&gt;
   st_transform(crs = 2263) |&gt;
   mutate(
@@ -374,15 +372,15 @@ densities.</p>
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) +  
   geom_sf(aes(fill = pop_bins), color = &quot;white&quot;, lwd = 0.2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),  # Replace with preferred colors
+    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(title = &quot;Population Distribution in New York City&quot;) +
   theme_minimal() +
   theme(
-    legend.position = c(0.05, 0.9),  # Adjust the position (x, y) in [0, 1] coordinates
-    legend.justification = c(0, 1), # Align legend box to the top-left
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;) # Optional for better visibility
+    legend.position = c(0.05, 0.9), 
+    legend.justification = c(0, 1), 
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
 </div>
@@ -397,17 +395,13 @@ Island</strong>.</p>
 <h3>Manhattan and Bronx</h3>
 <p>The map below depicts the locations of retail stores in Manhattan and
 the Bronx, plotted over a population density map by census tract.</p>
-<pre class="r"><code># Plot population map with retail store points
-nyc_tracts |&gt;
+<pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)) |&gt;
   ggplot() +
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) + 
-  # Census tracts with population bins
   geom_sf(aes(fill = pop_bins), color = &quot;white&quot;, lwd = 0.2) +
-  # Retail store locations
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)), color = &quot;darkblue&quot;, size = 2) +
-  # Customize population colors
   scale_fill_manual(
     values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
@@ -418,9 +412,9 @@ nyc_tracts |&gt;
   ) +
   theme_minimal() +
   theme(
-    legend.position = c(0.05, 0.9),  # Adjust the position (x, y) in [0, 1] coordinates
-    legend.justification = c(0, 1), # Align legend box to the top-left
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;) # Optional for better visibility
+    legend.position = c(0.05, 0.9), 
+    legend.justification = c(0, 1), 
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 <p>Retail stores are heavily concentrated in central and lower
@@ -439,21 +433,18 @@ access to nutritious food.</p>
   geom_sf(aes(fill = pop_bins),
     color = &quot;white&quot;, lwd = 0.2
   ) +
-  # Add transparent filled buffers for retail stores
   geom_sf(
     data = buffered_stores |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
     aes(fill = category),
     alpha = 0.4,
     color = NA
   ) +
-  # Add store points for clarity
   geom_sf(
     data = retail_stores |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
     aes(color = category),
     alpha = 0.6,
     size = 1.5
   ) +
-  # Define color scales for buffers and points
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
@@ -461,19 +452,18 @@ access to nutritious food.</p>
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
       &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
     ),
-    breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;),  # To avoid mixing store categories and population
+    breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
   ) +
   scale_color_manual(
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
-    guide = &quot;none&quot; # Hides duplicate legend for store points
+    guide = &quot;none&quot;
   ) +
-  # Add title and theme
-  labs(title = &quot;Population and Retail Store Buffers in Manhattan and Bronx&quot;) +
+  labs(title = &quot;Population and Retail Store Coverage in Manhattan and Bronx&quot;) +
   theme_minimal() +
   theme(
-    legend.position = c(0.05, 0.9),  # Adjust the position (x, y) in [0, 1] coordinates
-    legend.justification = c(0, 1), # Align legend box to the top-left
+    legend.position = c(0.05, 0.9), 
+    legend.justification = c(0, 1), 
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
@@ -493,12 +483,9 @@ density map by census tract.</p>
   filter(boroname %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)) |&gt;
   ggplot() +
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) + 
-  # Census tracts with population bins
   geom_sf(aes(fill = pop_bins), color = &quot;white&quot;, lwd = 0.2) +
-  # Retail store locations
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)), color = &quot;darkblue&quot;, size = 2) +
-  # Customize population colors
   scale_fill_manual(
     values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
@@ -509,9 +496,9 @@ density map by census tract.</p>
   ) +
   theme_minimal() +
   theme(
-    legend.position = c(0.05, 0.9),  # Adjust the position (x, y) in [0, 1] coordinates
-    legend.justification = c(0, 1), # Align legend box to the top-left
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;) # Optional for better visibility
+    legend.position = c(0.05, 0.9), 
+    legend.justification = c(0, 1),
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
 <p>Brooklyn has a high density of retail stores, particularly in areas
@@ -527,7 +514,6 @@ lower population density have limited retail store presence.</p>
   geom_sf(aes(fill = pop_bins),
     color = &quot;white&quot;, lwd = 0.2
   ) +
-  # Add transparent filled buffers for retail stores
   geom_sf(
     data = buffered_stores |&gt; 
       filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)),
@@ -535,7 +521,6 @@ lower population density have limited retail store presence.</p>
     alpha = 0.4,
     color = NA
   ) +
-  # Add store points for clarity
   geom_sf(
     data = retail_stores |&gt; 
       filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)),
@@ -543,7 +528,6 @@ lower population density have limited retail store presence.</p>
     alpha = 0.6,
     size = 1.5
   ) +
-  # Define color scales for buffers and points
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
@@ -551,19 +535,18 @@ lower population density have limited retail store presence.</p>
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
       &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
     ),
-    breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;),  # To avoid mixing store categories and population
+    breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
   ) +
   scale_color_manual(
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
-    guide = &quot;none&quot; # Hides duplicate legend for store points
+    guide = &quot;none&quot;
   ) +
-  # Add title and theme
-  labs(title = &quot;Population and Retail Store Buffers in Brooklyn, Queens, and Staten Island&quot;) +
+  labs(title = &quot;Population and Retail Store Coverage in Brooklyn, Queens, and Staten Island&quot;) +
   theme_minimal() +
   theme(
-    legend.position = c(0.05, 0.9),  # Adjust the position (x, y) in [0, 1] coordinates
-    legend.justification = c(0, 1), # Align legend box to the top-left
+    legend.position = c(0.05, 0.9),
+    legend.justification = c(0, 1),
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
