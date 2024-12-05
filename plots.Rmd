@@ -10,8 +10,7 @@ output:
 ```{=html}
 <pre>
 留言板
-1. 居中了图片标题，没改代码
-2. 不太明白为啥有些是类似于“Population Distribution in New York City”但是有些是专门搞了一个subtitle?是不是consistent一些比较好
+1. 优化了一下图片排版（字体，标题，大小之类的），其他都没改
 </pre>
 ```
 <br>   
@@ -111,13 +110,17 @@ nyc_tracts |>
     values = c("white", "#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
     name = "Population by Census Tract"
   ) +
-  labs(title = "Population Distribution in New York City") +
+  labs(
+    title = "Distribution of Population Density",
+    subtitle = "New York City"
+  ) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = "white", color = "black"),
-    plot.title = element_text(hjust=0.5)
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5)
   )
 ```
 
@@ -147,7 +150,8 @@ nyc_tracts |>
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = "white", color = "black"),
-    plot.title = element_text(hjust=0.5)
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5)
   )
 ```
 
@@ -188,13 +192,17 @@ nyc_tracts |>
     values = c("Small" = "yellow", "Medium" = "green", "Large" = "blue"),
     guide = "none"
   ) +
-  labs(title = "Population and Retail Store Coverage in Manhattan and Bronx") +
+  labs(
+    title = "Population Distribution and Retail Store Coverage",
+    subtitle = "Manhattan and Bronx"
+  ) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = "white", color = "black"),
-    plot.title = element_text(hjust=0.5)
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5)
   )
 ```
 
@@ -224,7 +232,8 @@ nyc_tracts |>
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1),
     legend.background = element_rect(fill = "white", color = "black"),
-    plot.title = element_text(hjust=0.5)
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5)
   )
 ```
 
@@ -267,13 +276,17 @@ nyc_tracts |>
     values = c("Small" = "yellow", "Medium" = "green", "Large" = "blue"),
     guide = "none"
   ) +
-  labs(title = "Population and Retail Store Coverage in Brooklyn, Queens, and Staten Island") +
+  labs(
+    title = "Population and Retail Store Coverage",
+    subtitle = "Brooklyn, Queens, and Staten Island"
+  ) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9),
     legend.justification = c(0, 1),
     legend.background = element_rect(fill = "white", color = "black"),
-    plot.title = element_text(hjust=0.5)
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=0.5)
   )
 ```
 
