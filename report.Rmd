@@ -175,7 +175,7 @@ To visualize the coverage of retail stores by adding coverage zones based on sto
   - **Large**: 0.35 miles (1,848 ft)   
 
 ### Behavioral Risk Factor Surveillance System 2022 Dataset
-```{r, echo = FALSE}
+```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
 
@@ -382,9 +382,9 @@ nyc_tracts |>
   scale_fill_manual(
     values = c(
       "Small" = "yellow", "Medium" = "green", "Large" = "blue",
-      "0 - 1,000" = "#fee5d9", "1,001 - 5,000" = "#fcbba1",
+      "≤ 1,000" = "#fee5d9", "1,001 - 5,000" = "#fcbba1",
       "5,001 - 10,000" = "#fc9272", "10,000 - 15,000" = "#fb6a4a",
-      "15,001 - 20,000" = "#de2d26"
+      "> 15,000" = "#de2d26"
     ),
     breaks = c("Small", "Medium", "Large"), 
     name = "Store Category"
@@ -412,10 +412,6 @@ Same as above, the retail stores are categorized into Small, Medium, and Large, 
 For Brooklyn, the coverage zones overlap significantly in densely populated areas, ensuring better coverage for residents. However, small gaps remain in the eastern parts. Queens has a mix of small and medium store buffers, indicating for moderate coverage. Sparse large store buffers in some areas leave room for improvement, especially in central and eastern Queens. For Staten Island, the central and southernmost tracts have very few store buffers, indicating limited accessibility to nutritious food options for residents in these regions. This combined map highlights potential food deserts and areas requiring improved access to retail stores offering fresh and nutritious food.
 
 ## Discussion
-
-   
-### Food Desert
-
 
 ### Food Desert
 Based on the visualizations and observations, we identify significant disparities in the availability of retail food stores across New York City's boroughs. The analysis highlights areas with limited access to nutritious food options, also known as food deserts, particularly in regions with sparse retail store coverage.
