@@ -6,12 +6,6 @@ output:
     toc_float: true
 ---
 
-```{=html}
-<pre>
-留言板
-</pre>
-```
-
 <br>
 
 ## **Food Access and Nutrition in NYC and NY**
