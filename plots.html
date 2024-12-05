@@ -378,17 +378,12 @@ densities.</p>
     values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
-  labs(
-    title = &quot;Distribution of Population Density&quot;,
-    subtitle = &quot;New York City&quot;
-  ) +
+  labs(title = &quot;Population Distribution in New York City&quot;) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
 </div>
@@ -422,9 +417,7 @@ the Bronx, plotted over a population density map by census tract.</p>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 <p>Retail stores are heavily concentrated in central and lower
@@ -469,17 +462,12 @@ access to nutritious food.</p>
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
     guide = &quot;none&quot;
   ) +
-  labs(
-    title = &quot;Population Distribution and Retail Store Coverage&quot;,
-    subtitle = &quot;Manhattan and Bronx&quot;
-  ) +
+  labs(title = &quot;Population and Retail Store Coverage in Manhattan and Bronx&quot;) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
 <p>For Manhattan, overlapping coverage zones indicate high
@@ -513,9 +501,7 @@ density map by census tract.</p>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
 <p>Brooklyn has a high density of retail stores, particularly in areas
@@ -548,9 +534,9 @@ lower population density have limited retail store presence.</p>
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
-      &quot;0 - 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
+      &quot;≤ 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
-      &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
+      &quot;&gt; 15,000&quot; = &quot;#de2d26&quot;
     ),
     breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
@@ -559,17 +545,12 @@ lower population density have limited retail store presence.</p>
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
     guide = &quot;none&quot;
   ) +
-  labs(
-    title = &quot;Population and Retail Store Coverage&quot;,
-    subtitle = &quot;Brooklyn, Queens, and Staten Island&quot;
-  ) +
+  labs(title = &quot;Population and Retail Store Coverage in Brooklyn, Queens, and Staten Island&quot;) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9),
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
 <p>For Brooklyn, the coverage zones overlap significantly in densely

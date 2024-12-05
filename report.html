@@ -285,6 +285,7 @@ $(document).ready(function () {
 </div>
 
 
+<<<<<<< HEAD
 <div id="motivation-and-primary-objectives" class="section level2">
 <h2>Motivation and Primary Objectives</h2>
 <p>Food access is a critical determinant of health outcomes and a driver
@@ -336,6 +337,31 @@ level?<br />
 - How does the spatial proximity to retail stores influence food access
 and availability for different communities?</p>
 </div>
+=======
+<pre>
+Report大纲    
+## Motivation   
+- Overview of Project Goals and Motivation    
+## Related Work   
+## Initial Questions    
+- Questions trying to answer    
+- 
+- What socioeconomic factors impact food insecure? How does food insecure affect individuals' general health? 
+- How does food insecure affect nutrition and general health outcomes?
+## Data   
+- Data Sources
+- Scraping Method   
+- Data Cleaning Procedures    
+## Exploratory Analysis   
+- Visualizations    
+- Summaries   
+- Exploratory Statistical Analysis    
+## Additional Analysis    
+- Formal Analysis   
+## Discussion   
+- Findings/Expectations/Insights..    
+</pre>
+>>>>>>> 0f73fc3e9711d5d40c8e163b0580cb4f5d3c2b54
 <div id="data-sources-and-cleaning" class="section level2">
 <h2>Data Sources and Cleaning</h2>
 <div id="nyc-2020-census-tract-dataset" class="section level3">
@@ -432,8 +458,83 @@ retail_stores =
       square_footage &lt;= 9000 ~ &quot;Medium&quot;,
       square_footage &gt; 9000 ~ &quot;Large&quot;
     )
+<<<<<<< HEAD
   )|&gt;
   select(county, geometry, category)</code></pre>
+=======
+  )
+buffered_stores = 
+  retail_stores |&gt;
+  st_transform(crs = 2263) |&gt;
+  mutate(
+    buffer_radius = case_when(
+      category == &quot;Small&quot; ~ 5280*0.15,
+      category == &quot;Medium&quot; ~ 5280*0.25,
+      category == &quot;Large&quot; ~ 5280*0.35
+    )
+  ) |&gt;
+  mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0)
+   )|&gt;
+  filter(!is.na(income), !is.na(education))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
+<div id="nyc-2020-census-tract-dataset" class="section level3">
+<h3>NYC 2020 Census Tract Dataset</h3>
+<p>Exported Shapefile from <a
+href="https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data">NYC
+Open Data</a>. This dataset includes the 2020 Census Tracts from the US
+Census for New York City. The boundary files are derived from the US
+Census Bureau’s TIGER data products and have been geographically
+modified to align with the New York City base map. The Shapefile was
+imported using <code>st_read()</code> from the <code>sf</code> package.
+Population data, aggregated at the census tract level, was joined to the
+shapefile using the common <code>geoid</code> identifier. Census tracts
+were classified into population bins based on total population for
+improved visualization.</p>
+</div>
+<div id="nyc-2020-decennial-census-data" class="section level3">
+<h3>NYC 2020 Decennial Census Data</h3>
+<p>Downloaded the Excel file from <a
+href="https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page">2020
+Census - DCP</a> provided by the NYC Department of City Planning. This
+dataset includes basic demographic and housing characteristics, such as
+total population, race/ethnicity, age, housing tenure, and household
+composition for NYC’s census blocks.The dataset was imported using
+<code>read_excel()</code> and the first six rows, which contained
+summary population information for the five counties and NYC as a whole,
+were removed. A new variable, <code>geoid</code>, was created by
+combining borough codes and tract numbers to ensure compatibility with
+the NYC census tract dataset. Total population was aggregated across
+unique <code>geoid</code> values to calculate the total population for
+each census tract. The cleaned population dataset was then merged with
+the NYC census tract dataset using the <code>geoid</code> variable.</p>
+</div>
+<div id="retail-store-dataset" class="section level3">
+<h3>Retail Store Dataset</h3>
+>>>>>>> 0f73fc3e9711d5d40c8e163b0580cb4f5d3c2b54
 <p>Exported CSV file from <a
 href="https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data">Open
 Data NY</a>. This dataset provides a listing of all retail food stores
@@ -476,6 +577,27 @@ following size groups:<br />
 - <strong>Small</strong>: 0.15 miles (792 ft)<br />
 - <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
 - <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
+</div>
+<div id="behavioral-risk-factor-surveillance-system-2022-dataset"
+class="section level3">
+<h3>Behavioral Risk Factor Surveillance System 2022 Dataset</h3>
+<p>Downlaoded the csv file from <a
+href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
+2022</a>. It provides monitors modifiable risk behaviors and other
+factors contributing to the leading causes of morbidity and mortality in
+the population. This dataset was imported using <code>read_csv()</code>
+and cleans the variable names for easier handling using
+<code>janitor::clean_names()</code>, and then processes the dataset to
+focus on relevant variables (<code>imprace</code>, <code>educag</code>,
+<code>incomg1</code>, <code>strsmeal_sa</code>, and
+<code>genhlth</code>). It filters out rows with missing values in these
+variables and recodes the income and education variables into simplified
+categories. New categorical variables are <code>income</code>and
+<code>education</code>. Additionally, it creates a binary
+<code>food_insecure</code> variable based on responses to food
+insecurity questions. Finally, the cleaned dataset excludes the original
+incomg1, educag, and strsmeal_sa variables and keeps only the relevant
+and recoded columns.</p>
 </div>
 </div>
 <div id="identifying-food-desert" class="section level2">
