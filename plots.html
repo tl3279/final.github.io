@@ -289,10 +289,11 @@ $(document).ready(function () {
 留言板
 1. 优化了一下图片排版（字体，标题，大小之类的），其他都没改 
 </pre>
-<p><br><br />
-test ## Data Importing and Cleaning<br />
-Visit <a href="report.html">this page</a> for detailed steps on how the
-data is cleaned.</p>
+<p><br></p>
+<div id="data-importing-and-cleaning" class="section level2">
+<h2>Data Importing and Cleaning</h2>
+<p>Visit <a href="report.html">this page</a> for detailed steps on how
+the data is cleaned.</p>
 <pre class="r"><code>population_data =
   read_excel(&quot;nyc2020_census_blocks.xlsx&quot;) |&gt;
   slice(-c(1:6)) |&gt;
@@ -362,6 +363,7 @@ buffered_stores =
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
+</div>
 <div id="nyc-population" class="section level2">
 <h2>NYC Population</h2>
 <p>This plot shows the population distribution across New York City’s
@@ -388,7 +390,7 @@ densities.</p>
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
     plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=0.5)
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
 </div>
@@ -424,7 +426,7 @@ the Bronx, plotted over a population density map by census tract.</p>
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
     plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=0.5)
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 <p>Retail stores are heavily concentrated in central and lower
@@ -479,7 +481,7 @@ access to nutritious food.</p>
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
     plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=0.5)
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
 <p>For Manhattan, overlapping coverage zones indicate high
@@ -515,7 +517,7 @@ density map by census tract.</p>
     legend.justification = c(0, 1),
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
     plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=0.5)
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
 <p>Brooklyn has a high density of retail stores, particularly in areas
@@ -569,7 +571,7 @@ lower population density have limited retail store presence.</p>
     legend.justification = c(0, 1),
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
     plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=0.5)
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
 <p>For Brooklyn, the coverage zones overlap significantly in densely
