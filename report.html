@@ -11,9 +11,9 @@
 
 
 
-<title>Report</title>
+<title>Project Report</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -258,7 +258,7 @@ $(document).ready(function () {
   <a href="report.html">Report</a>
 </li>
 <li>
-  <a href="http://github.com/tl3279/">
+  <a href="https://github.com/tl3279/final.github.io">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -280,37 +280,11 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Report</h1>
+<h1 class="title toc-ignore">Project Report</h1>
 
 </div>
 
 
-<pre>
-大纲    
-1. Motivation   
-  1.1 Overview of Project Goals and Motivation    
-2. Related Work   
-3. Initial Questions    
-  3.1 Questions trying to answer    
-  3.2 How did these questions evolve over the course of the project?    
-  3.3 What new questions did you consider in the course of your analysis?   
-4. Data   
-  4.1 Data Sources    
-  4.2 Scraping Method   
-  4.3 Data Cleaning Procedures    
-5. Exploratory Analysis   
-  5.1 Visualizations    
-  5.2 Summaries   
-  5.3 Exploratory Statistical Analysis    
-6. Additional Analysis    
-  6.1 Formal Analysis   
-7. Discussion   
-  7.1 Findings/Expectations/Insights..    
-</pre>
-<pre>
-留言板
-1. 这三个数据集我感觉有很多不太需要的变量要不要精简一下？
-</pre>
 <div id="motivation-and-primary-objectives" class="section level2">
 <h2>Motivation and Primary Objectives</h2>
 <p>Food access is a critical determinant of health outcomes and a driver
@@ -350,9 +324,22 @@ affordable and nutritious food within NYC.</p>
 </div>
 <div id="initial-questions" class="section level2">
 <h2>Initial Questions</h2>
+<p>Our initial questions are:<br />
+- Are there any food deserts in NYC?<br />
+- How does food access affect nutrition and health outcomes?<br />
+- What socioeconomic factors impact food access?</p>
+<p>After conducting exploratory analysis and gaining a better
+understanding of the datasets, we refined our questions as
+follows:<br />
+- Where are food deserts located in NYC, specifically at a more granular
+level?<br />
+- How does the spatial proximity to retail stores influence food access
+and availability for different communities?</p>
 </div>
 <div id="data-sources-and-cleaning" class="section level2">
 <h2>Data Sources and Cleaning</h2>
+<div id="nyc-2020-census-tract-dataset" class="section level3">
+<h3>NYC 2020 Census Tract Dataset</h3>
 <pre class="r"><code>population_data =
   read_excel(&quot;nyc2020_census_blocks.xlsx&quot;) |&gt;
   slice(-c(1:6)) |&gt;
@@ -369,9 +356,22 @@ affordable and nutritious food within NYC.</p>
     geoid = paste0(&quot;36&quot;, fips_county, tract_number)
   ) |&gt;
   group_by(geoid) |&gt;
-  summarize(total_population = sum(Pop1, na.rm = TRUE)) 
-
-nyc_tracts = 
+  summarize(total_population = sum(Pop1, na.rm = TRUE)) </code></pre>
+<p>Exported Shapefile from <a
+href="https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data">NYC
+Open Data</a>. This dataset includes the 2020 Census Tracts from the US
+Census for New York City. The boundary files are derived from the US
+Census Bureau’s TIGER data products and have been geographically
+modified to align with the New York City base map. The Shapefile was
+imported using <code>st_read()</code> from the <code>sf</code> package.
+Population data, aggregated at the census tract level, was joined to the
+shapefile using the common <code>geoid</code> identifier. Census tracts
+were classified into population bins based on total population for
+improved visualization.</p>
+</div>
+<div id="nyc-2020-decennial-census-data" class="section level3">
+<h3>NYC 2020 Decennial Census Data</h3>
+<pre class="r"><code>nyc_tracts = 
   st_read(
     &quot;2020 Census Tracts/geo_export_ae979acf-b46a-42af-a79f-874d7b450fc8.shp&quot;,
     quiet = TRUE)|&gt;
@@ -379,13 +379,35 @@ nyc_tracts =
   mutate(
     pop_bins = cut(
       total_population,
-      breaks = c(0, 1000, 5000, 10000, 15000, 200000),
-      labels = c(&quot;0 - 1,000&quot;, &quot;1,001 - 5,000&quot;, &quot;5,001 - 10,000&quot;, &quot;10,000 - 15,000&quot;, &quot;15,001 - 20,000&quot;),
+      breaks = c(0, 1001, 5001, 10001, 15001, Inf),
+      labels = c(&quot;≤ 1,000&quot;, &quot;1,001 - 5,000&quot;, &quot;5,001 - 10,000&quot;, &quot;10,001 - 15,000&quot;, &quot;&gt; 15,000&quot;),
       include.lowest = TRUE
     )
-  )
-
-retail_stores = 
+  ) |&gt;
+  select(boroname, total_population, geometry, pop_bins)</code></pre>
+<p>Downloaded the Excel file from <a
+href="https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page">2020
+Census - DCP</a> provided by the NYC Department of City Planning. This
+dataset includes basic demographic and housing characteristics, such as
+total population, race/ethnicity, age, housing tenure, and household
+composition for NYC’s census blocks.The dataset was imported using
+<code>read_excel()</code> and the first six rows, which contained
+summary population information for the five counties and NYC as a whole,
+were removed. A new variable, <code>geoid</code>, was created by
+combining borough codes and tract numbers to ensure compatibility with
+the NYC census tract dataset. Total population was aggregated across
+unique <code>geoid</code> values to calculate the total population for
+each census tract. The cleaned population dataset was then merged with
+the NYC census tract dataset using the <code>geoid</code> variable. We
+retained only the variables essential for our analysis:
+<strong><code>boroname</code></strong>,
+<strong><code>total_population</code></strong>,
+<strong><code>geometry</code></strong>, and
+<strong><code>pop_bins</code></strong>.</p>
+</div>
+<div id="retail-store-dataset" class="section level3">
+<h3>Retail Store Dataset</h3>
+<pre class="r"><code>retail_stores = 
   read_csv(&quot;Retail_Food_Stores.csv&quot;) |&gt;
   janitor::clean_names() |&gt;
   filter(county %in% c(&quot;BRONX&quot;, &quot;KINGS&quot;, &quot;NEW YORK&quot;, &quot;RICHMOND&quot;, &quot;QUEENS&quot;),
@@ -410,52 +432,8 @@ retail_stores =
       square_footage &lt;= 9000 ~ &quot;Medium&quot;,
       square_footage &gt; 9000 ~ &quot;Large&quot;
     )
-  )
-
-buffered_stores = 
-  retail_stores |&gt;
-  st_transform(crs = 2263) |&gt;
-  mutate(
-    buffer_radius = case_when(
-      category == &quot;Small&quot; ~ 5280*0.15,
-      category == &quot;Medium&quot; ~ 5280*0.25,
-      category == &quot;Large&quot; ~ 5280*0.35
-    )
-  ) |&gt;
-  mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
-<div id="nyc-2020-census-tract-dataset" class="section level3">
-<h3>NYC 2020 Census Tract Dataset</h3>
-<p>Exported Shapefile from <a
-href="https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data">NYC
-Open Data</a>. This dataset includes the 2020 Census Tracts from the US
-Census for New York City. The boundary files are derived from the US
-Census Bureau’s TIGER data products and have been geographically
-modified to align with the New York City base map. The Shapefile was
-imported using <code>st_read()</code> from the <code>sf</code> package.
-Population data, aggregated at the census tract level, was joined to the
-shapefile using the common <code>geoid</code> identifier. Census tracts
-were classified into population bins based on total population for
-improved visualization.</p>
-</div>
-<div id="nyc-2020-decennial-census-data" class="section level3">
-<h3>NYC 2020 Decennial Census Data</h3>
-<p>Downloaded the Excel file from <a
-href="https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page">2020
-Census - DCP</a> provided by the NYC Department of City Planning. This
-dataset includes basic demographic and housing characteristics, such as
-total population, race/ethnicity, age, housing tenure, and household
-composition for NYC’s census blocks.The dataset was imported using
-<code>read_excel()</code> and the first six rows, which contained
-summary population information for the five counties and NYC as a whole,
-were removed. A new variable, <code>geoid</code>, was created by
-combining borough codes and tract numbers to ensure compatibility with
-the NYC census tract dataset. Total population was aggregated across
-unique <code>geoid</code> values to calculate the total population for
-each census tract. The cleaned population dataset was then merged with
-the NYC census tract dataset using the <code>geoid</code> variable.</p>
-</div>
-<div id="retail-store-dataset" class="section level3">
-<h3>Retail Store Dataset</h3>
+  )|&gt;
+  select(county, geometry, category)</code></pre>
 <p>Exported CSV file from <a
 href="https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data">Open
 Data NY</a>. This dataset provides a listing of all retail food stores
@@ -474,7 +452,22 @@ groups:<br />
 - <strong>Small</strong>: Less than 5,000 sqft<br />
 - <strong>Medium</strong>: Between 5,000 and 9,000 sqft<br />
 - <strong>Large</strong>: Greater than 9,000 sqft<br />
-To visualize the coverage of retail stores by adding coverage zones
+We retained only the variables essential for our analysis:
+<strong><code>county</code></strong>,
+<strong><code>geometry</code></strong>, and
+<strong><code>category</code></strong>.</p>
+<pre class="r"><code>covered_df = 
+  retail_stores |&gt;
+  st_transform(crs = 2263) |&gt;
+  mutate(
+    coverage_radius = case_when(
+      category == &quot;Small&quot; ~ 5280*0.15,
+      category == &quot;Medium&quot; ~ 5280*0.25,
+      category == &quot;Large&quot; ~ 5280*0.35
+    )
+  ) |&gt;
+  mutate(geometry = st_buffer(geometry, dist = coverage_radius))</code></pre>
+<p>To visualize the coverage of retail stores by adding coverage zones
 based on store size. The geometry was transform the CRS to
 <code>EPSG:2263</code> for accurate distance-based calculations.Coverage
 zones were created around store locations using
@@ -502,7 +495,7 @@ Staten Island.</strong></p>
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) +  
   geom_sf(aes(fill = pop_bins), color = &quot;white&quot;, lwd = 0.2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(title = &quot;Population Distribution in New York City&quot;) +
@@ -512,7 +505,7 @@ Staten Island.</strong></p>
     legend.justification = c(0, 1), 
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-2-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
 <p>The map visualizes the population distribution across New York City
 by census tract, derived from the 2020 Census data. The tracts are
 color-coded to reflect population density, categorized into five
@@ -530,7 +523,7 @@ relatively sparse populations compared to urban centers.</p>
 <div id="manhattan-and-bronx" class="section level3">
 <h3>Manhattan and Bronx</h3>
 <div id="retail-store-dirtributions" class="section level4">
-<h4>Retail Store Dirtributions</h4>
+<h4>Retail store dirtributions</h4>
 <pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)) |&gt;
   ggplot() +
@@ -539,7 +532,7 @@ relatively sparse populations compared to urban centers.</p>
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)), color = &quot;darkblue&quot;, size = 2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(
@@ -550,9 +543,11 @@ relatively sparse populations compared to urban centers.</p>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
 <p>Retail stores are heavily concentrated in central and lower
 Manhattan, which aligns with areas of higher population density and
 commercial activity. This clustering likely reflects the demand for
@@ -578,7 +573,7 @@ required to improve access to nutritious food.</p>
     color = &quot;white&quot;, lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
+    data = covered_df |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
     aes(fill = category),
     alpha = 0.4,
     color = NA
@@ -592,9 +587,9 @@ required to improve access to nutritious food.</p>
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
-      &quot;0 - 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
+      &quot;≤ 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
-      &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
+      &quot;&gt; 15,000&quot; = &quot;#de2d26&quot;
     ),
     breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
@@ -603,14 +598,19 @@ required to improve access to nutritious food.</p>
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
     guide = &quot;none&quot;
   ) +
-  labs(title = &quot;Population and Retail Store Coverage in Manhattan and Bronx&quot;) +
+  labs(
+    title = &quot;Population Distribution and Retail Store Coverage&quot;,
+    subtitle = &quot;Manhattan and Bronx&quot;
+  ) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
 <p>This graph shows the retail store distribution and their respective
 coverage zones in Manhattan and the Bronx. The store categories are
 classified by square footage:<br />
@@ -640,7 +640,7 @@ potential food desert areas with limited access to retail stores.</p>
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)), color = &quot;darkblue&quot;, size = 2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(
@@ -653,7 +653,7 @@ potential food desert areas with limited access to retail stores.</p>
     legend.justification = c(0, 1),
     legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
 <p>Brooklyn has a high density of retail stores, particularly in areas
 of moderate to high population density. This reflects a pattern of urban
 development and commercial activity aligning with residential areas.
@@ -678,7 +678,7 @@ that provide fresh and nutritious food options.</p>
     color = &quot;white&quot;, lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |&gt; 
+    data = covered_df |&gt; 
       filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)),
     aes(fill = category),
     alpha = 0.4,
@@ -705,14 +705,19 @@ that provide fresh and nutritious food options.</p>
     values = c(&quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;),
     guide = &quot;none&quot;
   ) +
-  labs(title = &quot;Population and Retail Store Coverage in Brooklyn, Queens, and Staten Island&quot;) +
+  labs(
+    title = &quot;Population and Retail Store Coverage&quot;,
+    subtitle = &quot;Brooklyn, Queens, and Staten Island&quot;
+  ) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9),
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
+    plot.title = element_text(size=17.5, hjust=0.5),
+    plot.subtitle = element_text(hjust=.5)
   )</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
 <p>Same as above, the retail stores are categorized into Small, Medium,
 and Large, represented by yellow, green, and blue buffer zones,
 respectively.</p>
@@ -732,6 +737,9 @@ access to retail stores offering fresh and nutritious food.</p>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
 <div id="food-desert" class="section level3">
+<h3>Food Desert</h3>
+</div>
+<div id="food-desert-1" class="section level3">
 <h3>Food Desert</h3>
 <p>Based on the visualizations and observations, we identify significant
 disparities in the availability of retail food stores across New York
@@ -763,7 +771,7 @@ of the Bronx, eastern Queens, and southern Staten Island).<br />
 - Limited presence of medium and large retail stores, which are more
 likely to offer fresh and nutritious food options.</p>
 <p>Efforts could include incentivizing grocery stores to open in
-underserved areas, enhancing transportation options to food hubs, and
+under-served areas, enhancing transportation options to food hubs, and
 supporting local farmers’ markets to improve accessibility to nutritious
 food in food deserts. These actions could help bridge the food access
 gap and promote equitable food security across New York City.</p>
