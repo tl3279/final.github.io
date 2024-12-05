@@ -1,0 +1,76 @@
+---
+title: "Data Analysis"
+output: 
+  html_document:
+    toc: false
+    toc_float: true
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(haven)
+library(readxl)
+library(plotly)
+library(sf)
+library(VGAM)
+```
+
+
+Visit [report](report.html) for detailed steps on how the data is cleaned.
+```{r}
+brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|>
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)
+
+cleaned_df = 
+  cleaned_df |>
+  mutate(
+    income = case_when(
+      incomg1 %in% c("Less than $15,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
+      incomg1 == "$50,000 to < $100,000" ~ "50,000 ~ 100,000",
+      incomg1 %in% c ("$100,000 to < $200,000" , "$200,000 or more") ~ ">100,000",
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == "Did not graduate High School" ~ "Less than high school",
+      educag == "Graduated High School" ~ "High school or GED",
+      educag == "Attended College or Technical School" ~ "Some post-high school",
+      educag == "Graduated from College or Technical School" ~ "College graduate"
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c("Rarely","Sometimes","Usually", "Always") ~ 1,
+      strsmeal_sa == "Never" ~ 0),
+    
+    health = case_when(
+      genhlth %in% c("Good", "Very good", "Excellent") ~ 1,
+      genhlth %in% c("Fair", "Poor") ~ 0
+    )
+   )|>
+  filter(!is.na(income), !is.na(education))|>
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth)
+
+```
+
+
+### Is food insecure associated with general health?
+```{r}
+logit_health = 
+  glm(health ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
+
+knitr::kable(exp_health)
+```
+
+

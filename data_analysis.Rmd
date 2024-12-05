@@ -21,17 +21,12 @@ Visit [report](report.html) for detailed steps on how the data is cleaned.
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
-```
 
-
-```{r}
 cleaned_df = 
   brfss_22 |>
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth)
-```
 
-```{r}
 cleaned_df = 
   cleaned_df |>
   mutate(
@@ -137,10 +132,7 @@ cleaned_df =
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
-```
 
-
-```{r}
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
 
 knitr::kable(exp_income)
@@ -185,10 +177,7 @@ ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
-```
 
-
-```{r}
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
 
 knitr::kable(exp_race)
@@ -241,10 +230,7 @@ ggplot(ci_race, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
-```
 
-
-```{r}
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
 
 knitr::kable(exp_edu)
@@ -292,9 +278,7 @@ ggplot(ci_edu, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
-```
 
-```{r}
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
 
 knitr::kable(exp_all)
@@ -351,10 +335,7 @@ logit_all =
 ```{r}
 logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
-```
 
-
-```{r}
 exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 
 knitr::kable(exp_health)
