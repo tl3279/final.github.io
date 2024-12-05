@@ -54,11 +54,12 @@ nyc_tracts =
   mutate(
     pop_bins = cut(
       total_population,
-      breaks = c(0, 1000, 5000, 10000, 15000, 200000),
-      labels = c("0 - 1,000", "1,001 - 5,000", "5,001 - 10,000", "10,000 - 15,000", "15,001 - 20,000"),
+      breaks = c(0, 1001, 5001, 10001, 15001, Inf),
+      labels = c("≤ 1,000", "1,001 - 5,000", "5,001 - 10,000", "10,001 - 15,000", "> 15,000"),
       include.lowest = TRUE
     )
-  )
+  ) |>
+  select(boroname, total_population, geometry, pop_bins)
 
 retail_stores = 
   read_csv("Retail_Food_Stores.csv") |>
@@ -85,18 +86,20 @@ retail_stores =
       square_footage <= 9000 ~ "Medium",
       square_footage > 9000 ~ "Large"
     )
-  )
-buffered_stores = 
+  )|>
+  select(county, geometry, category)
+
+covered_df = 
   retail_stores |>
   st_transform(crs = 2263) |>
   mutate(
-    buffer_radius = case_when(
+    coverage_radius = case_when(
       category == "Small" ~ 5280*0.15,
       category == "Medium" ~ 5280*0.25,
       category == "Large" ~ 5280*0.35
     )
   ) |>
-  mutate(geometry = st_buffer(geometry, dist = buffer_radius))
+  mutate(geometry = st_buffer(geometry, dist = coverage_radius))
 ```
 
 ## NYC Population
@@ -107,7 +110,7 @@ nyc_tracts |>
   annotation_map_tile(zoom = 12, type = "cartolight") +  
   geom_sf(aes(fill = pop_bins), color = "white", lwd = 0.2) +
   scale_fill_manual(
-    values = c("white", "#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
+    values = c("#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
     name = "Population by Census Tract"
   ) +
   labs(
@@ -138,7 +141,7 @@ nyc_tracts |>
   geom_sf(data = retail_stores |>
             filter(county %in% c("Manhattan", "Bronx")), color = "darkblue", size = 2) +
   scale_fill_manual(
-    values = c("white", "#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
+    values = c("#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
     name = "Population by Census Tract"
   ) +
   labs(
@@ -167,7 +170,7 @@ nyc_tracts |>
     color = "white", lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |> filter(county %in% c("Manhattan", "Bronx")),
+    data = covered_df |> filter(county %in% c("Manhattan", "Bronx")),
     aes(fill = category),
     alpha = 0.4,
     color = NA
@@ -181,9 +184,9 @@ nyc_tracts |>
   scale_fill_manual(
     values = c(
       "Small" = "yellow", "Medium" = "green", "Large" = "blue",
-      "0 - 1,000" = "#fee5d9", "1,001 - 5,000" = "#fcbba1",
+      "≤ 1,000" = "#fee5d9", "1,001 - 5,000" = "#fcbba1",
       "5,001 - 10,000" = "#fc9272", "10,000 - 15,000" = "#fb6a4a",
-      "15,001 - 20,000" = "#de2d26"
+      "> 15,000" = "#de2d26"
     ),
     breaks = c("Small", "Medium", "Large"), 
     name = "Store Category"
@@ -220,7 +223,7 @@ nyc_tracts |>
   geom_sf(data = retail_stores |>
             filter(county %in% c("Brooklyn", "Queens", "Staten Island")), color = "darkblue", size = 2) +
   scale_fill_manual(
-    values = c("white", "#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
+    values = c("#fee5d9", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26"),
     name = "Population by Census Tract"
   ) +
   labs(
@@ -249,7 +252,7 @@ nyc_tracts |>
     color = "white", lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |> 
+    data = covered_df |> 
       filter(county %in% c("Brooklyn", "Queens", "Staten Island")),
     aes(fill = category),
     alpha = 0.4,
