@@ -1,6 +1,10 @@
 ---
 title: "Data Analysis"
-output: html_document
+output: 
+  html_document:
+    toc: false
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
