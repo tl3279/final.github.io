@@ -328,8 +328,7 @@ ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ```
 
 
-logit_all = 
-  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+
 
 ### Is food insecure associated with general health?
 ```{r}
