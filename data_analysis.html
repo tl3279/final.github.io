@@ -255,10 +255,13 @@ $(document).ready(function () {
   <a href="plots.html">Food Deserts</a>
 </li>
 <li>
-  <a href="report.html">Report</a>
+  <a href="data_analysis.html">Socioeconomic Factors</a>
 </li>
 <li>
-  <a href="data_analysis.html">Socioeconomic Factors</a>
+  <a href="Health.html">Health</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
 </li>
 <li>
   <a href="https://github.com/tl3279/final.github.io">
@@ -292,12 +295,14 @@ $(document).ready(function () {
 <p>Visit <a href="report.html">report</a> for detailed steps on how the
 data is cleaned.</p>
 <pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
-  janitor::clean_names()</code></pre>
-<pre class="r"><code>cleaned_df = 
+  janitor::clean_names()
+
+cleaned_df = 
   brfss_22 |&gt;
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
-  select(imprace, educag, incomg1, strsmeal_sa, genhlth)</code></pre>
-<pre class="r"><code>cleaned_df = 
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)
+
+cleaned_df = 
   cleaned_df |&gt;
   mutate(
     income = case_when(
@@ -335,7 +340,7 @@ data is cleaned.</p>
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>This bar graph illustrates the distribution of race/ethnicity in the
 dataset. The categories include American Indian/Alaskan Native, Asian,
 Black, Hispanic, Other Race, and White, all specified as Non-Hispanic
@@ -354,7 +359,7 @@ category represents the smallest group.</p>
   ) +
   theme_void() +
   theme(legend.position = &quot;right&quot;)</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>This pie chart shows the distribution of education levels within a
 dataset. The largest portion of the chart is represented by college
 graduates, shown in red, indicating that a significant proportion of
@@ -374,7 +379,7 @@ education.</p>
     fill = &quot;Status&quot;
   ) +
   theme_minimal()</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>This bar graph presents the distribution of food insecurity status
 among individuals in the dataset. The largest group, represented in
 light blue, comprises individuals who are not food insecure, with a
@@ -396,8 +401,9 @@ missing data (NA) for food insecurity status.</p>
 class="section level3">
 <h3>Is income associated with food insecure?</h3>
 <pre class="r"><code>logit_income = 
-  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)</code></pre>
-<pre class="r"><code>exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
+
+exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
 
 knitr::kable(exp_income)</code></pre>
 <table>
@@ -463,13 +469,14 @@ ci_income =
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
 <h3>Is race associated with food insecure?</h3>
 <pre class="r"><code>logit_race = 
-  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)</code></pre>
-<pre class="r"><code>exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
+
+exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
 
 knitr::kable(exp_race)</code></pre>
 <table>
@@ -559,14 +566,15 @@ ci_race =
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="is-education-associated-with-food-insecure"
 class="section level3">
 <h3>Is education associated with food insecure?</h3>
 <pre class="r"><code>logit_edu = 
-  glm(food_insecure ~ education, data = cleaned_df, family = binomial)</code></pre>
-<pre class="r"><code>exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)
+
+exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
 
 knitr::kable(exp_edu)</code></pre>
 <table>
@@ -638,14 +646,15 @@ ci_edu =
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
 class="section level3">
 <h3>Are race, education, and income associated with food insecure?</h3>
 <pre class="r"><code>logit_all = 
-  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)</code></pre>
-<pre class="r"><code>exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+
+exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
 
 knitr::kable(exp_all)</code></pre>
 <table>
@@ -762,93 +771,7 @@ ci_all =
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<p>logit_all = glm(food_insecure ~ education + income + imprace, data =
-cleaned_df, family = binomial)</p>
-</div>
-<div id="is-food-insecure-associated-with-general-health"
-class="section level3">
-<h3>Is food insecure associated with general health?</h3>
-<pre class="r"><code>logit_health = 
-  glm(health ~ food_insecure, data = cleaned_df, family = binomial)</code></pre>
-<pre class="r"><code>exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
-
-knitr::kable(exp_health)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">OR</th>
-<th align="right">2.5 %</th>
-<th align="right">97.5 %</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">8.4704641</td>
-<td align="right">7.7103768</td>
-<td align="right">9.3277174</td>
-</tr>
-<tr class="even">
-<td align="left">food_insecure</td>
-<td align="right">0.4225721</td>
-<td align="right">0.3678675</td>
-<td align="right">0.4853531</td>
-</tr>
-</tbody>
-</table>
-<p>OR: Individuals who are food insecure have 73.2% lower odds of
-reporting “Poor” health compared to “Fair” health when compared to
-non-food insecure individuals. Food-insecure individuals have 67.4%
-lower odds of reporting “Good” health compared to “Fair” health than
-non-food insecure individuals. Food-insecure individuals have 33.4%
-lower odds of reporting “Very Good” health compared to “Fair” health
-than non-food insecure individuals. Food-insecure individuals have 59.6%
-higher odds of reporting “Excellent” health compared to “Fair” health
-than non-food insecure individuals.</p>
-<p>Statistical significance: confidence intervals of OR of “Good”, “Very
-Good”, and “Excellent” health group exclude 1, indicating that these
-predictor levels are statistically significant.</p>
-<p>This analysis emphasizes that food insecurity significantly affects
-perceived health levels. The result that individuals with food insecure
-have a higher odds ratio to report “Excellent” health compared to “Fair”
-health is very weird. The result may be influenced by individuals’
-perceptions, cultural norms, and personal experiences. Furthermore,
-individuals who recently are experiencing food insecurity might still
-maintain good physical health but are at the early stages of economic or
-food-related struggles, leading them to perceive their health as
-excellent. Therefore, the limitation of this regression is excluding
-confouders.</p>
-</div>
-<div id="confidence-interval-4" class="section level3">
-<h3>Confidence Interval</h3>
-<pre class="r"><code>coefs &lt;- coef(summary(logit_health))
-odds_ratios &lt;- exp(coefs[, &quot;Estimate&quot;]) # Convert coefficients to odds ratios
-lower_ci &lt;- exp(coefs[, &quot;Estimate&quot;] - 1.96 * coefs[, &quot;Std. Error&quot;]) # Lower 95% CI
-upper_ci &lt;- exp(coefs[, &quot;Estimate&quot;] + 1.96 * coefs[, &quot;Std. Error&quot;]) # Upper 95% CI
-
-# Combine into a tidy data frame
-ci_data &lt;- data.frame(
-  Variable = rownames(coefs),
-  OR = odds_ratios,
-  Lower = lower_ci,
-  Upper = upper_ci
-) |&gt;
-  filter(!grepl(&quot;(Intercept)&quot;, Variable)) |&gt; # Exclude intercepts
-  separate(Variable, into = c(&quot;Outcome&quot;, &quot;Predictor&quot;), sep = &quot;: &quot;, fill = &quot;right&quot;)</code></pre>
-<pre class="r"><code>ggplot(ci_data, aes(y = Outcome, x = OR, xmin = Lower, xmax = Upper, color = Predictor)) +
-  geom_pointrange() +
-  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
-  labs(
-    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
-    x = &quot;Odds Ratio (OR)&quot;,
-    y = &quot;Outcome (General Health)&quot;,
-    color = &quot;Predictor&quot;
-  ) +
-  theme_minimal() +
-  theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="data_analysis_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 </div>
 </div>
 

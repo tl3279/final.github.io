@@ -74,3 +74,39 @@ knitr::kable(exp_health)
 ```
 
 
+
+### Confidence Interval
+```{r}
+coefs <- coef(summary(logit_health))
+odds_ratios <- exp(coefs[, "Estimate"]) # Convert coefficients to odds ratios
+lower_ci <- exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std. Error"]) # Lower 95% CI
+upper_ci <- exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std. Error"]) # Upper 95% CI
+
+# Combine into a tidy data frame
+ci_data <- data.frame(
+  Variable = rownames(coefs),
+  OR = odds_ratios,
+  Lower = lower_ci,
+  Upper = upper_ci
+) |>
+  filter(!grepl("(Intercept)", Variable)) |> # Exclude intercepts
+  separate(Variable, into = c("Outcome", "Predictor"), sep = ": ", fill = "right")
+```
+
+
+```{r}
+ggplot(ci_data, aes(y = Outcome, x = OR, xmin = Lower, xmax = Upper, color = Predictor)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Outcome (General Health)",
+    color = "Predictor"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+```
+
+
+

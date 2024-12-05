@@ -255,10 +255,13 @@ $(document).ready(function () {
   <a href="plots.html">Food Deserts</a>
 </li>
 <li>
-  <a href="report.html">Report</a>
+  <a href="data_analysis.html">Socioeconomic Factors</a>
 </li>
 <li>
-  <a href="data_analysis.html">Socioeconomic Factors</a>
+  <a href="Health.html">Health</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
 </li>
 <li>
   <a href="https://github.com/tl3279/final.github.io">
@@ -403,6 +406,35 @@ exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))</code></pre
 </tr>
 </tbody>
 </table>
+</div>
+<div id="confidence-interval" class="section level3">
+<h3>Confidence Interval</h3>
+<pre class="r"><code>coefs &lt;- coef(summary(logit_health))
+odds_ratios &lt;- exp(coefs[, &quot;Estimate&quot;]) # Convert coefficients to odds ratios
+lower_ci &lt;- exp(coefs[, &quot;Estimate&quot;] - 1.96 * coefs[, &quot;Std. Error&quot;]) # Lower 95% CI
+upper_ci &lt;- exp(coefs[, &quot;Estimate&quot;] + 1.96 * coefs[, &quot;Std. Error&quot;]) # Upper 95% CI
+
+# Combine into a tidy data frame
+ci_data &lt;- data.frame(
+  Variable = rownames(coefs),
+  OR = odds_ratios,
+  Lower = lower_ci,
+  Upper = upper_ci
+) |&gt;
+  filter(!grepl(&quot;(Intercept)&quot;, Variable)) |&gt; # Exclude intercepts
+  separate(Variable, into = c(&quot;Outcome&quot;, &quot;Predictor&quot;), sep = &quot;: &quot;, fill = &quot;right&quot;)</code></pre>
+<pre class="r"><code>ggplot(ci_data, aes(y = Outcome, x = OR, xmin = Lower, xmax = Upper, color = Predictor)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Outcome (General Health)&quot;,
+    color = &quot;Predictor&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))</code></pre>
+<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 
 
