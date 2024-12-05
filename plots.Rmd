@@ -6,13 +6,15 @@ output:
     toc_float: true
     code_folding: hide
 ---
-<br>    
+ 
 ```{=html}
 <pre>
 留言板
-1. 我稍微调整美化了一下图片排版格式之类的，没改内容
+1. 居中了图片标题，没改代码
+2. 不太明白为啥有些是类似于“Population Distribution in New York City”但是有些是专门搞了一个subtitle?是不是consistent一些比较好
 </pre>
 ```
+<br>   
 
 ## Data Importing and Cleaning   
 Visit [this page](report.html) for detailed steps on how the data is cleaned.
@@ -114,7 +116,8 @@ nyc_tracts |>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = "white", color = "black")
+    legend.background = element_rect(fill = "white", color = "black"),
+    plot.title = element_text(hjust=0.5)
   )
 ```
 
@@ -143,7 +146,8 @@ nyc_tracts |>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = "white", color = "black")
+    legend.background = element_rect(fill = "white", color = "black"),
+    plot.title = element_text(hjust=0.5)
   )
 ```
 
@@ -189,7 +193,8 @@ nyc_tracts |>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = "white", color = "black")
+    legend.background = element_rect(fill = "white", color = "black"),
+    plot.title = element_text(hjust=0.5)
   )
 ```
 
@@ -218,7 +223,8 @@ nyc_tracts |>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = "white", color = "black")
+    legend.background = element_rect(fill = "white", color = "black"),
+    plot.title = element_text(hjust=0.5)
   )
 ```
 
@@ -266,7 +272,8 @@ nyc_tracts |>
   theme(
     legend.position = c(0.05, 0.9),
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = "white", color = "black")
+    legend.background = element_rect(fill = "white", color = "black"),
+    plot.title = element_text(hjust=0.5)
   )
 ```
 
