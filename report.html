@@ -286,6 +286,7 @@ $(document).ready(function () {
 
 
 <pre>
+<<<<<<< HEAD
 Report大纲    
 ## Motivation   
 - Overview of Project Goals and Motivation    
@@ -307,7 +308,74 @@ Report大纲
 - Formal Analysis   
 ## Discussion   
 - Findings/Expectations/Insights..    
+=======
+大纲    
+1. Motivation   
+  1.1 Overview of Project Goals and Motivation    
+2. Related Work   
+3. Initial Questions    
+  3.1 Questions trying to answer    
+  3.2 How did these questions evolve over the course of the project?    
+  3.3 What new questions did you consider in the course of your analysis?   
+4. Data   
+  4.1 Data Sources    
+  4.2 Scraping Method   
+  4.3 Data Cleaning Procedures    
+5. Exploratory Analysis   
+  5.1 Visualizations    
+  5.2 Summaries   
+  5.3 Exploratory Statistical Analysis    
+6. Additional Analysis    
+  6.1 Formal Analysis   
+7. Discussion   
+  7.1 Findings/Expectations/Insights..    
+>>>>>>> 7bb9ff55938a838264015101138c176f0bb1c273
 </pre>
+<pre>
+留言板
+1. 这三个数据集我感觉有很多不太需要的变量要不要精简一下？
+2. Initial Quesitons这部分我好像不太好写因为需要“How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?”但我不太了解你analysis过程遇到和解决了什么问题...感觉这个你来写更方便一点
+</pre>
+<div id="motivation-and-primary-objectives" class="section level2">
+<h2>Motivation and Primary Objectives</h2>
+<p>Food access is a critical determinant of health outcomes and a driver
+of systemic health inequalities. In wealth-deprived communities, limited
+access to affordable and nutritious food often results in higher
+incidences of diet-related illnesses, such as Type II diabetes and
+obesity. This project focuses on identifying food deserts in NYC and
+analyzing food access patterns to better understand their health and
+socioeconomic impacts. While NYC is the primary focus for mapping food
+deserts, statewide regression analysis helps contextualize NYC-specific
+trends by providing a broader perspective on food access and its
+relationship to health outcomes across diverse regions in New York
+State. This dual-level approach aims to provide actionable insights into
+addressing food access disparities both locally and at the state
+level.</p>
+<p>The food desert map provides a detailed, localized view of NYC,
+analyzing population density and retail store access at the census tract
+level within the city. This map is valuable for identifying specific
+underserved areas within NYC. The regression analysis, on the other
+hand, uses data from the entire state of New York, which includes urban,
+suburban, and rural areas. It provides a broader perspective, capturing
+statewide trends in food access, retail distribution, and other
+socio-economic factors.</p>
+<p>The NYC map aims to understand urban-specific challenges, such as
+access in densely populated boroughs. The regression model attempts to
+identify statewide patterns and predictors of food deserts, considering
+the diversity of urban and rural contexts across the state.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related Work</h2>
+<p>Our project was inspired initially by an article <a
+href="https://council.nyc.gov/data/emergency-food-in-nyc/">Emergency
+Food in NYC</a> illustrating the dire situation New York citizens faced
+in terms of food security. The statistics gathered within this article
+shocked us and triggered us to investigate further on access to
+affordable and nutritious food within NYC.</p>
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial Questions</h2>
+</div>
 <div id="data-sources-and-cleaning" class="section level2">
 <h2>Data Sources and Cleaning</h2>
 <pre class="r"><code>population_data =
@@ -368,6 +436,7 @@ retail_stores =
       square_footage &gt; 9000 ~ &quot;Large&quot;
     )
   )
+
 buffered_stores = 
   retail_stores |&gt;
   st_transform(crs = 2263) |&gt;
@@ -379,33 +448,6 @@ buffered_stores =
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
-<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
-  janitor::clean_names()
-
-cleaned_df = 
-  brfss_22 |&gt;
-  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
-  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|&gt;
-  mutate(
-    income = case_when(
-      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
-      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
-      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
-      TRUE ~ NA_character_),
-    
-    education = case_when(
-      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
-      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
-      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
-      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
-    ),
-    
-    food_insecure = case_when(
-      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
-      strsmeal_sa == &quot;Never&quot; ~ 0)
-   )|&gt;
-  filter(!is.na(income), !is.na(education))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
 <div id="nyc-2020-census-tract-dataset" class="section level3">
 <h3>NYC 2020 Census Tract Dataset</h3>
 <p>Exported Shapefile from <a
@@ -466,27 +508,54 @@ following size groups:<br />
 - <strong>Small</strong>: 0.15 miles (792 ft)<br />
 - <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
 - <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0)
+   )|&gt;
+  filter(!is.na(income), !is.na(education))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
 </div>
 <div id="behavioral-risk-factor-surveillance-system-2022-dataset"
 class="section level3">
 <h3>Behavioral Risk Factor Surveillance System 2022 Dataset</h3>
 <p>Downlaoded the csv file from <a
 href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
-2022</a>. It provides monitors modifiable risk behaviors and other
-factors contributing to the leading causes of morbidity and mortality in
-the population. This dataset was imported using <code>read_csv()</code>
-and cleans the variable names for easier handling using
-<code>janitor::clean_names()</code>, and then processes the dataset to
-focus on relevant variables (<code>imprace</code>, <code>educag</code>,
-<code>incomg1</code>, <code>strsmeal_sa</code>, and
-<code>genhlth</code>). It filters out rows with missing values in these
-variables and recodes the income and education variables into simplified
-categories. New categorical variables are <code>income</code>and
-<code>education</code>. Additionally, it creates a binary
-<code>food_insecure</code> variable based on responses to food
-insecurity questions. Finally, the cleaned dataset excludes the original
-incomg1, educag, and strsmeal_sa variables and keeps only the relevant
-and recoded columns.</p>
+2022</a>. It is used for regression analysis. It provides monitors
+modifiable risk behaviors and other factors contributing to the leading
+causes of morbidity and mortality in the population. This dataset was
+imported using <code>read_csv()</code> and cleans the variable names for
+easier handling using <code>janitor::clean_names()</code>, and then
+processes the dataset to focus on relevant variables
+(<code>imprace</code>, <code>educag</code>, <code>incomg1</code>,
+<code>strsmeal_sa</code>, and <code>genhlth</code>). It filters out rows
+with missing values in these variables and recodes the income and
+education variables into simplified categories. New categorical
+variables are <code>income</code>and <code>education</code>.
+Additionally, it creates a binary <code>food_insecure</code> variable
+based on responses to food insecurity questions. Finally, the cleaned
+dataset excludes the original incomg1, educag, and strsmeal_sa variables
+and keeps only the relevant and recoded columns.</p>
 </div>
 </div>
 <div id="identifying-food-desert" class="section level2">
@@ -573,6 +642,451 @@ access to retail stores offering fresh and nutritious food.</p>
 </div>
 </div>
 </div>
+<div id="regression-analysis" class="section level2">
+<h2>Regression Analysis</h2>
+<p>In the regression analysis section, we explore the association
+between several socioeconomic factors, <code>income</code>,
+<code>education</code>, and <code>race</code> and
+<code>food insecure</code> seperately, and finally examine the
+association between <code>food insecure</code> and
+<code>general health</code> to emphasize how limited or uncertain access
+to adequate food impacts individuals’ physical, mental, and overall
+well-being. Food insecurity has been linked to poorer self-rated health,
+increased prevalence of chronic diseases, and higher stress levels,
+which can exacerbate health inequalities. Analyzing this relationship
+helps identify vulnerable populations and inform public health
+interventions aimed at improving food access and promoting better health
+outcomes.</p>
+<div id="is-income-associated-with-food-insecure"
+class="section level3">
+<h3>Is income associated with food insecure?</h3>
+<pre class="r"><code>logit_income = 
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
+
+exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+knitr::kable(exp_income)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.1714559</td>
+<td align="right">1.0786807</td>
+<td align="right">1.2724394</td>
+</tr>
+<tr class="even">
+<td align="left">income&gt;100,000</td>
+<td align="right">0.1656645</td>
+<td align="right">0.1441346</td>
+<td align="right">0.1900589</td>
+</tr>
+<tr class="odd">
+<td align="left">income50,000 ~ 100,000</td>
+<td align="right">0.3493678</td>
+<td align="right">0.3084065</td>
+<td align="right">0.3954708</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (1.171) represents the
+baseline odds of being food insecure when income is less than
+50,000.</p>
+<p>OR:</p>
+<ul>
+<li><p>Income &gt; 100,000: The odds ratio (0.166) indicates that
+individuals with an income greater than $100,000 have 83.4% lower odds
+of being food insecure compared to the income group less than
+50,000.</p></li>
+<li><p>Income 50,000–100,000: The odds ratio (0.349) indicates that
+individuals with an income between $50,000 and 100,000 have 65.1% lower
+odds of being food insecure compared to the income group less than
+50,000.</p></li>
+</ul>
+<p>Statistical significance: confidence intervals of OR of both
+predictor levels exclude 1, indicating that they are statistically
+associated with food insecure.</p>
+</div>
+<div id="is-race-associated-with-food-insecure" class="section level3">
+<h3>Is race associated with food insecure?</h3>
+<pre class="r"><code>logit_race = 
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
+
+exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+knitr::kable(exp_race)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.6000000</td>
+<td align="right">0.8482021</td>
+<td align="right">3.1174422</td>
+</tr>
+<tr class="even">
+<td align="left">impraceAsian, Non-Hispanic</td>
+<td align="right">0.3182870</td>
+<td align="right">0.1573729</td>
+<td align="right">0.6250436</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceBlack, Non-Hispanic</td>
+<td align="right">0.5275735</td>
+<td align="right">0.2660540</td>
+<td align="right">1.0145649</td>
+</tr>
+<tr class="even">
+<td align="left">impraceHispanic</td>
+<td align="right">0.8315217</td>
+<td align="right">0.4208835</td>
+<td align="right">1.5927584</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceOther race, Non-Hispanic</td>
+<td align="right">0.4261364</td>
+<td align="right">0.1982346</td>
+<td align="right">0.8920934</td>
+</tr>
+<tr class="even">
+<td align="left">impraceWhite, Non-Hispanic</td>
+<td align="right">0.2307309</td>
+<td align="right">0.1180762</td>
+<td align="right">0.4366356</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (1.6) represents the odds
+of being food insecure for the reference group (American Indian/Alaskan
+Native).</p>
+<p>OR:</p>
+<ul>
+<li><p>Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian,
+Non-Hispanic individuals have 68.2% lower odds of being food insecure
+compared to American Indians.</p></li>
+<li><p>Black, Non-Hispanic: The odds ratio (0.528) suggests that Black,
+Non-Hispanic individuals have 47.2% lower odds of being food insecure
+compared to American Indians.</p></li>
+<li><p>Hispanic: The odds ratio (0.832) implies that Hispanic
+individuals have 16.8% lower odds of being food insecure compared to
+American Indians.</p></li>
+<li><p>Other Race, Non-Hispanic: The odds ratio (0.426) indicates that
+individuals of Other Race, Non-Hispanic have 57.4% lower odds of being
+food insecure compared to American Indians.</p></li>
+<li><p>White, Non-Hispanic: The odds ratio (0.230) suggests that White,
+Non-Hispanic individuals have 77% lower odds of being food insecure
+compared to American Indians.</p></li>
+</ul>
+<p>Statistical significance: confidence intervals of OR of all predictor
+levels except Black and Hispanic exclude 1, indicating that these
+predictor levels are statistically significant.</p>
+</div>
+<div id="is-education-associated-with-food-insecure"
+class="section level3">
+<h3>Is education associated with food insecure?</h3>
+<pre class="r"><code>logit_edu = 
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)
+
+exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+knitr::kable(exp_edu)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.3089064</td>
+<td align="right">0.2855101</td>
+<td align="right">0.3338597</td>
+</tr>
+<tr class="even">
+<td align="left">educationHigh school or GED</td>
+<td align="right">2.4437471</td>
+<td align="right">2.1388216</td>
+<td align="right">2.7921872</td>
+</tr>
+<tr class="odd">
+<td align="left">educationLess than high school</td>
+<td align="right">5.2412235</td>
+<td align="right">4.1483184</td>
+<td align="right">6.6458564</td>
+</tr>
+<tr class="even">
+<td align="left">educationSome post-high school</td>
+<td align="right">2.1192858</td>
+<td align="right">1.8644532</td>
+<td align="right">2.4088344</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (0.309) represents the
+odds of being food insecure for individuals in the reference group
+(College graduates).</p>
+<p>OR:</p>
+<ul>
+<li><p>High School or GED: The odds ratio (2.444) indicates that
+individuals with a high school diploma or GED have 144.4% higher odds of
+being food insecure compared to college graduates.</p></li>
+<li><p>Less than High School: The odds ratio (5.241) suggests that
+individuals with less than a high school education have 424.1% higher
+odds of being food insecure compared to college graduates.</p></li>
+<li><p>Some Post-High School: The odds ratio (2.119) indicates that
+individuals with some post-high school education have 111.9% higher odds
+of being food insecure compared to college graduates.</p></li>
+</ul>
+<p>Statistical significance: confidence intervals of OR of all three
+predictor levels exclude 1, making these results statistically
+significant.</p>
+</div>
+<div id="are-race-education-and-income-associated-with-food-insecure"
+class="section level3">
+<h3>Are race, education, and income associated with food insecure?</h3>
+<pre class="r"><code>logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+
+exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+knitr::kable(exp_all)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.7021419</td>
+<td align="right">0.8647852</td>
+<td align="right">3.4657343</td>
+</tr>
+<tr class="even">
+<td align="left">educationHigh school or GED</td>
+<td align="right">1.4008627</td>
+<td align="right">1.2075946</td>
+<td align="right">1.6242264</td>
+</tr>
+<tr class="odd">
+<td align="left">educationLess than high school</td>
+<td align="right">1.6716442</td>
+<td align="right">1.2863633</td>
+<td align="right">2.1766833</td>
+</tr>
+<tr class="even">
+<td align="left">educationSome post-high school</td>
+<td align="right">1.4909056</td>
+<td align="right">1.2977759</td>
+<td align="right">1.7120630</td>
+</tr>
+<tr class="odd">
+<td align="left">income&gt;100,000</td>
+<td align="right">0.2276472</td>
+<td align="right">0.1955464</td>
+<td align="right">0.2646223</td>
+</tr>
+<tr class="even">
+<td align="left">income50,000 ~ 100,000</td>
+<td align="right">0.4372422</td>
+<td align="right">0.3831784</td>
+<td align="right">0.4986752</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceAsian, Non-Hispanic</td>
+<td align="right">0.5425790</td>
+<td align="right">0.2575868</td>
+<td align="right">1.1083291</td>
+</tr>
+<tr class="even">
+<td align="left">impraceBlack, Non-Hispanic</td>
+<td align="right">0.6996939</td>
+<td align="right">0.3394655</td>
+<td align="right">1.3960468</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceHispanic</td>
+<td align="right">0.9753822</td>
+<td align="right">0.4750575</td>
+<td align="right">1.9375440</td>
+</tr>
+<tr class="even">
+<td align="left">impraceOther race, Non-Hispanic</td>
+<td align="right">0.6039454</td>
+<td align="right">0.2687842</td>
+<td align="right">1.3203476</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceWhite, Non-Hispanic</td>
+<td align="right">0.3859749</td>
+<td align="right">0.1900830</td>
+<td align="right">0.7577675</td>
+</tr>
+</tbody>
+</table>
+<p>Statistical Significant Predictors:</p>
+<p>Education:</p>
+<ul>
+<li>Individuals with a high school diploma or GED have 40.1% higher odds
+of being food insecure compared to college graduates.</li>
+<li>Individuals with less than a high school education have 67.1% higher
+odds of being food insecure compared to college graduates.</li>
+<li>Individuals with some post-high school education have 49.1% higher
+odds of being food insecure compared to college graduates.</li>
+</ul>
+<p>Income:</p>
+<ul>
+<li>Individuals earning over 100,000 have 77.2% lower odds of being food
+insecure compared to those earning ≤ $50,000.</li>
+<li>Individuals earning between $50,000 and $100,000 have 56.3% lower
+odds of being food insecure compared to those earning ≤ $50,000.</li>
+</ul>
+<p>Race/Ethnicity:</p>
+<ul>
+<li>White, Non-Hispanic individuals have 61.4% lower odds of being food
+insecure compared to American Indians.</li>
+</ul>
+<p>Summary: Education and income levels show significant associations
+with food insecurity, with lower education and income levels increasing
+odds of food insecurity.Among racial/ethnic groups, only White,
+Non-Hispanic individuals show significantly lower odds of food
+insecurity compared to American Indians.</p>
+</div>
+<div id="is-food-insecure-associated-with-general-health"
+class="section level3">
+<h3>Is food insecure associated with general health?</h3>
+<pre class="r"><code>mlogit_health = 
+  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = &quot;Fair&quot;))
+
+exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+
+knitr::kable(exp_health)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept):1</td>
+<td align="right">0.0101010</td>
+<td align="right">0.0037724</td>
+<td align="right">0.0270464</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):2</td>
+<td align="right">2.3585859</td>
+<td align="right">2.0970490</td>
+<td align="right">2.6527407</td>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept):3</td>
+<td align="right">3.2525253</td>
+<td align="right">2.9061006</td>
+<td align="right">3.6402458</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):4</td>
+<td align="right">0.1969697</td>
+<td align="right">0.1545092</td>
+<td align="right">0.2510988</td>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept):5</td>
+<td align="right">0.0126263</td>
+<td align="right">0.0052265</td>
+<td align="right">0.0305028</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):6</td>
+<td align="right">4.5277778</td>
+<td align="right">4.0609020</td>
+<td align="right">5.0483295</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:1</td>
+<td align="right">0.2682927</td>
+<td align="right">0.0298527</td>
+<td align="right">2.4112053</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:2</td>
+<td align="right">0.3251684</td>
+<td align="right">0.2677158</td>
+<td align="right">0.3949506</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:3</td>
+<td align="right">0.6657325</td>
+<td align="right">0.5633216</td>
+<td align="right">0.7867615</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:4</td>
+<td align="right">1.5959975</td>
+<td align="right">1.1587934</td>
+<td align="right">2.1981555</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:5</td>
+<td align="right">0.2146341</td>
+<td align="right">0.0249609</td>
+<td align="right">1.8455962</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:6</td>
+<td align="right">0.3914410</td>
+<td align="right">0.3310014</td>
+<td align="right">0.4629166</td>
+</tr>
+</tbody>
+</table>
+<p>OR:</p>
+<ul>
+<li>Individuals who are food insecure have 73.2% lower odds of reporting
+“Poor” health compared to “Fair” health when compared to non-food
+insecure individuals.</li>
+<li>Food-insecure individuals have 67.4% lower odds of reporting “Good”
+health compared to “Fair” health than non-food insecure
+individuals.</li>
+<li>Food-insecure individuals have 33.4% lower odds of reporting “Very
+Good” health compared to “Fair” health than non-food insecure
+individuals.</li>
+<li>Food-insecure individuals have 59.6% higher odds of reporting
+“Excellent” health compared to “Fair” health than non-food insecure
+individuals.</li>
+</ul>
+<p>Statistical significance: confidence intervals of OR of “Good”, “Very
+Good”, and “Excellent” health group exclude 1, indicating that these
+predictor levels are statistically significant.</p>
+</div>
+</div>
 <div id="discussion" class="section level2">
 <h2>Discussion</h2>
 <div id="food-desert" class="section level3">
@@ -601,6 +1115,47 @@ supporting local farmers’ markets to improve accessibility to nutritious
 food in food deserts. These actions could help bridge the food access
 gap and promote equitable food security across New York City.</p>
 </div>
+<div id="food-insecure" class="section level3">
+<h3>Food Insecure</h3>
+<p>The regression analysis highlights the significant associations
+between food insecurity and key predictors, including income,
+race/ethnicity, education, and self-rated health. Results indicate that
+higher income levels are associated with substantially lower odds of
+food insecurity. Individuals earning over $100,000 have 83.4% lower
+odds, and those earning between $50,000 and $100,000 have 65.1% lower
+odds of food insecurity compared to those earning less than $50,000.
+Racial and ethnic disparities in food insecurity are evident. White,
+Non-Hispanic individuals have the lowest odds of food insecurity (77%
+lower), followed by Asian, Non-Hispanic individuals (68.2% lower), and
+Other Race, Non-Hispanic individuals (57.4% lower) compared to American
+Indians. Associations between levels of Black, Non-Hispanic and Hispanic
+individuals and food insecure are not significant. Lower education
+levels are strongly associated with higher odds of food insecurity.
+Individuals with less than a high school education have 424.1% higher
+odds, those with a high school diploma or GED have 144.4% higher odds,
+and those with some post-high school education have 111.9% higher odds
+of being food insecure compared to college graduates. The last
+regression emphasizes that food insecurity significantly affects
+perceived health levels. The result that individuals with food insecure
+have a higher odds ratio to report “Excellent” health compared to “Fair”
+health is very weird. The result may be influenced by individuals’
+perceptions, cultural norms, and personal experiences. Furthermore,
+individuals who recently are experiencing food insecurity might still
+maintain good physical health but are at the early stages of economic or
+food-related struggles, leading them to perceive their health as
+excellent.</p>
+</div>
+</div>
+<div id="limitations" class="section level2">
+<h2>Limitations</h2>
+<p>The limitation for regression analysis is that the regression to
+explore the association between food insecure and general health does
+not include any confounding variables. As we examined before this
+regression, we found that income, education, and race can influence
+individuals’ perspectives on food insecure. We may explore more
+socioeconomic factors and control them in the regression to better
+determine whether food insecurity independently contributes to
+differences in health outcomes.</p>
 </div>
 
 

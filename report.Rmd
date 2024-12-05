@@ -167,6 +167,29 @@ buffered_stores =
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))
 ```
 
+
+
+
+### NYC 2020 Census Tract Dataset
+
+Exported Shapefile from [NYC Open Data](https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data). This dataset includes the 2020 Census Tracts from the US Census for New York City. The boundary files are derived from the US Census Bureau's TIGER data products and have been geographically modified to align with the New York City base map. The Shapefile was imported using `st_read()` from the `sf` package. Population data, aggregated at the census tract level, was joined to the shapefile using the common `geoid` identifier. Census tracts were classified into population bins based on total population for improved visualization.
+
+### NYC 2020 Decennial Census Data
+
+Downloaded the Excel file from [2020 Census - DCP](https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page) provided by the NYC Department of City Planning. This dataset includes basic demographic and housing characteristics, such as total population, race/ethnicity, age, housing tenure, and household composition for NYC’s census blocks.The dataset was imported using `read_excel()` and the first six rows, which contained summary population information for the five counties and NYC as a whole, were removed. A new variable, `geoid`, was created by combining borough codes and tract numbers to ensure compatibility with the NYC census tract dataset. Total population was aggregated across unique `geoid` values to calculate the total population for each census tract. The cleaned population dataset was then merged with the NYC census tract dataset using the `geoid` variable.
+
+### Retail Store Dataset
+
+Exported CSV file from [Open Data NY](https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data). This dataset provides a listing of all retail food stores licensed by the Department of Agriculture and Markets. The dataset includes variables such as store location, type, and square footage. The dataset was imported using `read_csv()` and column names were cleaned using the `janitor::clean_names()` function. Only relevant counties (Bronx, Kings, New York, Richmond, and Queens) were selected for the analysis. Establishment types were filtered to include only type `B` (Bakery), `C` (Food Manufacturer), and `D` (Food Warehouse). County names were recoded for consistency with other datasets.Stores with square footage below 2,000 sqft were excluded due to insufficent nutrition providance consideration.Stores were categorized into the following size groups:\
+- **Small**: Less than 5,000 sqft\
+- **Medium**: Between 5,000 and 9,000 sqft\
+- **Large**: Greater than 9,000 sqft\
+To visualize the coverage of retail stores by adding coverage zones based on store size. The geometry was transform the CRS to `EPSG:2263` for accurate distance-based calculations.Coverage zones were created around store locations using `st_buffer()`. The coverage radii were categorized into the following size groups:\
+- **Small**: 0.15 miles (792 ft)\
+- **Medium**: 0.25 miles (1,320 ft)\
+- **Large**: 0.35 miles (1,848 ft)
+
+
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
@@ -197,32 +220,12 @@ cleaned_df =
   select(-incomg1, -educag, -strsmeal_sa)
 ```
 
-
-### NYC 2020 Census Tract Dataset
-
-Exported Shapefile from [NYC Open Data](https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data). This dataset includes the 2020 Census Tracts from the US Census for New York City. The boundary files are derived from the US Census Bureau's TIGER data products and have been geographically modified to align with the New York City base map. The Shapefile was imported using `st_read()` from the `sf` package. Population data, aggregated at the census tract level, was joined to the shapefile using the common `geoid` identifier. Census tracts were classified into population bins based on total population for improved visualization.
-
-### NYC 2020 Decennial Census Data
-
-Downloaded the Excel file from [2020 Census - DCP](https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page) provided by the NYC Department of City Planning. This dataset includes basic demographic and housing characteristics, such as total population, race/ethnicity, age, housing tenure, and household composition for NYC’s census blocks.The dataset was imported using `read_excel()` and the first six rows, which contained summary population information for the five counties and NYC as a whole, were removed. A new variable, `geoid`, was created by combining borough codes and tract numbers to ensure compatibility with the NYC census tract dataset. Total population was aggregated across unique `geoid` values to calculate the total population for each census tract. The cleaned population dataset was then merged with the NYC census tract dataset using the `geoid` variable.
-
-### Retail Store Dataset
-
-Exported CSV file from [Open Data NY](https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data). This dataset provides a listing of all retail food stores licensed by the Department of Agriculture and Markets. The dataset includes variables such as store location, type, and square footage. The dataset was imported using `read_csv()` and column names were cleaned using the `janitor::clean_names()` function. Only relevant counties (Bronx, Kings, New York, Richmond, and Queens) were selected for the analysis. Establishment types were filtered to include only type `B` (Bakery), `C` (Food Manufacturer), and `D` (Food Warehouse). County names were recoded for consistency with other datasets.Stores with square footage below 2,000 sqft were excluded due to insufficent nutrition providance consideration.Stores were categorized into the following size groups:\
-- **Small**: Less than 5,000 sqft\
-- **Medium**: Between 5,000 and 9,000 sqft\
-- **Large**: Greater than 9,000 sqft\
-To visualize the coverage of retail stores by adding coverage zones based on store size. The geometry was transform the CRS to `EPSG:2263` for accurate distance-based calculations.Coverage zones were created around store locations using `st_buffer()`. The coverage radii were categorized into the following size groups:\
-- **Small**: 0.15 miles (792 ft)\
-- **Medium**: 0.25 miles (1,320 ft)\
-- **Large**: 0.35 miles (1,848 ft)
-
-
-
-
 ### Behavioral Risk Factor Surveillance System 2022 Dataset
 
-Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, and `genhlth`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`and `education`. Additionally, it creates a binary `food_insecure` variable based on responses to food insecurity questions. Finally, the cleaned dataset excludes the original incomg1, educag, and strsmeal_sa variables and keeps only the relevant and recoded columns. 
+Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It is used for regression analysis. It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, and `genhlth`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`and `education`. Additionally, it creates a binary `food_insecure` variable based on responses to food insecurity questions. Finally, the cleaned dataset excludes the original incomg1, educag, and strsmeal_sa variables and keeps only the relevant and recoded columns. 
+
+
+
 
 
 
@@ -261,6 +264,143 @@ Same as above, the retail stores are categorized into Small, Medium, and Large, 
 
 For Brooklyn, the coverage zones overlap significantly in densely populated areas, ensuring better coverage for residents. However, small gaps remain in the eastern parts. Queens has a mix of small and medium store buffers, indicating for moderate coverage. Sparse large store buffers in some areas leave room for improvement, especially in central and eastern Queens. For Staten Island, the central and southernmost tracts have very few store buffers, indicating limited accessibility to nutritious food options for residents in these regions. This combined map highlights potential food deserts and areas requiring improved access to retail stores offering fresh and nutritious food.
 
+
+## Regression Analysis 
+
+In the regression analysis section, we explore the association between several socioeconomic factors, `income`, `education`, and `race` and `food insecure` seperately, and finally examine the association between `food insecure` and `general health` to emphasize how limited or uncertain access to adequate food impacts individuals' physical, mental, and overall well-being. Food insecurity has been linked to poorer self-rated health, increased prevalence of chronic diseases, and higher stress levels, which can exacerbate health inequalities. Analyzing this relationship helps identify vulnerable populations and inform public health interventions aimed at improving food access and promoting better health outcomes.
+
+### Is income associated with food insecure? 
+
+```{r}
+logit_income = 
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
+
+exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+knitr::kable(exp_income)
+```
+
+Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. 
+
+OR: 
+   
+   - Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. 
+
+   - Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. 
+   
+Statistical significance: confidence intervals of OR of both predictor levels exclude 1, indicating that they are statistically associated with food insecure. 
+
+
+
+### Is race associated with food insecure?
+
+```{r}
+logit_race = 
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
+
+exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+knitr::kable(exp_race)
+```
+
+Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). 
+
+OR:
+
+   - Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. 
+
+   - Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians. 
+
+   - Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. 
+
+   - Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. 
+
+   - White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. 
+
+Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
+
+
+### Is education associated with food insecure?
+
+```{r}
+logit_edu = 
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)
+
+exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+knitr::kable(exp_edu)
+```
+
+Intercept: The odds ratio for the intercept (0.309) represents the odds of being food insecure for individuals in the reference group (College graduates). 
+
+OR:
+
+   - High School or GED: The odds ratio (2.444) indicates that individuals with a high school diploma or GED have 144.4% higher odds of being food insecure compared to college graduates. 
+
+   - Less than High School: The odds ratio (5.241) suggests that individuals with less than a high school education have 424.1% higher odds of being food insecure compared to college graduates. 
+
+   - Some Post-High School: The odds ratio (2.119) indicates that individuals with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates. 
+
+Statistical significance: confidence intervals of OR of all three predictor levels exclude 1, making these results statistically significant. 
+
+
+
+### Are race, education, and income associated with food insecure?
+
+```{r}
+logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+
+exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+knitr::kable(exp_all)
+```
+
+
+Statistical Significant Predictors: 
+
+Education:
+   
+   - Individuals with a high school diploma or GED have 40.1% higher odds of being food insecure compared to college graduates. 
+   - Individuals with less than a high school education have 67.1% higher odds of being food insecure compared to college graduates. 
+   - Individuals with some post-high school education have 49.1% higher odds of being food insecure compared to college graduates. 
+    
+Income: 
+   
+   - Individuals earning over 100,000 have 77.2% lower odds of being food insecure compared to those earning ≤ $50,000.
+   - Individuals earning between $50,000 and $100,000 have 56.3% lower odds of being food insecure compared to those earning ≤ $50,000. 
+   
+Race/Ethnicity:
+   
+   - White, Non-Hispanic individuals have 61.4% lower odds of being food insecure compared to American Indians.
+   
+Summary: 
+   Education and income levels show significant associations with food insecurity, with lower education and income levels increasing odds of food insecurity.Among racial/ethnic groups, only White, Non-Hispanic individuals show significantly lower odds of food insecurity compared to American Indians.
+   
+   
+### Is food insecure associated with general health?
+
+```{r}
+mlogit_health = 
+  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = "Fair"))
+
+exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+
+knitr::kable(exp_health)
+```
+
+OR: 
+  
+  - Individuals who are food insecure have 73.2% lower odds of reporting "Poor" health compared to "Fair" health when compared to non-food insecure individuals.
+  - Food-insecure individuals have 67.4% lower odds of reporting "Good" health compared to "Fair" health than non-food insecure individuals.
+  - Food-insecure individuals have 33.4% lower odds of reporting "Very Good" health compared to "Fair" health than non-food insecure individuals.
+  - Food-insecure individuals have 59.6% higher odds of reporting "Excellent" health compared to "Fair" health than non-food insecure individuals.
+
+Statistical significance: confidence intervals of OR of "Good", "Very Good", and "Excellent" health group exclude 1, indicating that these predictor levels are statistically significant. 
+
+
+
+
 ## Discussion
 
 ### Food Desert
@@ -274,3 +414,19 @@ The analysis underscores the need for tailored policies and interventions to add
 - Limited presence of medium and large retail stores, which are more likely to offer fresh and nutritious food options.
 
 Efforts could include incentivizing grocery stores to open in underserved areas, enhancing transportation options to food hubs, and supporting local farmers' markets to improve accessibility to nutritious food in food deserts. These actions could help bridge the food access gap and promote equitable food security across New York City.
+
+
+### Food Insecure
+
+The regression analysis highlights the significant associations between food insecurity and key predictors, including income, race/ethnicity, education, and self-rated health. 
+Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 83.4% lower odds, and those earning between $50,000 and $100,000 have 65.1% lower odds of food insecurity compared to those earning less than $50,000. 
+Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have the lowest odds of food insecurity (77% lower), followed by Asian, Non-Hispanic individuals (68.2% lower), and Other Race, Non-Hispanic individuals (57.4% lower) compared to American Indians. Associations between levels of Black, Non-Hispanic and Hispanic individuals and food insecure are not significant. 
+Lower education levels are strongly associated with higher odds of food insecurity. Individuals with less than a high school education have 424.1% higher odds, those with a high school diploma or GED have 144.4% higher odds, and those with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates.
+The last regression emphasizes that food insecurity significantly affects perceived health levels. The result that individuals with food insecure have a higher odds ratio to report "Excellent" health compared to "Fair" health is very weird. The result may be influenced by individuals' perceptions, cultural norms, and personal experiences. Furthermore, individuals who recently are experiencing food insecurity might still maintain good physical health but are at the early stages of economic or food-related struggles, leading them to perceive their health as excellent. 
+
+## Limitations
+
+The limitation for regression analysis is that the regression to explore the association between food insecure and general health does not include any confounding variables. As we examined before this regression, we found that income, education, and race can influence individuals' perspectives on food insecure. We may explore more socioeconomic factors and control them in the regression to  better determine whether food insecurity independently contributes to differences in health outcomes. 
+
+
+

@@ -178,9 +178,9 @@ knitr::kable(exp_income)
 Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. Since the 95% confidence interval (1.079–1.272) does not include 1, it is statistically significant.
 
 OR: 
-   Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. The 95% confidence interval (0.144–0.191) excludes 1, making this result statistically significant.
+   Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. 
 
-   Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. The 95% confidence interval (0.308–0.395) excludes 1, so this result is also statistically significant.
+   Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. 
    
 Statistical significance: confidence intervals of OR of both predictor levels exclude 1, indicating that they are statistically associated with food insecure. 
 
@@ -226,18 +226,18 @@ exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
 knitr::kable(exp_race)
 ```
 
-Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). Since the 95% confidence interval (0.848–3.117) includes 1, this result is not statistically significant.
+Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). 
 
 OR:
-   Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.157–0.625) excludes 1, so this result is statistically significant.
+   Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. 
 
-   Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians. However, the 95% confidence interval (0.266–1.015) includes 1, making this result not statistically significant.
+   Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians.
 
-   Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. Since the 95% confidence interval (0.421–1.593) includes 1, this result is not statistically significant.
+   Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. 
 
-   Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.198–0.892) excludes 1, so this result is statistically significant.
+   Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. 
 
-   White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.118–0.437) excludes 1, so this result is statistically significant.
+   White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. 
 
 Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
 
