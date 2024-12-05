@@ -43,6 +43,15 @@ Report大纲
 </pre>
 ```
 
+## Motivation and Primary Objectives
+Food access is a critical determinant of health outcomes and a driver of systemic health inequalities. In wealth-deprived communities, limited access to affordable and nutritious food often results in higher incidences of diet-related illnesses, such as Type II diabetes and obesity. This project focuses on identifying food deserts in NYC and analyzing food access patterns to better understand their health and socioeconomic impacts. While NYC is the primary focus for mapping food deserts, statewide regression analysis helps contextualize NYC-specific trends by providing a broader perspective on food access and its relationship to health outcomes across diverse regions in New York State. This dual-level approach aims to provide actionable insights into addressing food access disparities both locally and at the state level.
+
+The food desert map provides a detailed, localized view of NYC, analyzing population density and retail store access at the census tract level within the city. This map is valuable for identifying specific underserved areas within NYC.
+The regression analysis, on the other hand, uses data from the entire state of New York, which includes urban, suburban, and rural areas. It provides a broader perspective, capturing statewide trends in food access, retail distribution, and other socio-economic factors.
+
+The NYC map aims to understand urban-specific challenges, such as access in densely populated boroughs.
+The regression model attempts to identify statewide patterns and predictors of food deserts, considering the diversity of urban and rural contexts across the state.
+
 ## Data Sources and Cleaning
 
 ```{r}
