@@ -6,6 +6,13 @@ output:
     toc_float: true
     code_folding: hide
 ---
+<br>    
+```{=html}
+<pre>
+留言板
+1. 我稍微调整美化了一下图片排版格式之类的，没改内容
+</pre>
+```
 
 ## Data Importing and Cleaning   
 Visit [this page](report.html) for detailed steps on how the data is cleaned.
