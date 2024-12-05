@@ -68,8 +68,8 @@ Our project was inspired initially by an article [Emergency Food in NYC](https:/
 ## Initial Questions
 Our initial questions are:   
 - Are there any food deserts in NYC?    
-- How does food access affect nutrition and health outcomes?   
-- What socioeconomic factors impact food access?   
+- What socioeconomic factors impact food access? How does food access affect nutrition and health outcomes?   
+ 
 
 After conducting exploratory analysis and gaining a better understanding of the datasets, we refined our questions as follows:   
 - Where are food deserts located in NYC, specifically at a more granular level?   

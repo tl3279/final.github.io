@@ -353,8 +353,8 @@ affordable and nutritious food within NYC.</p>
 <h2>Initial Questions</h2>
 <p>Our initial questions are:<br />
 - Are there any food deserts in NYC?<br />
-- How does food access affect nutrition and health outcomes?<br />
-- What socioeconomic factors impact food access?</p>
+- What socioeconomic factors impact food access? How does food access
+affect nutrition and health outcomes?</p>
 <p>After conducting exploratory analysis and gaining a better
 understanding of the datasets, we refined our questions as
 follows:<br />
@@ -494,60 +494,7 @@ We retained only the variables essential for our analysis:
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = coverage_radius))</code></pre>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
-</div>
-<div id="nyc-2020-census-tract-dataset-1" class="section level3">
-<h3>NYC 2020 Census Tract Dataset</h3>
-<p>Exported Shapefile from <a
-href="https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data">NYC
-Open Data</a>. This dataset includes the 2020 Census Tracts from the US
-Census for New York City. The boundary files are derived from the US
-Census Bureau’s TIGER data products and have been geographically
-modified to align with the New York City base map. The Shapefile was
-imported using <code>st_read()</code> from the <code>sf</code> package.
-Population data, aggregated at the census tract level, was joined to the
-shapefile using the common <code>geoid</code> identifier. Census tracts
-were classified into population bins based on total population for
-improved visualization.</p>
-</div>
-<div id="nyc-2020-decennial-census-data-1" class="section level3">
-<h3>NYC 2020 Decennial Census Data</h3>
-<p>Downloaded the Excel file from <a
-href="https://www.nyc.gov/site/planning/planning-level/nyc-population/2020-census.page">2020
-Census - DCP</a> provided by the NYC Department of City Planning. This
-dataset includes basic demographic and housing characteristics, such as
-total population, race/ethnicity, age, housing tenure, and household
-composition for NYC’s census blocks.The dataset was imported using
-<code>read_excel()</code> and the first six rows, which contained
-summary population information for the five counties and NYC as a whole,
-were removed. A new variable, <code>geoid</code>, was created by
-combining borough codes and tract numbers to ensure compatibility with
-the NYC census tract dataset. Total population was aggregated across
-unique <code>geoid</code> values to calculate the total population for
-each census tract. The cleaned population dataset was then merged with
-the NYC census tract dataset using the <code>geoid</code> variable.</p>
-</div>
-<div id="retail-store-dataset-1" class="section level3">
-<h3>Retail Store Dataset</h3>
-<p>Exported CSV file from <a
-href="https://data.ny.gov/Economic-Development/Retail-Food-Stores/9a8c-vfzj/about_data">Open
-Data NY</a>. This dataset provides a listing of all retail food stores
-licensed by the Department of Agriculture and Markets. The dataset
-includes variables such as store location, type, and square footage. The
-dataset was imported using <code>read_csv()</code> and column names were
-cleaned using the <code>janitor::clean_names()</code> function. Only
-relevant counties (Bronx, Kings, New York, Richmond, and Queens) were
-selected for the analysis. Establishment types were filtered to include
-only type <code>B</code> (Bakery), <code>C</code> (Food Manufacturer),
-and <code>D</code> (Food Warehouse). County names were recoded for
-consistency with other datasets.Stores with square footage below 2,000
-sqft were excluded due to insufficent nutrition providance
-consideration.Stores were categorized into the following size
-groups:<br />
-- <strong>Small</strong>: Less than 5,000 sqft<br />
-- <strong>Medium</strong>: Between 5,000 and 9,000 sqft<br />
-- <strong>Large</strong>: Greater than 9,000 sqft<br />
-To visualize the coverage of retail stores by adding coverage zones
+<p>To visualize the coverage of retail stores by adding coverage zones
 based on store size. The geometry was transform the CRS to
 <code>EPSG:2263</code> for accurate distance-based calculations.Coverage
 zones were created around store locations using
@@ -556,23 +503,37 @@ following size groups:<br />
 - <strong>Small</strong>: 0.15 miles (792 ft)<br />
 - <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
 - <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
-<p>======= To visualize the coverage of retail stores by adding coverage
-zones based on store size. The geometry was transform the CRS to
-<code>EPSG:2263</code> for accurate distance-based calculations.Coverage
-zones were created around store locations using
-<code>st_buffer()</code>. The coverage radii were categorized into the
-following size groups:<br />
-- <strong>Small</strong>: 0.15 miles (792 ft)<br />
-- <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
-- <strong>Large</strong>: 0.35 miles (1,848 ft)<br />
-&gt;&gt;&gt;&gt;&gt;&gt;&gt;
-7f75831cbcb8841c253a917d92ffa983a1f9ebe3</p>
 </div>
 <div id="behavioral-risk-factor-surveillance-system-2022-dataset"
 class="section level3">
 <h3>Behavioral Risk Factor Surveillance System 2022 Dataset</h3>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD ### Behavioral Risk Factor
-Surveillance System 2022 Dataset</p>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0)
+   )|&gt;
+  filter(!is.na(income), !is.na(education))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
 <p>Downlaoded the csv file from <a
 href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
 2022</a>. It is used for regression analysis. It provides monitors
@@ -590,24 +551,6 @@ Additionally, it creates a binary <code>food_insecure</code> variable
 based on responses to food insecurity questions. Finally, the cleaned
 dataset excludes the original incomg1, educag, and strsmeal_sa variables
 and keeps only the relevant and recoded columns.</p>
-<p>======= Downlaoded the csv file from <a
-href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
-2022</a>. It provides monitors modifiable risk behaviors and other
-factors contributing to the leading causes of morbidity and mortality in
-the population. This dataset was imported using <code>read_csv()</code>
-and cleans the variable names for easier handling using
-<code>janitor::clean_names()</code>, and then processes the dataset to
-focus on relevant variables (<code>imprace</code>, <code>educag</code>,
-<code>incomg1</code>, <code>strsmeal_sa</code>, and
-<code>genhlth</code>). It filters out rows with missing values in these
-variables and recodes the income and education variables into simplified
-categories. New categorical variables are <code>income</code>and
-<code>education</code>. Additionally, it creates a binary
-<code>food_insecure</code> variable based on responses to food
-insecurity questions. Finally, the cleaned dataset excludes the original
-incomg1, educag, and strsmeal_sa variables and keeps only the relevant
-and recoded columns. &gt;&gt;&gt;&gt;&gt;&gt;&gt;
-7f75831cbcb8841c253a917d92ffa983a1f9ebe3</p>
 </div>
 </div>
 <div id="identifying-food-desert" class="section level2">
@@ -837,9 +780,9 @@ that provide fresh and nutritious food options.</p>
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
-      &quot;0 - 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
+      &quot;≤ 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
-      &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
+      &quot;&gt; 15,000&quot; = &quot;#de2d26&quot;
     ),
     breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
@@ -1385,9 +1328,6 @@ predictor levels are statistically significant.</p>
 <h2>Discussion</h2>
 <div id="food-desert" class="section level3">
 <h3>Food Desert</h3>
-</div>
-<div id="food-desert-1" class="section level3">
-<h3>Food Desert</h3>
 <p>Based on the visualizations and observations, we identify significant
 disparities in the availability of retail food stores across New York
 City’s boroughs. The analysis highlights areas with limited access to
@@ -1417,12 +1357,11 @@ interventions to address food deserts, focusing on areas with:<br />
 of the Bronx, eastern Queens, and southern Staten Island).<br />
 - Limited presence of medium and large retail stores, which are more
 likely to offer fresh and nutritious food options.</p>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD Efforts could include incentivizing
-grocery stores to open in underserved areas, enhancing transportation
-options to food hubs, and supporting local farmers’ markets to improve
-accessibility to nutritious food in food deserts. These actions could
-help bridge the food access gap and promote equitable food security
-across New York City.</p>
+<p>Efforts could include incentivizing grocery stores to open in
+underserved areas, enhancing transportation options to food hubs, and
+supporting local farmers’ markets to improve accessibility to nutritious
+food in food deserts. These actions could help bridge the food access
+gap and promote equitable food security across New York City.</p>
 </div>
 </div>
 <div id="food-insecure" class="section level3">
@@ -1466,13 +1405,6 @@ individuals’ perspectives on food insecure. We may explore more
 socioeconomic factors and control them in the regression to better
 determine whether food insecurity independently contributes to
 differences in health outcomes.</p>
-<p>======= Efforts could include incentivizing grocery stores to open in
-under-served areas, enhancing transportation options to food hubs, and
-supporting local farmers’ markets to improve accessibility to nutritious
-food in food deserts. These actions could help bridge the food access
-gap and promote equitable food security across New York City.
-&gt;&gt;&gt;&gt;&gt;&gt;&gt;
-7f75831cbcb8841c253a917d92ffa983a1f9ebe3</p>
 </div>
 
 
