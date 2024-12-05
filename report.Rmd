@@ -20,7 +20,7 @@ library(prettymapr)
 
 ```{=html}
 <pre>
-Report大纲    
+大纲    
 1. Motivation   
   1.1 Overview of Project Goals and Motivation    
 2. Related Work   
@@ -40,6 +40,13 @@ Report大纲
   6.1 Formal Analysis   
 7. Discussion   
   7.1 Findings/Expectations/Insights..    
+</pre>
+```
+
+```{=html}
+<pre>
+讨论板
+1. 这三个数据集我感觉有很多不太需要的变量要不要精简一下？
 </pre>
 ```
 
@@ -116,6 +123,7 @@ retail_stores =
       square_footage > 9000 ~ "Large"
     )
   )
+
 buffered_stores = 
   retail_stores |>
   st_transform(crs = 2263) |>
