@@ -47,6 +47,7 @@ library(prettymapr)
 <pre>
 留言板
 1. 这三个数据集我感觉有很多不太需要的变量要不要精简一下？
+2. Initial Quesitons这部分我好像不太好写因为需要“How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?”但我不太了解你analysis过程遇到和解决了什么问题...感觉这个你来写更方便一点
 </pre>
 ```
 
