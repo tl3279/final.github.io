@@ -10,12 +10,14 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse)
+library(haven)
 library(sf)
 library(dplyr)
 library(tmap) 
 library(readxl)
 library(ggspatial)
 library(prettymapr)
+library(VGAM)
 ```
 
 <pre>
@@ -25,10 +27,11 @@ Report大纲
 ## Related Work   
 ## Initial Questions    
 - Questions trying to answer    
-- How did these questions evolve over the course of the project?    
-What new questions did you consider in the course of your analysis?   
+- 
+- What socioeconomic factors impact food insecure? How does food insecure affect individuals' general health? 
+- How does food insecure affect nutrition and general health outcomes?
 ## Data   
-- Data Sources    
+- Data Sources
 - Scraping Method   
 - Data Cleaning Procedures    
 ## Exploratory Analysis   
@@ -116,6 +119,37 @@ buffered_stores =
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))
 ```
 
+```{r}
+brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|>
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|>
+  mutate(
+    income = case_when(
+      incomg1 %in% c("Less than $15,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
+      incomg1 == "$50,000 to < $100,000" ~ "50,000 ~ 100,000",
+      incomg1 %in% c ("$100,000 to < $200,000" , "$200,000 or more") ~ ">100,000",
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == "Did not graduate High School" ~ "Less than high school",
+      educag == "Graduated High School" ~ "High school or GED",
+      educag == "Attended College or Technical School" ~ "Some post-high school",
+      educag == "Graduated from College or Technical School" ~ "College graduate"
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c("Rarely","Sometimes","Usually", "Always") ~ 1,
+      strsmeal_sa == "Never" ~ 0)
+   )|>
+  filter(!is.na(income), !is.na(education))|>
+  select(-incomg1, -educag, -strsmeal_sa)
+```
+
+
 ### NYC 2020 Census Tract Dataset
 
 Exported Shapefile from [NYC Open Data](https://data.cityofnewyork.us/City-Government/2020-Census-Tracts/63ge-mke6/about_data). This dataset includes the 2020 Census Tracts from the US Census for New York City. The boundary files are derived from the US Census Bureau's TIGER data products and have been geographically modified to align with the New York City base map. The Shapefile was imported using `st_read()` from the `sf` package. Population data, aggregated at the census tract level, was joined to the shapefile using the common `geoid` identifier. Census tracts were classified into population bins based on total population for improved visualization.
@@ -134,6 +168,15 @@ To visualize the coverage of retail stores by adding coverage zones based on sto
 - **Small**: 0.15 miles (792 ft)\
 - **Medium**: 0.25 miles (1,320 ft)\
 - **Large**: 0.35 miles (1,848 ft)
+
+
+
+
+### Behavioral Risk Factor Surveillance System 2022 Dataset
+
+Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, and `genhlth`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`and `education`. Additionally, it creates a binary `food_insecure` variable based on responses to food insecurity questions. Finally, the cleaned dataset excludes the original incomg1, educag, and strsmeal_sa variables and keeps only the relevant and recoded columns. 
+
+
 
 ## Identifying Food Desert
 

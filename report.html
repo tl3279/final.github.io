@@ -13,7 +13,7 @@
 
 <title>Report</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -292,10 +292,11 @@ Report大纲
 ## Related Work   
 ## Initial Questions    
 - Questions trying to answer    
-- How did these questions evolve over the course of the project?    
-What new questions did you consider in the course of your analysis?   
+- 
+- What socioeconomic factors impact food insecure? How does food insecure affect individuals' general health? 
+- How does food insecure affect nutrition and general health outcomes?
 ## Data   
-- Data Sources    
+- Data Sources
 - Scraping Method   
 - Data Cleaning Procedures    
 ## Exploratory Analysis   
@@ -378,6 +379,33 @@ buffered_stores =
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth)|&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0)
+   )|&gt;
+  filter(!is.na(income), !is.na(education))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa)</code></pre>
 <div id="nyc-2020-census-tract-dataset" class="section level3">
 <h3>NYC 2020 Census Tract Dataset</h3>
 <p>Exported Shapefile from <a
@@ -438,6 +466,27 @@ following size groups:<br />
 - <strong>Small</strong>: 0.15 miles (792 ft)<br />
 - <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
 - <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
+</div>
+<div id="behavioral-risk-factor-surveillance-system-2022-dataset"
+class="section level3">
+<h3>Behavioral Risk Factor Surveillance System 2022 Dataset</h3>
+<p>Downlaoded the csv file from <a
+href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
+2022</a>. It provides monitors modifiable risk behaviors and other
+factors contributing to the leading causes of morbidity and mortality in
+the population. This dataset was imported using <code>read_csv()</code>
+and cleans the variable names for easier handling using
+<code>janitor::clean_names()</code>, and then processes the dataset to
+focus on relevant variables (<code>imprace</code>, <code>educag</code>,
+<code>incomg1</code>, <code>strsmeal_sa</code>, and
+<code>genhlth</code>). It filters out rows with missing values in these
+variables and recodes the income and education variables into simplified
+categories. New categorical variables are <code>income</code>and
+<code>education</code>. Additionally, it creates a binary
+<code>food_insecure</code> variable based on responses to food
+insecurity questions. Finally, the cleaned dataset excludes the original
+incomg1, educag, and strsmeal_sa variables and keeps only the relevant
+and recoded columns.</p>
 </div>
 </div>
 <div id="identifying-food-desert" class="section level2">
