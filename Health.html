@@ -291,6 +291,7 @@ $(document).ready(function () {
 </div>
 
 
+<<<<<<< HEAD
 <pre class="r"><code>library(tidyverse)
 library(haven)
 library(readxl)
@@ -328,9 +329,17 @@ data is cleaned.</p>
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>cleaned_df = 
+=======
+<p>Visit <a href="report.html">report</a> for detailed steps on how the
+data is cleaned.</p>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+>>>>>>> 8c51acd2b84287a3ae0c00729ff18c9d3eda0909
   brfss_22 |&gt;
-  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
-  select(imprace, educag, incomg1, strsmeal_sa, genhlth)
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
   cleaned_df |&gt;
@@ -354,20 +363,28 @@ cleaned_df =
     
     health = case_when(
       genhlth %in% c(&quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;) ~ 1,
-      genhlth %in% c(&quot;Fair&quot;, &quot;Poor&quot;) ~ 0
-    )
+      genhlth %in% c(&quot;Fair&quot;, &quot;Poor&quot;) ~ 0),
+    
+    physical_health = case_when(
+      phys14d %in% c(&quot;Zero days when physical health not good&quot;) ~ 0,
+      phys14d %in% c(&quot;1-13 days when physical health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 1),
+    
+    mental_health = case_when(
+      ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 0,
+      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 1)
+    
    )|&gt;
-  filter(!is.na(income), !is.na(education))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa, -genhlth)</code></pre>
+  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d)</code></pre>
 <div id="is-food-insecure-associated-with-general-health"
 class="section level3">
 <h3>Is food insecure associated with general health?</h3>
 <pre class="r"><code>logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
 
-exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))</code></pre>
-<pre><code>## Waiting for profiling to be done...</code></pre>
-<pre class="r"><code>knitr::kable(exp_health)</code></pre>
+exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
+
+knitr::kable(exp_health)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -380,15 +397,15 @@ exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))</code></pre
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">8.4704641</td>
-<td align="right">7.7103768</td>
-<td align="right">9.3277174</td>
+<td align="right">10.8694362</td>
+<td align="right">9.738412</td>
+<td align="right">12.1738224</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4225721</td>
-<td align="right">0.3678675</td>
-<td align="right">0.4853531</td>
+<td align="right">0.4674195</td>
+<td align="right">0.394007</td>
+<td align="right">0.5548997</td>
 </tr>
 </tbody>
 </table>
@@ -420,7 +437,7 @@ ci_data &lt;- data.frame(
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 
 
