@@ -18,29 +18,30 @@ library(ggspatial)
 library(prettymapr)
 ```
 
+```{=html}
 <pre>
 Report大纲    
-## Motivation   
-- Overview of Project Goals and Motivation    
-## Related Work   
-## Initial Questions    
-- Questions trying to answer    
-- How did these questions evolve over the course of the project?    
-What new questions did you consider in the course of your analysis?   
-## Data   
-- Data Sources    
-- Scraping Method   
-- Data Cleaning Procedures    
-## Exploratory Analysis   
-- Visualizations    
-- Summaries   
-- Exploratory Statistical Analysis    
-## Additional Analysis    
-- Formal Analysis   
-## Discussion   
-- Findings/Expectations/Insights..    
+1. Motivation   
+  1.1 Overview of Project Goals and Motivation    
+2. Related Work   
+3. Initial Questions    
+  3.1 Questions trying to answer    
+  3.2 How did these questions evolve over the course of the project?    
+  3.3 What new questions did you consider in the course of your analysis?   
+4. Data   
+  4.1 Data Sources    
+  4.2 Scraping Method   
+  4.3 Data Cleaning Procedures    
+5. Exploratory Analysis   
+  5.1 Visualizations    
+  5.2 Summaries   
+  5.3 Exploratory Statistical Analysis    
+6. Additional Analysis    
+  6.1 Formal Analysis   
+7. Discussion   
+  7.1 Findings/Expectations/Insights..    
 </pre>
-
+```
 
 ## Data Sources and Cleaning
 
