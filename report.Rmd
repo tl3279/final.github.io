@@ -35,12 +35,14 @@ Our project was inspired initially by an article [Emergency Food in NYC](https:/
 ## Initial Questions
 Our initial questions are:   
 - Are there any food deserts in NYC?    
-- What socioeconomic factors impact food access? How does food access affect nutrition and health outcomes?   
+- What socioeconomic factors impact food access? 
+- How does food access affect nutrition and health outcomes?   
  
 
 After conducting exploratory analysis and gaining a better understanding of the datasets, we refined our questions as follows:   
 - Where are food deserts located in NYC, specifically at a more granular level?   
 - How does the spatial proximity to retail stores influence food access and availability for different communities?   
+- What 
 
 ## Data Sources and Cleaning
 ### NYC 2020 Census Tract Dataset
@@ -166,13 +168,20 @@ cleaned_df =
     
     food_insecure = case_when(
       strsmeal_sa %in% c("Rarely","Sometimes","Usually", "Always") ~ 1,
-      strsmeal_sa == "Never" ~ 0)
+      strsmeal_sa == "Never" ~ 0),
+    
+     health = case_when(
+      genhlth %in% c("Good", "Very good", "Excellent") ~ 1,
+      genhlth %in% c("Fair", "Poor") ~ 0)
    )|>
   filter(!is.na(income), !is.na(education))|>
-  select(-incomg1, -educag, -strsmeal_sa)
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth)
 ```
 
-Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It is used for regression analysis. It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, and `genhlth`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`and `education`. Additionally, it creates a binary `food_insecure` variable based on responses to food insecurity questions. Finally, the cleaned dataset excludes the original incomg1, educag, and strsmeal_sa variables and keeps only the relevant and recoded columns. 
+
+
+Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It is used for regression analysis. It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, and `genhlth`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`, `education`. Additionally, we created two binary variable,`food_insecure` based on responses to food insecurity questions, and `health` based on responses of rated health. Finally, the cleaned dataset excludes the original incomg1, educag, strsmeal_sa, and genhlth variables and keeps only the relevant and recoded columns. 
+
 
 ## Identifying Food Desert   
 Food deserts are areas with limited access to affordable and nutritious food options, particularly fresh fruits and vegetables. To identify food deserts, we examined the distribution of retail stores across New York City. This analysis combines population density data with the spatial distribution of retail stores. To enhance visualization and clarity, the analysis is divided into two geographic regions: **Manhattan + Bronx** and **Brooklyn + Queens + Staten Island.**   
@@ -376,12 +385,12 @@ nyc_tracts |>
 
 Same as above, the retail stores are categorized into Small, Medium, and Large, represented by yellow, green, and blue buffer zones, respectively.
 
-For Brooklyn, the coverage zones overlap significantly in densely populated areas, ensuring better coverage for residents. However, small gaps remain in the eastern parts. Queens has a mix of small and medium store buffers, indicating for moderate coverage. Sparse large store buffers in some areas leave room for improvement, especially in central and eastern Queens. For Staten Island, the central and southernmost tracts have very few store buffers, indicating limited accessibility to nutritious food options for residents in these regions. This combined map highlights potential food deserts and areas requiring improved access to retail stores offering fresh and nutritious food.
+For Brooklyn, the coverage zones overlap significantly in densely populated areas, ensuring better coverage for residents. However, small gaps remain in the eastern parts. Queens has a mix of small and medium store buffers, indicating for moderate coverage. Sparse large store buffers in some areas leave room for improvement, especially in central and eastern Queens. For Staten Island, the central and southernmost tracts have very few store buffers, indicating limited accessibility to nutritious food options for residents in these regions. This combined map highlights potential food deserts and areas requiring improved access to retail stores offering fresh and nutritious food. 
 
 
 ## Regression Analysis 
 
-In the regression analysis section, we explore the association between several socioeconomic factors, `income`, `education`, and `race` and `food insecure` seperately, and finally examine the association between `food insecure` and `general health` to emphasize how limited or uncertain access to adequate food impacts individuals' physical, mental, and overall well-being. Food insecurity has been linked to poorer self-rated health, increased prevalence of chronic diseases, and higher stress levels, which can exacerbate health inequalities. Analyzing this relationship helps identify vulnerable populations and inform public health interventions aimed at improving food access and promoting better health outcomes.
+In the regression analysis section, we explore the association between several socioeconomic factors, `income`, `education`, and `race` and `food insecure` separately, and finally examine the association between `food insecure` and `general health` to emphasize how limited or uncertain access to adequate food impacts individuals' physical, mental, and overall well-being. Food insecurity has been linked to poorer self-rated health, increased prevalence of chronic diseases, and higher stress levels, which can exacerbate health inequalities. Analyzing this relationship helps identify vulnerable populations and inform public health interventions aimed at improving food access and promoting better health outcomes. 
 
 
 ### Key Socioeconomic Factors Distribution
@@ -544,10 +553,10 @@ Summary:
 ### Is food insecure associated with general health?
 
 ```{r}
-mlogit_health = 
-  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = "Fair"))
+logit_health = 
+  glm(health ~ food_insecure, data = cleaned_df, family = binomial)
 
-exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 
 knitr::kable(exp_health)
 ```

@@ -8,11 +8,6 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-```{r}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse)
 library(haven)
@@ -22,29 +17,11 @@ library(VGAM)
 
 **Regression Model**
 
-Detailed process please see [report](). 
+Visit [report](report.html) for detailed steps on how the data is cleaned.
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
 ```
-
-```{r}
-zipcode = 
-  brfss_22 |>
-  filter(zipcode1 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
-
-head(zipcode)
-```
-
-```{r}
-county = 
-  brfss_22 |>
-  filter(ctycode2 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
-
-head(county)
-```
-· we try to filter people who live in NYC, but all data are confidential. 
-
 
 
 ```{r}
@@ -73,10 +50,15 @@ cleaned_df =
     
     food_insecure = case_when(
       strsmeal_sa %in% c("Rarely","Sometimes","Usually", "Always") ~ 1,
-      strsmeal_sa == "Never" ~ 0)
+      strsmeal_sa == "Never" ~ 0),
+    
+    health = case_when(
+      genhlth %in% c("Good", "Very good", "Excellent") ~ 1,
+      genhlth %in% c("Fair", "Poor") ~ 0
+    )
    )|>
   filter(!is.na(income), !is.na(education))|>
-  select(-incomg1, -educag, -strsmeal_sa)
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth)
 
 ```
 
@@ -144,8 +126,7 @@ cleaned_df =
   mutate(
     imprace = as.factor(imprace),
     income = as.factor(income),
-    education = as.factor(education),
-    genhlth = as.factor(genhlth)
+    education = as.factor(education)
   )
 ```
 
@@ -158,9 +139,6 @@ logit_income =
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
 ```
 
-```{r}
-summary(logit_income)
-```
 
 ```{r}
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
@@ -209,9 +187,6 @@ logit_race =
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
 ```
 
-```{r}
-summary(logit_race)
-```
 
 ```{r}
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
@@ -268,9 +243,6 @@ logit_edu =
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
 ```
 
-```{r}
-summary(logit_edu)
-```
 
 ```{r}
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
@@ -323,10 +295,6 @@ logit_all =
 ```
 
 ```{r}
-summary(logit_all)
-```
-
-```{r}
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
 
 knitr::kable(exp_all)
@@ -376,19 +344,18 @@ ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ```
 
 
+logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
 
 ### Is food insecure associated with general health?
 ```{r}
-mlogit_health = 
-  vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = "Fair"))
+logit_health = 
+  glm(health ~ food_insecure, data = cleaned_df, family = binomial)
 ```
 
-```{r}
-summary(mlogit_health)
-```
 
 ```{r}
-exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
+exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 
 knitr::kable(exp_health)
 ```
@@ -405,7 +372,7 @@ This analysis emphasizes that food insecurity significantly affects perceived he
 
 ### Confidence Interval
 ```{r}
-coefs <- coef(summary(mlogit_health))
+coefs <- coef(summary(logit_health))
 odds_ratios <- exp(coefs[, "Estimate"]) # Convert coefficients to odds ratios
 lower_ci <- exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std. Error"]) # Lower 95% CI
 upper_ci <- exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std. Error"]) # Upper 95% CI
