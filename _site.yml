@@ -9,6 +9,8 @@ navbar:
       href: report.html
     - text: "Socioeconomic Factors"
       href: data_analysis.html
+    - text: "Health"
+      href: Health.html
     - icon: fa-github fa-lg
       href: https://github.com/tl3279/final.github.io
 output:
