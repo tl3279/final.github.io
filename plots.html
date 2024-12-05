@@ -289,11 +289,10 @@ $(document).ready(function () {
 留言板
 1. 优化了一下图片排版（字体，标题，大小之类的），其他都没改 
 </pre>
-<p><br></p>
-<div id="data-importing-and-cleaning" class="section level2">
-<h2>Data Importing and Cleaning</h2>
-<p>Visit <a href="report.html">this page</a> for detailed steps on how
-the data is cleaned.</p>
+<p><br><br />
+test ## Data Importing and Cleaning<br />
+Visit <a href="report.html">this page</a> for detailed steps on how the
+data is cleaned.</p>
 <pre class="r"><code>population_data =
   read_excel(&quot;nyc2020_census_blocks.xlsx&quot;) |&gt;
   slice(-c(1:6)) |&gt;
@@ -363,7 +362,6 @@ buffered_stores =
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
-</div>
 <div id="nyc-population" class="section level2">
 <h2>NYC Population</h2>
 <p>This plot shows the population distribution across New York City’s
