@@ -13,7 +13,7 @@
 
 <title>Identifying Food Deserts</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -258,7 +258,7 @@ $(document).ready(function () {
   <a href="report.html">Report</a>
 </li>
 <li>
-  <a href="http://github.com/tl3279/">
+  <a href="https://github.com/tl3279/final.github.io">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -320,11 +320,12 @@ nyc_tracts =
   mutate(
     pop_bins = cut(
       total_population,
-      breaks = c(0, 1000, 5000, 10000, 15000, 200000),
-      labels = c(&quot;0 - 1,000&quot;, &quot;1,001 - 5,000&quot;, &quot;5,001 - 10,000&quot;, &quot;10,000 - 15,000&quot;, &quot;15,001 - 20,000&quot;),
+      breaks = c(0, 1001, 5001, 10001, 15001, Inf),
+      labels = c(&quot;≤ 1,000&quot;, &quot;1,001 - 5,000&quot;, &quot;5,001 - 10,000&quot;, &quot;10,001 - 15,000&quot;, &quot;&gt; 15,000&quot;),
       include.lowest = TRUE
     )
-  )
+  ) |&gt;
+  select(boroname, total_population, geometry, pop_bins)
 
 retail_stores = 
   read_csv(&quot;Retail_Food_Stores.csv&quot;) |&gt;
@@ -351,18 +352,20 @@ retail_stores =
       square_footage &lt;= 9000 ~ &quot;Medium&quot;,
       square_footage &gt; 9000 ~ &quot;Large&quot;
     )
-  )
-buffered_stores = 
+  )|&gt;
+  select(county, geometry, category)
+
+covered_df = 
   retail_stores |&gt;
   st_transform(crs = 2263) |&gt;
   mutate(
-    buffer_radius = case_when(
+    coverage_radius = case_when(
       category == &quot;Small&quot; ~ 5280*0.15,
       category == &quot;Medium&quot; ~ 5280*0.25,
       category == &quot;Large&quot; ~ 5280*0.35
     )
   ) |&gt;
-  mutate(geometry = st_buffer(geometry, dist = buffer_radius))</code></pre>
+  mutate(geometry = st_buffer(geometry, dist = coverage_radius))</code></pre>
 </div>
 <div id="nyc-population" class="section level2">
 <h2>NYC Population</h2>
@@ -377,7 +380,7 @@ densities.</p>
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) +  
   geom_sf(aes(fill = pop_bins), color = &quot;white&quot;, lwd = 0.2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(
@@ -413,7 +416,7 @@ the Bronx, plotted over a population density map by census tract.</p>
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)), color = &quot;darkblue&quot;, size = 2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(
@@ -446,7 +449,7 @@ access to nutritious food.</p>
     color = &quot;white&quot;, lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
+    data = covered_df |&gt; filter(county %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)),
     aes(fill = category),
     alpha = 0.4,
     color = NA
@@ -460,9 +463,9 @@ access to nutritious food.</p>
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
-      &quot;0 - 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
+      &quot;≤ 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
-      &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
+      &quot;&gt; 15,000&quot; = &quot;#de2d26&quot;
     ),
     breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
@@ -504,7 +507,7 @@ density map by census tract.</p>
   geom_sf(data = retail_stores |&gt;
             filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)), color = &quot;darkblue&quot;, size = 2) +
   scale_fill_manual(
-    values = c(&quot;white&quot;, &quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
+    values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
   labs(
@@ -534,7 +537,7 @@ lower population density have limited retail store presence.</p>
     color = &quot;white&quot;, lwd = 0.2
   ) +
   geom_sf(
-    data = buffered_stores |&gt; 
+    data = covered_df |&gt; 
       filter(county %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)),
     aes(fill = category),
     alpha = 0.4,
@@ -550,9 +553,9 @@ lower population density have limited retail store presence.</p>
   scale_fill_manual(
     values = c(
       &quot;Small&quot; = &quot;yellow&quot;, &quot;Medium&quot; = &quot;green&quot;, &quot;Large&quot; = &quot;blue&quot;,
-      &quot;0 - 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
+      &quot;≤ 1,000&quot; = &quot;#fee5d9&quot;, &quot;1,001 - 5,000&quot; = &quot;#fcbba1&quot;,
       &quot;5,001 - 10,000&quot; = &quot;#fc9272&quot;, &quot;10,000 - 15,000&quot; = &quot;#fb6a4a&quot;,
-      &quot;15,001 - 20,000&quot; = &quot;#de2d26&quot;
+      &quot;&gt; 15,000&quot; = &quot;#de2d26&quot;
     ),
     breaks = c(&quot;Small&quot;, &quot;Medium&quot;, &quot;Large&quot;), 
     name = &quot;Store Category&quot;
