@@ -20,7 +20,9 @@ library(readxl)
 library(VGAM)
 ```
 
-**Data Importing, Cleaning and Selecting**
+**Regression Model**
+
+Detailed process please see [report](). 
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
@@ -44,7 +46,7 @@ head(county)
 · we try to filter people who live in NYC, but all data are confidential. 
 
 
-**Subset Dataset Cleaning**
+
 ```{r}
 cleaned_df = 
   brfss_22 |>
@@ -78,18 +80,9 @@ cleaned_df =
 
 ```
 
-### Cleaning Step:
-· First filtering all valid values in the following variables: imprace, educag, incomg1, strsmeal_sa, genhlth.
-
-· Only selecting these variables that we will use in the following steps because the original dataset is too       large. It is easy to make a subset dataset. 
-
-· After first step filtering, we re-categorize income3, educag, and strsmeal_sa. The most noticeable change is     re-categorizing strsmeal_sa into a new variable "food-insecure". We combine rarely, sometimes, usually, and      always into "1" to represent food insecure challenge that individuals face, and contain never as 0 to represent   no food insecure. 
-
-· Last, we remove all missing values from the sub dataset. 
 
 
-
-**Figures Making**
+### Key Socioeconomic Factors Distribution
 
 ```{r}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
@@ -157,7 +150,7 @@ cleaned_df =
 ```
 
 
-## **Logistic Regression Models**
+## Logistic Regression Models
 
 ### Is income associated with food insecure? 
 ```{r}

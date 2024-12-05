@@ -258,7 +258,7 @@ $(document).ready(function () {
   <a href="report.html">Report</a>
 </li>
 <li>
-  <a href="http://github.com/tl3279/">
+  <a href="https://github.com/tl3279/final.github.io">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -299,27 +299,11 @@ library(tidyverse)</code></pre>
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 <pre class="r"><code>library(haven)
 library(readxl)
-library(plotly)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;plotly&#39;
-## 
-## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     last_plot
-## 
-## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter
-## 
-## The following object is masked from &#39;package:graphics&#39;:
-## 
-##     layout</code></pre>
-<pre class="r"><code>library(sf)</code></pre>
-<pre><code>## Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
-<pre class="r"><code>library(VGAM)</code></pre>
+library(VGAM)</code></pre>
 <pre><code>## Loading required package: stats4
 ## Loading required package: splines</code></pre>
-<p><strong>Data Importing, Cleaning and Selecting</strong></p>
+<p><strong>Regression Model</strong></p>
+<p>Detailed process please see <a href="">report</a>.</p>
 <pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
   janitor::clean_names()</code></pre>
 <pre class="r"><code>zipcode = 
@@ -350,7 +334,6 @@ head(county)</code></pre>
 ## #   rmvteth4 &lt;chr&gt;, cvdinfr4 &lt;chr&gt;, cvdcrhd4 &lt;chr&gt;, cvdstrk3 &lt;chr&gt;, …</code></pre>
 <p>· we try to filter people who live in NYC, but all data are
 confidential.</p>
-<p><strong>Subset Dataset Cleaning</strong></p>
 <pre class="r"><code>cleaned_df = 
   brfss_22 |&gt;
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
@@ -377,21 +360,8 @@ confidential.</p>
    )|&gt;
   filter(!is.na(income), !is.na(education))|&gt;
   select(-incomg1, -educag, -strsmeal_sa)</code></pre>
-<div id="cleaning-step" class="section level3">
-<h3>Cleaning Step:</h3>
-<p>· First filtering all valid values in the following variables:
-imprace, educag, incomg1, strsmeal_sa, genhlth.</p>
-<p>· Only selecting these variables that we will use in the following
-steps because the original dataset is too large. It is easy to make a
-subset dataset.</p>
-<p>· After first step filtering, we re-categorize income3, educag, and
-strsmeal_sa. The most noticeable change is re-categorizing strsmeal_sa
-into a new variable “food-insecure”. We combine rarely, sometimes,
-usually, and always into “1” to represent food insecure challenge that
-individuals face, and contain never as 0 to represent no food
-insecure.</p>
-<p>· Last, we remove all missing values from the sub dataset.</p>
-<p><strong>Figures Making</strong></p>
+<div id="key-socioeconomic-factors-distribution" class="section level3">
+<h3>Key Socioeconomic Factors Distribution</h3>
 <pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
   labs(
@@ -458,7 +428,7 @@ missing data (NA) for food insecurity status.</p>
   )</code></pre>
 </div>
 <div id="logistic-regression-models" class="section level2">
-<h2><strong>Logistic Regression Models</strong></h2>
+<h2>Logistic Regression Models</h2>
 <div id="is-income-associated-with-food-insecure"
 class="section level3">
 <h3>Is income associated with food insecure?</h3>
@@ -524,14 +494,12 @@ Since the 95% confidence interval (1.079–1.272) does not include 1, it
 is statistically significant.</p>
 <p>OR: Income &gt; 100,000: The odds ratio (0.166) indicates that
 individuals with an income greater than $100,000 have 83.4% lower odds
-of being food insecure compared to the income group less than 50,000.
-The 95% confidence interval (0.144–0.191) excludes 1, making this result
-statistically significant.</p>
+of being food insecure compared to the income group less than
+50,000.</p>
 <p>Income 50,000–100,000: The odds ratio (0.349) indicates that
 individuals with an income between $50,000 and 100,000 have 65.1% lower
 odds of being food insecure compared to the income group less than
-50,000. The 95% confidence interval (0.308–0.395) excludes 1, so this
-result is also statistically significant.</p>
+50,000.</p>
 <p>Statistical significance: confidence intervals of OR of both
 predictor levels exclude 1, indicating that they are statistically
 associated with food insecure.</p>
@@ -636,30 +604,22 @@ knitr::kable(exp_race)</code></pre>
 </table>
 <p>Intercept: The odds ratio for the intercept (1.6) represents the odds
 of being food insecure for the reference group (American Indian/Alaskan
-Native). Since the 95% confidence interval (0.848–3.117) includes 1,
-this result is not statistically significant.</p>
+Native).</p>
 <p>OR: Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian,
 Non-Hispanic individuals have 68.2% lower odds of being food insecure
-compared to American Indians. The 95% confidence interval (0.157–0.625)
-excludes 1, so this result is statistically significant.</p>
+compared to American Indians.</p>
 <p>Black, Non-Hispanic: The odds ratio (0.528) suggests that Black,
 Non-Hispanic individuals have 47.2% lower odds of being food insecure
-compared to American Indians. However, the 95% confidence interval
-(0.266–1.015) includes 1, making this result not statistically
-significant.</p>
+compared to American Indians.</p>
 <p>Hispanic: The odds ratio (0.832) implies that Hispanic individuals
 have 16.8% lower odds of being food insecure compared to American
-Indians. Since the 95% confidence interval (0.421–1.593) includes 1,
-this result is not statistically significant.</p>
+Indians.</p>
 <p>Other Race, Non-Hispanic: The odds ratio (0.426) indicates that
 individuals of Other Race, Non-Hispanic have 57.4% lower odds of being
-food insecure compared to American Indians. The 95% confidence interval
-(0.198–0.892) excludes 1, so this result is statistically
-significant.</p>
+food insecure compared to American Indians.</p>
 <p>White, Non-Hispanic: The odds ratio (0.230) suggests that White,
 Non-Hispanic individuals have 77% lower odds of being food insecure
-compared to American Indians. The 95% confidence interval (0.118–0.437)
-excludes 1, so this result is statistically significant.</p>
+compared to American Indians.</p>
 <p>Statistical significance: confidence intervals of OR of all predictor
 levels except Black and Hispanic exclude 1, indicating that these
 predictor levels are statistically significant.</p>
