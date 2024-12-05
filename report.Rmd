@@ -18,6 +18,54 @@ library(ggspatial)
 library(prettymapr)
 ```
 
+```{=html}
+<pre>
+大纲    
+1. Motivation   
+  1.1 Overview of Project Goals and Motivation    
+2. Related Work   
+3. Initial Questions    
+  3.1 Questions trying to answer    
+  3.2 How did these questions evolve over the course of the project?    
+  3.3 What new questions did you consider in the course of your analysis?   
+4. Data   
+  4.1 Data Sources    
+  4.2 Scraping Method   
+  4.3 Data Cleaning Procedures    
+5. Exploratory Analysis   
+  5.1 Visualizations    
+  5.2 Summaries   
+  5.3 Exploratory Statistical Analysis    
+6. Additional Analysis    
+  6.1 Formal Analysis   
+7. Discussion   
+  7.1 Findings/Expectations/Insights..    
+</pre>
+```
+
+```{=html}
+<pre>
+留言板
+1. 这三个数据集我感觉有很多不太需要的变量要不要精简一下？
+2. Initial Quesitons这部分我好像不太好写因为需要“How did these questions evolve over the course of the project? What new questions did you consider in the course of your analysis?”但我不太了解你analysis过程遇到和解决了什么问题...感觉这个你来写更方便一点
+</pre>
+```
+
+## Motivation and Primary Objectives
+
+Food access is a critical determinant of health outcomes and a driver of systemic health inequalities. In wealth-deprived communities, limited access to affordable and nutritious food often results in higher incidences of diet-related illnesses, such as Type II diabetes and obesity. This project focuses on identifying food deserts in NYC and analyzing food access patterns to better understand their health and socioeconomic impacts. While NYC is the primary focus for mapping food deserts, statewide regression analysis helps contextualize NYC-specific trends by providing a broader perspective on food access and its relationship to health outcomes across diverse regions in New York State. This dual-level approach aims to provide actionable insights into addressing food access disparities both locally and at the state level.
+
+The food desert map provides a detailed, localized view of NYC, analyzing population density and retail store access at the census tract level within the city. This map is valuable for identifying specific underserved areas within NYC. The regression analysis, on the other hand, uses data from the entire state of New York, which includes urban, suburban, and rural areas. It provides a broader perspective, capturing statewide trends in food access, retail distribution, and other socio-economic factors.
+
+The NYC map aims to understand urban-specific challenges, such as access in densely populated boroughs. The regression model attempts to identify statewide patterns and predictors of food deserts, considering the diversity of urban and rural contexts across the state.   
+
+## Related Work
+
+Our project was inspired initially by an article [Emergency Food in NYC](https://council.nyc.gov/data/emergency-food-in-nyc/) illustrating the dire situation New York citizens faced in terms of food security. The statistics gathered within this article shocked us and triggered us to investigate further on access to affordable and nutritious food within NYC. 
+
+## Initial Questions
+
+
 ## Data Sources and Cleaning
 
 ```{r}
@@ -79,6 +127,7 @@ retail_stores =
       square_footage > 9000 ~ "Large"
     )
   )
+
 buffered_stores = 
   retail_stores |>
   st_transform(crs = 2263) |>

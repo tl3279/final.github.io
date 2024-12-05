@@ -10,9 +10,8 @@
 
 
 
-<meta name="date" content="2024-11-20" />
 
-<title>ds_final</title>
+<title>Data Analysis</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -31,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -219,6 +219,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -267,15 +270,23 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">ds_final</h1>
-<h4 class="date">2024-11-20</h4>
+
+<h1 class="title toc-ignore">Data Analysis</h1>
 
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
+<pre class="r"><code>knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+library(tidyverse)</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
@@ -308,32 +319,38 @@ library(plotly)</code></pre>
 <pre class="r"><code>library(VGAM)</code></pre>
 <pre><code>## Loading required package: stats4
 ## Loading required package: splines</code></pre>
-<div id="brfss-dataset" class="section level3">
-<h3>brfss dataset</h3>
+<p><strong>Data Importing, Cleaning and Selecting</strong></p>
 <pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
   janitor::clean_names()</code></pre>
-<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for details,
-## e.g.:
-##   dat &lt;- vroom(...)
-##   problems(dat)</code></pre>
-<pre><code>## Rows: 17800 Columns: 343
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (303): _STATE, IDATE, IMONTH, IDAY, RESPSLCT, SEXVAR, GENHLTH, PHYSHLTH,...
-## dbl  (38): FMONTH, IYEAR, SEQNO, _PSU, CELPHON1, COLGSEX1, NUMADULT, LANDSEX...
-## lgl   (2): CANHOWUSE_F, TELE_USE_F
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>zipcode = 
   brfss_22 |&gt;
-  filter(zipcode1 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)</code></pre>
+  filter(zipcode1 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)
+
+head(zipcode)</code></pre>
+<pre><code>## # A tibble: 0 × 343
+## # ℹ 343 variables: state &lt;chr&gt;, fmonth &lt;dbl&gt;, idate &lt;chr&gt;, imonth &lt;chr&gt;,
+## #   iday &lt;chr&gt;, iyear &lt;dbl&gt;, seqno &lt;dbl&gt;, psu &lt;dbl&gt;, celphon1 &lt;dbl&gt;,
+## #   colgsex1 &lt;dbl&gt;, numadult &lt;dbl&gt;, landsex1 &lt;dbl&gt;, respslct &lt;chr&gt;,
+## #   hhadult &lt;dbl&gt;, sexvar &lt;chr&gt;, genhlth &lt;chr&gt;, physhlth &lt;chr&gt;, menthlth &lt;chr&gt;,
+## #   poorhlth &lt;chr&gt;, priminsr &lt;chr&gt;, persdoc3 &lt;chr&gt;, medcost1 &lt;chr&gt;,
+## #   checkup1 &lt;chr&gt;, exerany2 &lt;chr&gt;, sleptim1 &lt;chr&gt;, lastden4 &lt;chr&gt;,
+## #   rmvteth4 &lt;chr&gt;, cvdinfr4 &lt;chr&gt;, cvdcrhd4 &lt;chr&gt;, cvdstrk3 &lt;chr&gt;, …</code></pre>
 <pre class="r"><code>county = 
   brfss_22 |&gt;
-  filter(ctycode2 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)</code></pre>
-</div>
-<div id="subset-dataset-cleaning" class="section level3">
-<h3>subset dataset cleaning</h3>
+  filter(ctycode2 != &quot;Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)&quot;)
+
+head(county)</code></pre>
+<pre><code>## # A tibble: 0 × 343
+## # ℹ 343 variables: state &lt;chr&gt;, fmonth &lt;dbl&gt;, idate &lt;chr&gt;, imonth &lt;chr&gt;,
+## #   iday &lt;chr&gt;, iyear &lt;dbl&gt;, seqno &lt;dbl&gt;, psu &lt;dbl&gt;, celphon1 &lt;dbl&gt;,
+## #   colgsex1 &lt;dbl&gt;, numadult &lt;dbl&gt;, landsex1 &lt;dbl&gt;, respslct &lt;chr&gt;,
+## #   hhadult &lt;dbl&gt;, sexvar &lt;chr&gt;, genhlth &lt;chr&gt;, physhlth &lt;chr&gt;, menthlth &lt;chr&gt;,
+## #   poorhlth &lt;chr&gt;, priminsr &lt;chr&gt;, persdoc3 &lt;chr&gt;, medcost1 &lt;chr&gt;,
+## #   checkup1 &lt;chr&gt;, exerany2 &lt;chr&gt;, sleptim1 &lt;chr&gt;, lastden4 &lt;chr&gt;,
+## #   rmvteth4 &lt;chr&gt;, cvdinfr4 &lt;chr&gt;, cvdcrhd4 &lt;chr&gt;, cvdstrk3 &lt;chr&gt;, …</code></pre>
+<p>· we try to filter people who live in NYC, but all data are
+confidential.</p>
+<p><strong>Subset Dataset Cleaning</strong></p>
 <pre class="r"><code>cleaned_df = 
   brfss_22 |&gt;
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth))|&gt;
@@ -360,6 +377,21 @@ library(plotly)</code></pre>
    )|&gt;
   filter(!is.na(income), !is.na(education))|&gt;
   select(-incomg1, -educag, -strsmeal_sa)</code></pre>
+<div id="cleaning-step" class="section level3">
+<h3>Cleaning Step:</h3>
+<p>· First filtering all valid values in the following variables:
+imprace, educag, incomg1, strsmeal_sa, genhlth.</p>
+<p>· Only selecting these variables that we will use in the following
+steps because the original dataset is too large. It is easy to make a
+subset dataset.</p>
+<p>· After first step filtering, we re-categorize income3, educag, and
+strsmeal_sa. The most noticeable change is re-categorizing strsmeal_sa
+into a new variable “food-insecure”. We combine rarely, sometimes,
+usually, and always into “1” to represent food insecure challenge that
+individuals face, and contain never as 0 to represent no food
+insecure.</p>
+<p>· Last, we remove all missing values from the sub dataset.</p>
+<p><strong>Figures Making</strong></p>
 <pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
   labs(
@@ -370,6 +402,15 @@ library(plotly)</code></pre>
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) </code></pre>
 <p><img src="data_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>This bar graph illustrates the distribution of race/ethnicity in the
+dataset. The categories include American Indian/Alaskan Native, Asian,
+Black, Hispanic, Other Race, and White, all specified as Non-Hispanic
+except for the Hispanic group. Among these groups, White, Non-Hispanic
+individuals dominate, with the highest count exceeding 6,000. The second
+most prevalent group is Hispanic, followed by Black, Non-Hispanic, while
+Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly
+smaller counts. The American Indian/Alaskan Native, Non-Hispanic
+category represents the smallest group.</p>
 <pre class="r"><code>ggplot(cleaned_df, aes(x = &quot;&quot;, fill = education)) +
   geom_bar(width = 1, stat = &quot;count&quot;) +
   coord_polar(theta = &quot;y&quot;) +
@@ -380,6 +421,15 @@ library(plotly)</code></pre>
   theme_void() +
   theme(legend.position = &quot;right&quot;)</code></pre>
 <p><img src="data_analysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>This pie chart shows the distribution of education levels within a
+dataset. The largest portion of the chart is represented by college
+graduates, shown in red, indicating that a significant proportion of
+individuals have completed higher education. The second-largest
+category, represented in purple, corresponds to individuals with some
+post-high school education. High school graduates or those with a GED,
+shown in green, form a smaller segment, while the smallest portion of
+the chart, in teal, represents individuals with less than a high school
+education.</p>
 <pre class="r"><code>ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
   geom_bar() +
   scale_fill_manual(values = c(&quot;0&quot; = &quot;lightblue&quot;, &quot;1&quot; = &quot;pink&quot;), labels = c(&quot;Not Food Insecure&quot;, &quot;Food Insecure&quot;)) +
@@ -391,6 +441,13 @@ library(plotly)</code></pre>
   ) +
   theme_minimal()</code></pre>
 <p><img src="data_analysis_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>This bar graph presents the distribution of food insecurity status
+among individuals in the dataset. The largest group, represented in
+light blue, comprises individuals who are not food insecure, with a
+count exceeding 4,000. The second-largest group, shown in pink,
+represents individuals who are food insecure, numbering slightly over
+2,000. A very small proportion, represented in gray, corresponds to
+missing data (NA) for food insecurity status.</p>
 <pre class="r"><code>cleaned_df = 
   cleaned_df |&gt;
   mutate(
@@ -400,9 +457,11 @@ library(plotly)</code></pre>
     genhlth = as.factor(genhlth)
   )</code></pre>
 </div>
+<div id="logistic-regression-models" class="section level2">
+<h2><strong>Logistic Regression Models</strong></h2>
 <div id="is-income-associated-with-food-insecure"
 class="section level3">
-<h3>is income associated with food insecure?</h3>
+<h3>Is income associated with food insecure?</h3>
 <pre class="r"><code>logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)</code></pre>
 <pre class="r"><code>summary(logit_income)</code></pre>
@@ -426,16 +485,59 @@ class="section level3">
 ## AIC: 7773.5
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))</code></pre>
-<pre><code>## Waiting for profiling to be done...</code></pre>
-<pre class="r"><code>print(exp_income)</code></pre>
-<pre><code>##                               OR     2.5 %    97.5 %
-## (Intercept)            1.1714559 1.0786807 1.2724394
-## income&gt;100,000         0.1656645 0.1441346 0.1900589
-## income50,000 ~ 100,000 0.3493678 0.3084065 0.3954708</code></pre>
+<pre class="r"><code>exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+knitr::kable(exp_income)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.1714559</td>
+<td align="right">1.0786807</td>
+<td align="right">1.2724394</td>
+</tr>
+<tr class="even">
+<td align="left">income&gt;100,000</td>
+<td align="right">0.1656645</td>
+<td align="right">0.1441346</td>
+<td align="right">0.1900589</td>
+</tr>
+<tr class="odd">
+<td align="left">income50,000 ~ 100,000</td>
+<td align="right">0.3493678</td>
+<td align="right">0.3084065</td>
+<td align="right">0.3954708</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (1.171) represents the
+baseline odds of being food insecure when income is less than 50,000.
+Since the 95% confidence interval (1.079–1.272) does not include 1, it
+is statistically significant.</p>
+<p>OR: Income &gt; 100,000: The odds ratio (0.166) indicates that
+individuals with an income greater than $100,000 have 83.4% lower odds
+of being food insecure compared to the income group less than 50,000.
+The 95% confidence interval (0.144–0.191) excludes 1, making this result
+statistically significant.</p>
+<p>Income 50,000–100,000: The odds ratio (0.349) indicates that
+individuals with an income between $50,000 and 100,000 have 65.1% lower
+odds of being food insecure compared to the income group less than
+50,000. The 95% confidence interval (0.308–0.395) excludes 1, so this
+result is also statistically significant.</p>
+<p>Statistical significance: confidence intervals of OR of both
+predictor levels exclude 1, indicating that they are statistically
+associated with food insecure.</p>
 </div>
-<div id="making-confident-interval" class="section level3">
-<h3>making confident interval</h3>
+<div id="confidence-interval" class="section level3">
+<h3>Confidence Interval</h3>
 <pre class="r"><code>ci_income = as.data.frame(exp_income)
 ci_income = 
   ci_income |&gt; 
@@ -454,7 +556,7 @@ ci_income =
 <p><img src="data_analysis_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
-<h3>is race associated with food insecure?</h3>
+<h3>Is race associated with food insecure?</h3>
 <pre class="r"><code>logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)</code></pre>
 <pre class="r"><code>summary(logit_race)</code></pre>
@@ -481,19 +583,89 @@ ci_income =
 ## AIC: 8205.8
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))</code></pre>
-<pre><code>## Waiting for profiling to be done...</code></pre>
-<pre class="r"><code>print(exp_race)</code></pre>
-<pre><code>##                                        OR     2.5 %    97.5 %
-## (Intercept)                     1.6000000 0.8482021 3.1174422
-## impraceAsian, Non-Hispanic      0.3182870 0.1573729 0.6250436
-## impraceBlack, Non-Hispanic      0.5275735 0.2660540 1.0145649
-## impraceHispanic                 0.8315217 0.4208835 1.5927584
-## impraceOther race, Non-Hispanic 0.4261364 0.1982346 0.8920934
-## impraceWhite, Non-Hispanic      0.2307309 0.1180762 0.4366356</code></pre>
+<pre class="r"><code>exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+knitr::kable(exp_race)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.6000000</td>
+<td align="right">0.8482021</td>
+<td align="right">3.1174422</td>
+</tr>
+<tr class="even">
+<td align="left">impraceAsian, Non-Hispanic</td>
+<td align="right">0.3182870</td>
+<td align="right">0.1573729</td>
+<td align="right">0.6250436</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceBlack, Non-Hispanic</td>
+<td align="right">0.5275735</td>
+<td align="right">0.2660540</td>
+<td align="right">1.0145649</td>
+</tr>
+<tr class="even">
+<td align="left">impraceHispanic</td>
+<td align="right">0.8315217</td>
+<td align="right">0.4208835</td>
+<td align="right">1.5927584</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceOther race, Non-Hispanic</td>
+<td align="right">0.4261364</td>
+<td align="right">0.1982346</td>
+<td align="right">0.8920934</td>
+</tr>
+<tr class="even">
+<td align="left">impraceWhite, Non-Hispanic</td>
+<td align="right">0.2307309</td>
+<td align="right">0.1180762</td>
+<td align="right">0.4366356</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (1.6) represents the odds
+of being food insecure for the reference group (American Indian/Alaskan
+Native). Since the 95% confidence interval (0.848–3.117) includes 1,
+this result is not statistically significant.</p>
+<p>OR: Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian,
+Non-Hispanic individuals have 68.2% lower odds of being food insecure
+compared to American Indians. The 95% confidence interval (0.157–0.625)
+excludes 1, so this result is statistically significant.</p>
+<p>Black, Non-Hispanic: The odds ratio (0.528) suggests that Black,
+Non-Hispanic individuals have 47.2% lower odds of being food insecure
+compared to American Indians. However, the 95% confidence interval
+(0.266–1.015) includes 1, making this result not statistically
+significant.</p>
+<p>Hispanic: The odds ratio (0.832) implies that Hispanic individuals
+have 16.8% lower odds of being food insecure compared to American
+Indians. Since the 95% confidence interval (0.421–1.593) includes 1,
+this result is not statistically significant.</p>
+<p>Other Race, Non-Hispanic: The odds ratio (0.426) indicates that
+individuals of Other Race, Non-Hispanic have 57.4% lower odds of being
+food insecure compared to American Indians. The 95% confidence interval
+(0.198–0.892) excludes 1, so this result is statistically
+significant.</p>
+<p>White, Non-Hispanic: The odds ratio (0.230) suggests that White,
+Non-Hispanic individuals have 77% lower odds of being food insecure
+compared to American Indians. The 95% confidence interval (0.118–0.437)
+excludes 1, so this result is statistically significant.</p>
+<p>Statistical significance: confidence intervals of OR of all predictor
+levels except Black and Hispanic exclude 1, indicating that these
+predictor levels are statistically significant.</p>
 </div>
-<div id="making-ci" class="section level3">
-<h3>making CI</h3>
+<div id="confidence-interval-1" class="section level3">
+<h3>Confidence Interval</h3>
 <pre class="r"><code>ci_race = as.data.frame(exp_race)
 ci_race = 
   ci_race |&gt; 
@@ -513,7 +685,7 @@ ci_race =
 </div>
 <div id="is-education-associated-with-food-insecure"
 class="section level3">
-<h3>is education associated with food insecure?</h3>
+<h3>Is education associated with food insecure?</h3>
 <pre class="r"><code>logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)</code></pre>
 <pre class="r"><code>summary(logit_edu)</code></pre>
@@ -538,17 +710,63 @@ class="section level3">
 ## AIC: 8189.7
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))</code></pre>
-<pre><code>## Waiting for profiling to be done...</code></pre>
-<pre class="r"><code>print(exp_edu)</code></pre>
-<pre><code>##                                       OR     2.5 %    97.5 %
-## (Intercept)                    0.3089064 0.2855101 0.3338597
-## educationHigh school or GED    2.4437471 2.1388216 2.7921872
-## educationLess than high school 5.2412235 4.1483184 6.6458564
-## educationSome post-high school 2.1192858 1.8644532 2.4088344</code></pre>
+<pre class="r"><code>exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+knitr::kable(exp_edu)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.3089064</td>
+<td align="right">0.2855101</td>
+<td align="right">0.3338597</td>
+</tr>
+<tr class="even">
+<td align="left">educationHigh school or GED</td>
+<td align="right">2.4437471</td>
+<td align="right">2.1388216</td>
+<td align="right">2.7921872</td>
+</tr>
+<tr class="odd">
+<td align="left">educationLess than high school</td>
+<td align="right">5.2412235</td>
+<td align="right">4.1483184</td>
+<td align="right">6.6458564</td>
+</tr>
+<tr class="even">
+<td align="left">educationSome post-high school</td>
+<td align="right">2.1192858</td>
+<td align="right">1.8644532</td>
+<td align="right">2.4088344</td>
+</tr>
+</tbody>
+</table>
+<p>Intercept: The odds ratio for the intercept (0.309) represents the
+odds of being food insecure for individuals in the reference group
+(College graduates).</p>
+<p>OR: High School or GED: The odds ratio (2.444) indicates that
+individuals with a high school diploma or GED have 144.4% higher odds of
+being food insecure compared to college graduates.</p>
+<p>Less than High School: The odds ratio (5.241) suggests that
+individuals with less than a high school education have 424.1% higher
+odds of being food insecure compared to college graduates.</p>
+<p>Some Post-High School: The odds ratio (2.119) indicates that
+individuals with some post-high school education have 111.9% higher odds
+of being food insecure compared to college graduates.</p>
+<p>Statistical significance: confidence intervals of OR of all three
+predictor levels exclude 1, making these results statistically
+significant.</p>
 </div>
-<div id="making-ci-1" class="section level3">
-<h3>making CI</h3>
+<div id="confidence-interval-2" class="section level3">
+<h3>Confidence Interval</h3>
 <pre class="r"><code>ci_edu = as.data.frame(exp_edu)
 ci_edu = 
   ci_edu |&gt; 
@@ -568,7 +786,7 @@ ci_edu =
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
 class="section level3">
-<h3>are race, education, and income associated with food insecure?</h3>
+<h3>Are race, education, and income associated with food insecure?</h3>
 <pre class="r"><code>logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)</code></pre>
 <pre class="r"><code>summary(logit_all)</code></pre>
@@ -601,24 +819,108 @@ class="section level3">
 ## AIC: 7578.1
 ## 
 ## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))</code></pre>
-<pre><code>## Waiting for profiling to be done...</code></pre>
-<pre class="r"><code>print(exp_all)</code></pre>
-<pre><code>##                                        OR     2.5 %    97.5 %
-## (Intercept)                     1.7021419 0.8647852 3.4657343
-## educationHigh school or GED     1.4008627 1.2075946 1.6242264
-## educationLess than high school  1.6716442 1.2863633 2.1766833
-## educationSome post-high school  1.4909056 1.2977759 1.7120630
-## income&gt;100,000                  0.2276472 0.1955464 0.2646223
-## income50,000 ~ 100,000          0.4372422 0.3831784 0.4986752
-## impraceAsian, Non-Hispanic      0.5425790 0.2575868 1.1083291
-## impraceBlack, Non-Hispanic      0.6996939 0.3394655 1.3960468
-## impraceHispanic                 0.9753822 0.4750575 1.9375440
-## impraceOther race, Non-Hispanic 0.6039454 0.2687842 1.3203476
-## impraceWhite, Non-Hispanic      0.3859749 0.1900830 0.7577675</code></pre>
+<pre class="r"><code>exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+knitr::kable(exp_all)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.7021419</td>
+<td align="right">0.8647852</td>
+<td align="right">3.4657343</td>
+</tr>
+<tr class="even">
+<td align="left">educationHigh school or GED</td>
+<td align="right">1.4008627</td>
+<td align="right">1.2075946</td>
+<td align="right">1.6242264</td>
+</tr>
+<tr class="odd">
+<td align="left">educationLess than high school</td>
+<td align="right">1.6716442</td>
+<td align="right">1.2863633</td>
+<td align="right">2.1766833</td>
+</tr>
+<tr class="even">
+<td align="left">educationSome post-high school</td>
+<td align="right">1.4909056</td>
+<td align="right">1.2977759</td>
+<td align="right">1.7120630</td>
+</tr>
+<tr class="odd">
+<td align="left">income&gt;100,000</td>
+<td align="right">0.2276472</td>
+<td align="right">0.1955464</td>
+<td align="right">0.2646223</td>
+</tr>
+<tr class="even">
+<td align="left">income50,000 ~ 100,000</td>
+<td align="right">0.4372422</td>
+<td align="right">0.3831784</td>
+<td align="right">0.4986752</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceAsian, Non-Hispanic</td>
+<td align="right">0.5425790</td>
+<td align="right">0.2575868</td>
+<td align="right">1.1083291</td>
+</tr>
+<tr class="even">
+<td align="left">impraceBlack, Non-Hispanic</td>
+<td align="right">0.6996939</td>
+<td align="right">0.3394655</td>
+<td align="right">1.3960468</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceHispanic</td>
+<td align="right">0.9753822</td>
+<td align="right">0.4750575</td>
+<td align="right">1.9375440</td>
+</tr>
+<tr class="even">
+<td align="left">impraceOther race, Non-Hispanic</td>
+<td align="right">0.6039454</td>
+<td align="right">0.2687842</td>
+<td align="right">1.3203476</td>
+</tr>
+<tr class="odd">
+<td align="left">impraceWhite, Non-Hispanic</td>
+<td align="right">0.3859749</td>
+<td align="right">0.1900830</td>
+<td align="right">0.7577675</td>
+</tr>
+</tbody>
+</table>
+<p>Statistical Significant Predictors:</p>
+<p>Education: Individuals with a high school diploma or GED have 40.1%
+higher odds of being food insecure compared to college graduates.
+Individuals with less than a high school education have 67.1% higher
+odds of being food insecure compared to college graduates. Individuals
+with some post-high school education have 49.1% higher odds of being
+food insecure compared to college graduates.</p>
+<p>Income: Individuals earning over 100,000 have 77.2% lower odds of
+being food insecure compared to those earning ≤ $50,000. Individuals
+earning between $50,000 and $100,000 have 56.3% lower odds of being food
+insecure compared to those earning ≤ $50,000.</p>
+<p>Race/Ethnicity: White, Non-Hispanic individuals have 61.4% lower odds
+of being food insecure compared to American Indians.</p>
+<p>Summary: Education and income levels show significant associations
+with food insecurity, with lower education and income levels increasing
+odds of food insecurity.Among racial/ethnic groups, only White,
+Non-Hispanic individuals show significantly lower odds of food
+insecurity compared to American Indians.</p>
 </div>
-<div id="making-ci-2" class="section level3">
-<h3>making CI</h3>
+<div id="confidence-interval-3" class="section level3">
+<h3>Confidence Interval</h3>
 <pre class="r"><code>ci_all = as.data.frame(exp_all)
 ci_all = 
   ci_all |&gt; 
@@ -638,7 +940,7 @@ ci_all =
 </div>
 <div id="is-food-insecure-associated-with-general-health"
 class="section level3">
-<h3>is food insecure associated with general health?</h3>
+<h3>Is food insecure associated with general health?</h3>
 <pre class="r"><code>mlogit_health = 
   vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = &quot;Fair&quot;))</code></pre>
 <pre class="r"><code>summary(mlogit_health)</code></pre>
@@ -681,20 +983,116 @@ class="section level3">
 ## Reference group is level  3  of the response</code></pre>
 <pre class="r"><code>exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
 
-print(exp_health)</code></pre>
-<pre><code>##                         OR       2.5 %     97.5 %
-## (Intercept):1   0.01010101 0.003772419 0.02704641
-## (Intercept):2   2.35858586 2.097048973 2.65274074
-## (Intercept):3   3.25252525 2.906100626 3.64024577
-## (Intercept):4   0.19696970 0.154509167 0.25109877
-## (Intercept):5   0.01262626 0.005226491 0.03050278
-## (Intercept):6   4.52777778 4.060902015 5.04832954
-## food_insecure:1 0.26829268 0.029852690 2.41120527
-## food_insecure:2 0.32516843 0.267715812 0.39495056
-## food_insecure:3 0.66573246 0.563321566 0.78676149
-## food_insecure:4 1.59599750 1.158793351 2.19815553
-## food_insecure:5 0.21463415 0.024960941 1.84559617
-## food_insecure:6 0.39144097 0.331001377 0.46291660</code></pre>
+knitr::kable(exp_health)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept):1</td>
+<td align="right">0.0101010</td>
+<td align="right">0.0037724</td>
+<td align="right">0.0270464</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):2</td>
+<td align="right">2.3585859</td>
+<td align="right">2.0970490</td>
+<td align="right">2.6527407</td>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept):3</td>
+<td align="right">3.2525253</td>
+<td align="right">2.9061006</td>
+<td align="right">3.6402458</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):4</td>
+<td align="right">0.1969697</td>
+<td align="right">0.1545092</td>
+<td align="right">0.2510988</td>
+</tr>
+<tr class="odd">
+<td align="left">(Intercept):5</td>
+<td align="right">0.0126263</td>
+<td align="right">0.0052265</td>
+<td align="right">0.0305028</td>
+</tr>
+<tr class="even">
+<td align="left">(Intercept):6</td>
+<td align="right">4.5277778</td>
+<td align="right">4.0609020</td>
+<td align="right">5.0483295</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:1</td>
+<td align="right">0.2682927</td>
+<td align="right">0.0298527</td>
+<td align="right">2.4112053</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:2</td>
+<td align="right">0.3251684</td>
+<td align="right">0.2677158</td>
+<td align="right">0.3949506</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:3</td>
+<td align="right">0.6657325</td>
+<td align="right">0.5633216</td>
+<td align="right">0.7867615</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:4</td>
+<td align="right">1.5959975</td>
+<td align="right">1.1587934</td>
+<td align="right">2.1981555</td>
+</tr>
+<tr class="odd">
+<td align="left">food_insecure:5</td>
+<td align="right">0.2146341</td>
+<td align="right">0.0249609</td>
+<td align="right">1.8455962</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure:6</td>
+<td align="right">0.3914410</td>
+<td align="right">0.3310014</td>
+<td align="right">0.4629166</td>
+</tr>
+</tbody>
+</table>
+<p>OR: Individuals who are food insecure have 73.2% lower odds of
+reporting “Poor” health compared to “Fair” health when compared to
+non-food insecure individuals. Food-insecure individuals have 67.4%
+lower odds of reporting “Good” health compared to “Fair” health than
+non-food insecure individuals. Food-insecure individuals have 33.4%
+lower odds of reporting “Very Good” health compared to “Fair” health
+than non-food insecure individuals. Food-insecure individuals have 59.6%
+higher odds of reporting “Excellent” health compared to “Fair” health
+than non-food insecure individuals.</p>
+<p>Statistical significance: confidence intervals of OR of “Good”, “Very
+Good”, and “Excellent” health group exclude 1, indicating that these
+predictor levels are statistically significant.</p>
+<p>This analysis emphasizes that food insecurity significantly affects
+perceived health levels. The result that individuals with food insecure
+have a higher odds ratio to report “Excellent” health compared to “Fair”
+health is very weird. The result may be influenced by individuals’
+perceptions, cultural norms, and personal experiences. Furthermore,
+individuals who recently are experiencing food insecurity might still
+maintain good physical health but are at the early stages of economic or
+food-related struggles, leading them to perceive their health as
+excellent. Therefore, the limitation of this regression is excluding
+confouders.</p>
+</div>
+<div id="confidence-interval-4" class="section level3">
+<h3>Confidence Interval</h3>
 <pre class="r"><code>coefs &lt;- coef(summary(mlogit_health))
 odds_ratios &lt;- exp(coefs[, &quot;Estimate&quot;]) # Convert coefficients to odds ratios
 lower_ci &lt;- exp(coefs[, &quot;Estimate&quot;] - 1.96 * coefs[, &quot;Std. Error&quot;]) # Lower 95% CI
@@ -721,6 +1119,7 @@ ci_data &lt;- data.frame(
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))</code></pre>
 <p><img src="data_analysis_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+</div>
 </div>
 
 
@@ -756,6 +1155,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

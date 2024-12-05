@@ -1,7 +1,10 @@
 ---
-title: "ds_final"
-output: html_document
-date: "2024-11-20"
+title: "Data Analysis"
+output: 
+  html_document:
+    toc: false
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -10,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse)
 library(haven)
 library(readxl)
@@ -18,7 +22,7 @@ library(sf)
 library(VGAM)
 ```
 
-### brfss dataset 
+**Data Importing, Cleaning and Selecting**
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
   janitor::clean_names()
@@ -28,15 +32,21 @@ brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
 zipcode = 
   brfss_22 |>
   filter(zipcode1 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
+
+head(zipcode)
 ```
 
 ```{r}
 county = 
   brfss_22 |>
   filter(ctycode2 != "Data do not meet the criteria for statistical reliability, data quality or confidentiality (data are suppressed)")
-```
 
-### subset dataset cleaning
+head(county)
+```
+· we try to filter people who live in NYC, but all data are confidential. 
+
+
+**Subset Dataset Cleaning**
 ```{r}
 cleaned_df = 
   brfss_22 |>
@@ -70,6 +80,19 @@ cleaned_df =
 
 ```
 
+### Cleaning Step:
+· First filtering all valid values in the following variables: imprace, educag, incomg1, strsmeal_sa, genhlth.
+
+· Only selecting these variables that we will use in the following steps because the original dataset is too       large. It is easy to make a subset dataset. 
+
+· After first step filtering, we re-categorize income3, educag, and strsmeal_sa. The most noticeable change is     re-categorizing strsmeal_sa into a new variable "food-insecure". We combine rarely, sometimes, usually, and      always into "1" to represent food insecure challenge that individuals face, and contain never as 0 to represent   no food insecure. 
+
+· Last, we remove all missing values from the sub dataset. 
+
+
+
+**Figures Making**
+
 ```{r}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
@@ -82,6 +105,11 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 ```
 
+
+
+This bar graph illustrates the distribution of race/ethnicity in the dataset. The categories include American Indian/Alaskan Native, Asian, Black, Hispanic, Other Race, and White, all specified as Non-Hispanic except for the Hispanic group. Among these groups, White, Non-Hispanic individuals dominate, with the highest count exceeding 6,000. The second most prevalent group is Hispanic, followed by Black, Non-Hispanic, while Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly smaller counts. The American Indian/Alaskan Native, Non-Hispanic category represents the smallest group. 
+
+
 ```{r}
 ggplot(cleaned_df, aes(x = "", fill = education)) +
   geom_bar(width = 1, stat = "count") +
@@ -93,6 +121,12 @@ ggplot(cleaned_df, aes(x = "", fill = education)) +
   theme_void() +
   theme(legend.position = "right")
 ```
+
+
+
+
+This pie chart shows the distribution of education levels within a dataset. The largest portion of the chart is represented by college graduates, shown in red, indicating that a significant proportion of individuals have completed higher education. The second-largest category, represented in purple, corresponds to individuals with some post-high school education. High school graduates or those with a GED, shown in green, form a smaller segment, while the smallest portion of the chart, in teal, represents individuals with less than a high school education. 
+
 
 ```{r}
 ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
@@ -108,6 +142,11 @@ ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insec
 ```
 
 
+
+
+This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
+
+
 ```{r}
 cleaned_df = 
   cleaned_df |>
@@ -120,7 +159,9 @@ cleaned_df =
 ```
 
 
-### is income associated with food insecure? 
+## **Logistic Regression Models**
+
+### Is income associated with food insecure? 
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
@@ -133,10 +174,21 @@ summary(logit_income)
 ```{r}
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
 
-print(exp_income)
+knitr::kable(exp_income)
 ```
 
-### making confident interval
+Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. Since the 95% confidence interval (1.079–1.272) does not include 1, it is statistically significant.
+
+OR: 
+   Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. The 95% confidence interval (0.144–0.191) excludes 1, making this result statistically significant.
+
+   Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. The 95% confidence interval (0.308–0.395) excludes 1, so this result is also statistically significant.
+   
+Statistical significance: confidence intervals of OR of both predictor levels exclude 1, indicating that they are statistically associated with food insecure. 
+
+
+
+### Confidence Interval
 ```{r}
 ci_income = as.data.frame(exp_income)
 ci_income = 
@@ -160,7 +212,7 @@ ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 
 
 
-### is race associated with food insecure?
+### Is race associated with food insecure?
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
@@ -173,10 +225,27 @@ summary(logit_race)
 ```{r}
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
 
-print(exp_race)
+knitr::kable(exp_race)
 ```
 
-### making CI
+Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). Since the 95% confidence interval (0.848–3.117) includes 1, this result is not statistically significant.
+
+OR:
+   Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.157–0.625) excludes 1, so this result is statistically significant.
+
+   Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians. However, the 95% confidence interval (0.266–1.015) includes 1, making this result not statistically significant.
+
+   Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. Since the 95% confidence interval (0.421–1.593) includes 1, this result is not statistically significant.
+
+   Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.198–0.892) excludes 1, so this result is statistically significant.
+
+   White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. The 95% confidence interval (0.118–0.437) excludes 1, so this result is statistically significant.
+
+Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
+
+
+
+### Confidence Interval
 ```{r}
 ci_race = as.data.frame(exp_race)
 ci_race = 
@@ -202,7 +271,7 @@ ggplot(ci_race, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 
 
 
-### is education associated with food insecure?
+### Is education associated with food insecure?
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
@@ -215,10 +284,24 @@ summary(logit_edu)
 ```{r}
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
 
-print(exp_edu)
+knitr::kable(exp_edu)
 ```
 
-### making CI
+
+Intercept: The odds ratio for the intercept (0.309) represents the odds of being food insecure for individuals in the reference group (College graduates). 
+
+OR:
+   High School or GED: The odds ratio (2.444) indicates that individuals with a high school diploma or GED have 144.4% higher odds of being food insecure compared to college graduates. 
+
+   Less than High School: The odds ratio (5.241) suggests that individuals with less than a high school education have 424.1% higher odds of being food insecure compared to college graduates. 
+
+   Some Post-High School: The odds ratio (2.119) indicates that individuals with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates. 
+
+Statistical significance: confidence intervals of OR of all three predictor levels exclude 1, making these results statistically significant. 
+
+
+
+### Confidence Interval
 ```{r}
 ci_edu = as.data.frame(exp_edu)
 ci_edu = 
@@ -242,7 +325,7 @@ ggplot(ci_edu, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 
 
 
-### are race, education, and income associated with food insecure?
+### Are race, education, and income associated with food insecure?
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
@@ -255,10 +338,31 @@ summary(logit_all)
 ```{r}
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
 
-print(exp_all)
+knitr::kable(exp_all)
 ```
 
-### making CI
+Statistical Significant Predictors: 
+
+Education:
+   Individuals with a high school diploma or GED have 40.1% higher odds of being food insecure compared to college graduates. 
+   Individuals with less than a high school education have 67.1% higher odds of being food insecure compared to college graduates. 
+   Individuals with some post-high school education have 49.1% higher odds of being food insecure compared to college graduates. 
+    
+Income: 
+   Individuals earning over 100,000 have 77.2% lower odds of being food insecure compared to those earning ≤ $50,000.
+   Individuals earning between $50,000 and $100,000 have 56.3% lower odds of being food insecure compared to those earning ≤ $50,000. 
+   
+Race/Ethnicity:
+   White, Non-Hispanic individuals have 61.4% lower odds of being food insecure compared to American Indians.
+   
+Summary: 
+   Education and income levels show significant associations with food insecurity, with lower education and income levels increasing odds of food insecurity.Among racial/ethnic groups, only White, Non-Hispanic individuals show significantly lower odds of food insecurity compared to American Indians.
+   
+
+
+
+
+### Confidence Interval
 ```{r}
 ci_all = as.data.frame(exp_all)
 ci_all = 
@@ -282,7 +386,7 @@ ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 
 
 
-### is food insecure associated with general health?
+### Is food insecure associated with general health?
 ```{r}
 mlogit_health = 
   vglm(genhlth ~ food_insecure, data = cleaned_df, family = multinomial(refLevel = "Fair"))
@@ -295,9 +399,20 @@ summary(mlogit_health)
 ```{r}
 exp_health = exp(cbind(OR=coef(mlogit_health),confint(mlogit_health)))
 
-print(exp_health)
+knitr::kable(exp_health)
 ```
 
+OR: 
+  Individuals who are food insecure have 73.2% lower odds of reporting "Poor" health compared to "Fair" health when compared to non-food insecure individuals.
+  Food-insecure individuals have 67.4% lower odds of reporting "Good" health compared to "Fair" health than non-food insecure individuals.
+  Food-insecure individuals have 33.4% lower odds of reporting "Very Good" health compared to "Fair" health than non-food insecure individuals.
+  Food-insecure individuals have 59.6% higher odds of reporting "Excellent" health compared to "Fair" health than non-food insecure individuals.
+
+Statistical significance: confidence intervals of OR of "Good", "Very Good", and "Excellent" health group exclude 1, indicating that these predictor levels are statistically significant. 
+
+This analysis emphasizes that food insecurity significantly affects perceived health levels. The result that individuals with food insecure have a higher odds ratio to report "Excellent" health compared to "Fair" health is very weird. The result may be influenced by individuals' perceptions, cultural norms, and personal experiences. Furthermore, individuals who recently are experiencing food insecurity might still maintain good physical health but are at the early stages of economic or food-related struggles, leading them to perceive their health as excellent. Therefore, the limitation of this regression is excluding confouders. 
+
+### Confidence Interval
 ```{r}
 coefs <- coef(summary(mlogit_health))
 odds_ratios <- exp(coefs[, "Estimate"]) # Convert coefficients to odds ratios
