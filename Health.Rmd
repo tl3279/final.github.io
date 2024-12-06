@@ -2,8 +2,9 @@
 title: "Data Analysis"
 output: 
   html_document:
-    toc: false
-    toc_float: true
+    toc: true
+    toc_float:
+      smooth_scroll: true
     code_folding: hide
 ---
 
@@ -14,7 +15,7 @@ library(haven)
 library(VGAM)
 ```
 
-
+## Data Importing and Cleaning
 Visit [report](report.html) for detailed steps on how the data is cleaned.
 ```{r}
 brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
@@ -67,8 +68,10 @@ cleaned_df =
 
 ```
 
+We are interested in understanding the associations between food insecurity and its potential impacts on various health outcomes, including general health, physical health, mental health, and diabetes. 
 
-## Is Food Insecure Associated With General Health?
+## General Health
+### Odds Ratio
 ```{r}
 logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -77,7 +80,6 @@ exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 
 knitr::kable(exp_health)
 ```
-
 
 ### Confidence Interval
 
@@ -104,8 +106,8 @@ OR interpretation: Individuals who are food insecure have approximately 53% lowe
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
 
-## Is Food Insecure Associated With Physical Health?
-
+## Physical Health
+### Odds Ratio
 ```{r}
 logit_physical = 
   glm(physical_health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -139,8 +141,8 @@ OR interpretation: Individuals who are food insecure have approximately 37.7% lo
 Therefore, food insecure is associated with physical health.
 
 
-## Is Food Insecure Associated With Mental Health?
-
+## Mental Health
+### Odds Ratio
 ```{r}
 logit_mental = 
   glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -177,8 +179,8 @@ Therefore, food insecure is associated with mental health.
 Results show that food insecure have impacts on both individuals' physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition. 
 
 
-## Is Food Insecure Associated With Diabetes
-
+## Diabetes
+### Odds Ratio
 ```{r}
 logit_diabete = 
   glm(diabete ~ food_insecure, data = cleaned_df, family = binomial)

@@ -2,8 +2,9 @@
 title: "Project Report"
 output: 
   html_document:
-    toc: false
-    toc_float: true
+    toc: true
+    toc_float:
+      smooth_scroll: true
     code_folding: hide
 ---
 
@@ -201,7 +202,7 @@ Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Beha
 
 
 ## Identifying Food Desert   
-Food deserts are areas with limited access to affordable and nutritious food options, particularly fresh fruits and vegetables. To identify food deserts, we examined the distribution of retail stores across New York City. This analysis combines population density data with the spatial distribution of retail stores. To enhance visualization and clarity, the analysis is divided into two geographic regions: **Manhattan + Bronx** and **Brooklyn + Queens + Staten Island.**   
+Food deserts are areas with limited access to affordable and nutritious food options, particularly fresh fruits and vegetables. To identify food deserts, we examined the distribution of retail stores across New York City. This analysis combines population density data with the spatial distribution of retail stores. To enhance visualization and clarity, the analysis for the distribution of retail stores is divided into two geographic regions: **Manhattan + Bronx** and **Brooklyn + Queens + Staten Island.**   
 
 ### NYC Population Distribution
 ```{r fig.height=8,fig.width=8, warning = FALSE, message = FALSE}
@@ -226,9 +227,6 @@ The map visualizes the population distribution across New York City by census tr
 
 Manhattan exhibits densely populated tracts, particularly in the central and lower regions, which are major commercial and residential hubs. Parts of Brooklyn and Queens also show significant population concentrations, particularly in areas near transportation centers and urban neighborhoods. Staten Island generally has lower population density, especially in its southern and central tracts, reflecting its more suburban nature. Peripheral regions in Queens and the Bronx have relatively sparse populations compared to urban centers.
 
-## Identifying Food Desert
-
-Food deserts are areas with limited access to affordable and nutritious food options, particularly fresh fruits and vegetables. To identify food deserts, we examined the distribution of retail stores across New York City. This analysis combines population density data with the spatial distribution of retail stores. To enhance visualization and clarity, the analysis is divided into two geographic regions: **Manhattan + Bronx** and **Brooklyn + Queens + Staten Island.**
 
 ### Manhattan and Bronx
 
@@ -459,7 +457,7 @@ ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insec
 This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
 
 ### Is Income Associated With Food Insecure? 
-
+#### Odds Ratio
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
@@ -469,6 +467,26 @@ exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
 rownames(exp_income) = gsub("income", "", rownames(exp_income))
 
 knitr::kable(exp_income)
+```
+
+#### Confidence Interval
+```{r}
+ci_income = as.data.frame(exp_income)
+ci_income = 
+  ci_income |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Income Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_income
 ```
 
 Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. 
@@ -484,7 +502,7 @@ Statistical significance: confidence intervals of OR of both predictor levels ex
 
 
 ### Is Race Associated With Food Insecure?
-
+#### Odds Ratio
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
@@ -494,6 +512,26 @@ exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
 rownames(exp_race) = gsub("imprace", "", rownames(exp_race))
 
 knitr::kable(exp_race)
+```
+
+#### Confidence Interval
+```{r}
+ci_race = as.data.frame(exp_race)
+ci_race = 
+  ci_race |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Race Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_race
 ```
 
 Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). 
@@ -514,7 +552,7 @@ Statistical significance: confidence intervals of OR of all predictor levels exc
 
 
 ### Is Education Associated With Food Insecure?
-
+#### Odds Ratio
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
@@ -524,6 +562,26 @@ exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
 rownames(exp_edu) = gsub("education", "", rownames(exp_edu))
 
 knitr::kable(exp_edu)
+```
+
+#### Confidence Interval
+```{r}
+ci_edu = as.data.frame(exp_edu)
+ci_edu = 
+  ci_edu |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Education Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_edu
 ```
 
 Intercept: The odds ratio for the intercept (0.309) represents the odds of being food insecure for individuals in the reference group (College graduates). 
@@ -541,7 +599,7 @@ Statistical significance: confidence intervals of OR of all three predictor leve
 
 
 ### Are Race, Education, and Income Associated With Food Insecure?
-
+#### Odds Ratio
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
@@ -553,6 +611,25 @@ rownames(exp_all) = gsub("education|income|imprace", "", rownames(exp_all))
 knitr::kable(exp_all)
 ```
 
+#### Confidence Interval
+```{r}
+ci_all = as.data.frame(exp_all)
+ci_all = 
+  ci_all |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Categories"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_all
+```
 
 Statistical Significant Predictors: 
 
@@ -580,6 +657,7 @@ Summary:
 ## Regression Analysis - Health
 
 ### Is Food Insecure Associated With General Health?
+#### Odds Ratio
 ```{r}
 logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -589,12 +667,32 @@ exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 knitr::kable(exp_health)
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 53% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
+#### Confidence Interval
+```{r}
+ci_general = as.data.frame(exp_health)
+ci_general = 
+  ci_general |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "General Health Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_general
+```
+
+Individuals who are food insecure have approximately 53% lower odds (OR = 0.47, 95% CI: 0.39–0.56) of having good health compared to those who are not food insecure, holding all else constant. This suggests that food insecurity is significantly associated with worse general health outcomes. Food insecurity emerges as a strong risk factor for poor general health. This could be due to the limited availability of nutritious food, leading to a higher prevalence of diet-related illnesses such as obesity, hypertension, and chronic conditions. 
+
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
-
 ### Is Food Insecure Associated With Physical Health?
-
+#### Odds Ratio
 ```{r}
 logit_physical = 
   glm(physical_health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -604,10 +702,30 @@ exp_physical = exp(cbind(OR=coef(logit_physical),confint(logit_physical)))
 knitr::kable(exp_physical)
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 37.7% lower odds of having good physical health compared to those who are not food insecure, holding all else constant. Therefore, food insecure is associated with physical health.
+#### Confidence Interval
+```{r}
+ci_physical = as.data.frame(exp_physical)
+ci_physical = 
+  ci_physical |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Physical Health Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_physical
+```
+
+Individuals who are food insecure have approximately 37.7% lower odds (OR = 0.62, 95% CI: 0.55–0.70) of having good physical health compared to those who are not food insecure, holding all else constant. The results are statistically significant, indicating a robust relationship between food insecurity and physical health. Poor physical health among food-insecure individuals may result from inadequate nutrition, increased stress levels, or reduced access to healthcare resources.
 
 ### Is Food Insecure Associated With Mental Health?
-
+#### Odds Ratio
 ```{r}
 logit_mental = 
   glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -617,13 +735,32 @@ exp_mental = exp(cbind(OR=coef(logit_mental),confint(logit_mental)))
 knitr::kable(exp_mental)
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 49.9% lower odds of having good mental health compared to those who are not food insecure, holding all else constant. Therefore, food insecure is associated with mental health.
+#### Confidence Interval
+```{r}
+ci_mental = as.data.frame(exp_mental)
+ci_mental = 
+  ci_mental |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Physical Health Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_mental
+```
 
-Results show that food insecure have impacts on both individuals’ physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition.
+Individuals who are food insecure have approximately 49.9% lower odds (OR = 0.50, 95% CI: 0.44–0.57) of having good mental health compared to those who are not food insecure, holding all else constant. This strong association highlights the significant mental health burden food insecurity places on individuals.
 
+The stress of uncertain food access likely exacerbates mental health conditions, including anxiety and depression. Food insecurity could also interact with other socioeconomic stressors, amplifying its effects on mental health. Results show that food insecure have impacts on both individuals’ physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition.
 
 ### Is Food Insecure Associated With Diabetes
-
+#### Odds Ratio
 ```{r}
 logit_diabete = 
   glm(diabete ~ food_insecure, data = cleaned_df, family = binomial)
@@ -633,8 +770,27 @@ exp_diabete = exp(cbind(OR=coef(logit_diabete),confint(logit_diabete)))
 knitr::kable(exp_diabete)
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 27.4% higher odds of having diabetes compared to those who are not food insecure, holding all else constant. Therefore, food insecure is associated with diabetes.
+#### Confidence Interval
+```{r}
+ci_diabete = as.data.frame(exp_diabete)
+ci_diabete = 
+  ci_diabete |> 
+  rownames_to_column("Variable") |> 
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  labs(
+    title = "Odds Ratios with 95% Confidence Intervals",
+    x = "Odds Ratio (OR)",
+    y = "Physical Health Category"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_diabete
+```
 
+Individuals who are food insecure have approximately 27.4% higher odds (OR = 1.27, 95% CI: 1.07–1.52) of having diabetes compared to those who are not food insecure, holding all else constant. This association indicates a notable link between food insecurity and diet-related chronic diseases. Food insecurity often leads to reliance on low-cost, calorie-dense but nutrient-poor foods, increasing the risk of diabetes and other metabolic conditions.
 
 ## Discussion
 
@@ -653,18 +809,47 @@ The analysis underscores the need for tailored policies and interventions to add
 
 Efforts could include incentivizing grocery stores to open in underserved areas, enhancing transportation options to food hubs, and supporting local farmers' markets to improve accessibility to nutritious food in food deserts. These actions could help bridge the food access gap and promote equitable food security across New York City.
 
-### Socioeconomic Factors
+### Regression Analysis
+#### Socioeconomic Factors
 The regression analysis highlights the significant associations between food insecurity and key predictors, including income, race/ethnicity, education, and self-rated health. 
 Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 83.4% lower odds, and those earning between $50,000 and $100,000 have 65.1% lower odds of food insecurity compared to those earning less than $50,000. 
+
 Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have the lowest odds of food insecurity (77% lower), followed by Asian, Non-Hispanic individuals (68.2% lower), and Other Race, Non-Hispanic individuals (57.4% lower) compared to American Indians. Associations between levels of Black, Non-Hispanic and Hispanic individuals and food insecure are not significant. 
+
 Lower education levels are strongly associated with higher odds of food insecurity. Individuals with less than a high school education have 424.1% higher odds, those with a high school diploma or GED have 144.4% higher odds, and those with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates.
 
 
-### Health
-These findings highlight the multifaceted impact of food insecurity on both physical and mental health, as well as its association with diabetes. The results suggest that individuals experiencing food insecurity have significantly lower odds of maintaining good physical and mental health, with 37.7% and 49.9% lower odds, respectively. This emphasizes the detrimental effect of food insecurity on overall well-being, particularly its disproportionate impact on mental health. The mental strain associated with food insecurity, such as stress and anxiety over limited access to nutritious food, could be a key driver of this disparity. Additionally, the 27.4% higher odds of developing diabetes among food-insecure individuals underscore the potential physiological consequences of inadequate nutrition. Food insecurity often limits access to healthy, nutrient-rich foods, forcing individuals to rely on cheaper, calorie-dense, and nutritionally poor options, which can increase the risk of metabolic disorders like diabetes. Therefore, these findings suggest a cyclical relationship in which food insecurity exacerbates both physical and mental health outcomes, ultimately increasing the risk of chronic conditions like diabetes. Addressing food insecurity through targeted interventions could therefore play a crucial role in improving health outcomes and breaking this cycle.
+#### Health
+These findings highlight the multifaceted impact of food insecurity on both physical and mental health, as well as its association with diabetes. The results suggest that individuals experiencing food insecurity have significantly lower odds of maintaining good physical and mental health, with 37.7% and 49.9% lower odds, respectively. This emphasizes the detrimental effect of food insecurity on overall well-being, particularly its disproportionate impact on mental health. The mental strain associated with food insecurity, such as stress and anxiety over limited access to nutritious food, could be a key driver of this disparity. Additionally, the 27.4% higher odds of developing diabetes among food-insecure individuals underscore the potential physiological consequences of inadequate nutrition. Food insecurity often limits access to healthy, nutrient-rich foods, forcing individuals to rely on cheaper, calorie-dense, and nutritionally poor options, which can increase the risk of metabolic disorders like diabetes. 
 
+These findings underscore how limited access to nutritious food exacerbates health disparities, disproportionately affecting vulnerable populations. The relationship between food insecurity and poor health outcomes is likely driven by a combination of factors, including reduced access to affordable, nutrient-rich foods, increased stress, and limited healthcare access. For instance, the reliance on calorie-dense, nutrient-poor diets due to financial constraints may contribute to both physical health conditions and poor mental health outcomes.
+
+### Implications for Policy and Practice
+Here, we propose potential policies and practices that can serve as solutions to address the identified issues.   
+
+#### Food Desert
+- Incentivize Grocery Store Development: Provide grants, tax breaks, or low-interest loans to encourage grocery stores and supermarkets to establish locations in underserved areas. Support community-owned grocery stores or cooperatives in areas where large chains may not invest.   
+- Subsidize Healthy Food Costs: Offer subsidies to farmers and retailers to reduce the cost of fresh produce and healthy foods for consumers.   
+- Community-Supported Agriculture: Expand Community-Supported Agriculture programs where residents subscribe to receive fresh produce from local farms. Create partnerships between urban farms and local schools, hospitals, and community centers to distribute healthy food.   
+
+#### Socioeconomic Disparities  
+- Increase Income Support Programs: Expand access to programs like the Supplemental Nutrition Assistance Program (SNAP) and provide higher benefit amounts to account for inflation and cost-of-living differences in high-expense areas.   
+- Affordable Housing Initiatives: Subsidize housing costs for low-income households to free up resources for nutritious food.   
+- Educational Equity: Increase funding for early childhood education and programs to improve high school graduation rates.   
+
+#### Health Disparities Linked to Food Insecurity    
+- Food Assistance Programs: Expand the reach and effectiveness of programs to ensure access to fresh, nutritious foods for low-income populations.   
+- Community-Based Solutions: Invest in community initiatives such as food banks, urban agriculture, and farmers' markets to increase the availability of affordable healthy foods in underserved areas.
+- Health and Nutrition Education: Provide education on nutrition and chronic disease prevention tailored to food-insecure populations.   
+- Healthcare Access: Enhance healthcare services for food-insecure individuals, including diabetes prevention and management programs.   
+
+By implementing comprehensive strategies such as expanding income support and food assistance programs, promoting affordable housing, and fostering educational equity, systemic socioeconomic disparities can be addressed. In parallel, community-based initiatives, health education, and improved healthcare access can mitigate health disparities tied to food insecurity, fostering equitable access to nutritious foods and improving overall well-being.
 
 ## Limitations
 
+The size of the Behavioral Risk Factor Surveillance System 2022 Dataset exceeded GitHub's 100MB file limit, requiring the use of `.gitignore` to manage it effectively. While this approach ensured the project's maintainability, it introduces potential replication challenges for others. To replicate the analysis, users must independently access the dataset using [this link](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data) and ensure compatibility with the project structure.
 
+Another limitation pertains to the geographic scope of the datasets used. While the analysis focused on food deserts in NYC, the regression analysis utilized statewide data, which may dilute the specificity of findings for NYC. Expanding the analysis to encompass all of New York State would require additional datasets with detailed spatial and socioeconomic attributes for rural and suburban areas, ensuring that trends and disparities beyond NYC are adequately captured.
+
+Conversely, applying regression analysis specifically to NYC would necessitate acquiring a more detailed and localized dataset. Such data should provide granular information on neighborhood-level demographics, health outcomes, and food access patterns to refine insights and better inform targeted interventions within the city.
 

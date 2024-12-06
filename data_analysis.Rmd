@@ -2,8 +2,9 @@
 title: "Data Analysis"
 output: 
   html_document:
-    toc: false
-    toc_float: true
+    toc: true
+    toc_float:
+      smooth_scroll: true
     code_folding: hide
 ---
 
@@ -14,7 +15,7 @@ library(haven)
 library(VGAM)
 ```
 
-**Regression Model**
+## Data Importing and Cleaning
 
 Visit [report](report.html) for detailed steps on how the data is cleaned.
 ```{r}
@@ -71,7 +72,7 @@ cleaned_df =
 
 
 ## Key Socioeconomic Factors Distribution
-
+### Race
 ```{r}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
@@ -88,7 +89,7 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
 
 This bar graph illustrates the distribution of race/ethnicity in the dataset. The categories include American Indian/Alaskan Native, Asian, Black, Hispanic, Other Race, and White, all specified as Non-Hispanic except for the Hispanic group. Among these groups, White, Non-Hispanic individuals dominate, with the highest count exceeding 6,000. The second most prevalent group is Hispanic, followed by Black, Non-Hispanic, while Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly smaller counts. The American Indian/Alaskan Native, Non-Hispanic category represents the smallest group. 
 
-
+### Education
 ```{r}
 ggplot(cleaned_df, aes(x = "", fill = education)) +
   geom_bar(width = 1, stat = "count") +
@@ -106,7 +107,7 @@ ggplot(cleaned_df, aes(x = "", fill = education)) +
 
 This pie chart shows the distribution of education levels within a dataset. The largest portion of the chart is represented by college graduates, shown in red, indicating that a significant proportion of individuals have completed higher education. The second-largest category, represented in purple, corresponds to individuals with some post-high school education. High school graduates or those with a GED, shown in green, form a smaller segment, while the smallest portion of the chart, in teal, represents individuals with less than a high school education. 
 
-
+### Food Insecurity
 ```{r}
 ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
   geom_bar() +
@@ -140,6 +141,7 @@ cleaned_df =
 ## Logistic Regression Models
 
 ### Is Income Associated With Food Insecure? 
+#### Odds Ratio
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
@@ -151,18 +153,7 @@ rownames(exp_income) = gsub("income", "", rownames(exp_income))
 knitr::kable(exp_income)
 ```
 
-Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. Since the 95% confidence interval (1.079–1.272) does not include 1, it is statistically significant.
-
-OR: 
-   Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. 
-
-   Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. 
-   
-Statistical significance: confidence intervals of OR of both predictor levels exclude 1, indicating that they are statistically associated with food insecure. 
-
-
-
-### Confidence Interval
+#### Confidence Interval
 ```{r}
 ci_income = as.data.frame(exp_income)
 ci_income = 
@@ -182,9 +173,18 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_income
 ```
 
+Intercept: The odds ratio for the intercept (1.171) represents the baseline odds of being food insecure when income is less than 50,000. Since the 95% confidence interval (1.079–1.272) does not include 1, it is statistically significant.
+
+OR: 
+   Income > 100,000: The odds ratio (0.166) indicates that individuals with an income greater than $100,000 have 83.4% lower odds of being food insecure compared to the income group less than 50,000. 
+
+   Income 50,000–100,000: The odds ratio (0.349) indicates that individuals with an income between $50,000 and 100,000 have 65.1% lower odds of being food insecure compared to the income group less than 50,000. 
+   
+Statistical significance: confidence intervals of OR of both predictor levels exclude 1, indicating that they are statistically associated with food insecure. 
 
 
 ### Is Race Associated With Food Insecure?
+#### Odds Ratio
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
@@ -196,24 +196,7 @@ rownames(exp_race) = gsub("imprace", "", rownames(exp_race))
 knitr::kable(exp_race)
 ```
 
-Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). 
-
-OR:
-   Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. 
-
-   Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians.
-
-   Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. 
-
-   Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. 
-
-   White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. 
-
-Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
-
-
-
-### Confidence Interval
+#### Confidence Interval
 ```{r}
 ci_race = as.data.frame(exp_race)
 ci_race = 
@@ -234,10 +217,24 @@ ci_race
 ```
 
 
+Intercept: The odds ratio for the intercept (1.6) represents the odds of being food insecure for the reference group (American Indian/Alaskan Native). 
 
+OR:
+   Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian, Non-Hispanic individuals have 68.2% lower odds of being food insecure compared to American Indians. 
+
+   Black, Non-Hispanic: The odds ratio (0.528) suggests that Black, Non-Hispanic individuals have 47.2% lower odds of being food insecure compared to American Indians.
+
+   Hispanic: The odds ratio (0.832) implies that Hispanic individuals have 16.8% lower odds of being food insecure compared to American Indians. 
+
+   Other Race, Non-Hispanic: The odds ratio (0.426) indicates that individuals of Other Race, Non-Hispanic have 57.4% lower odds of being food insecure compared to American Indians. 
+
+   White, Non-Hispanic: The odds ratio (0.230) suggests that White, Non-Hispanic individuals have 77% lower odds of being food insecure compared to American Indians. 
+
+Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
 
 
 ### Is Education Associated With Food Insecure?
+#### Odds Ratio
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
@@ -249,21 +246,7 @@ rownames(exp_edu) = gsub("education", "", rownames(exp_edu))
 knitr::kable(exp_edu)
 ```
 
-
-Intercept: The odds ratio for the intercept (0.309) represents the odds of being food insecure for individuals in the reference group (College graduates). 
-
-OR:
-   High School or GED: The odds ratio (2.444) indicates that individuals with a high school diploma or GED have 144.4% higher odds of being food insecure compared to college graduates. 
-
-   Less than High School: The odds ratio (5.241) suggests that individuals with less than a high school education have 424.1% higher odds of being food insecure compared to college graduates. 
-
-   Some Post-High School: The odds ratio (2.119) indicates that individuals with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates. 
-
-Statistical significance: confidence intervals of OR of all three predictor levels exclude 1, making these results statistically significant. 
-
-
-
-### Confidence Interval
+#### Confidence Interval
 ```{r}
 ci_edu = as.data.frame(exp_edu)
 ci_edu = 
@@ -283,9 +266,20 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_edu
 ```
 
+Intercept: The odds ratio for the intercept (0.309) represents the odds of being food insecure for individuals in the reference group (College graduates). 
+
+OR:
+   High School or GED: The odds ratio (2.444) indicates that individuals with a high school diploma or GED have 144.4% higher odds of being food insecure compared to college graduates. 
+
+   Less than High School: The odds ratio (5.241) suggests that individuals with less than a high school education have 424.1% higher odds of being food insecure compared to college graduates. 
+
+   Some Post-High School: The odds ratio (2.119) indicates that individuals with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates. 
+
+Statistical significance: confidence intervals of OR of all three predictor levels exclude 1, making these results statistically significant. 
 
 
 ### Are Race, Education, and Income Associated With Food Insecure?
+#### Odds Ratio
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
@@ -297,28 +291,7 @@ rownames(exp_all) = gsub("education|income|imprace", "", rownames(exp_all))
 knitr::kable(exp_all)
 ```
 
-Statistical Significant Predictors: 
-
-Education:
-   Individuals with a high school diploma or GED have 40.1% higher odds of being food insecure compared to college graduates. 
-   Individuals with less than a high school education have 67.1% higher odds of being food insecure compared to college graduates. 
-   Individuals with some post-high school education have 49.1% higher odds of being food insecure compared to college graduates. 
-    
-Income: 
-   Individuals earning over 100,000 have 77.2% lower odds of being food insecure compared to those earning ≤ $50,000.
-   Individuals earning between $50,000 and $100,000 have 56.3% lower odds of being food insecure compared to those earning ≤ $50,000. 
-   
-Race/Ethnicity:
-   White, Non-Hispanic individuals have 61.4% lower odds of being food insecure compared to American Indians.
-   
-Summary: 
-   Education and income levels show significant associations with food insecurity, with lower education and income levels increasing odds of food insecurity.Among racial/ethnic groups, only White, Non-Hispanic individuals show significantly lower odds of food insecurity compared to American Indians.
-   
-
-
-
-
-### Confidence Interval
+#### Confidence Interval
 ```{r}
 ci_all = as.data.frame(exp_all)
 ci_all = 
@@ -339,5 +312,19 @@ ci_all
 ```
 
 
+Statistical Significant Predictors: 
 
-
+Education:
+   Individuals with a high school diploma or GED have 40.1% higher odds of being food insecure compared to college graduates. 
+   Individuals with less than a high school education have 67.1% higher odds of being food insecure compared to college graduates. 
+   Individuals with some post-high school education have 49.1% higher odds of being food insecure compared to college graduates. 
+    
+Income: 
+   Individuals earning over 100,000 have 77.2% lower odds of being food insecure compared to those earning ≤ $50,000.
+   Individuals earning between $50,000 and $100,000 have 56.3% lower odds of being food insecure compared to those earning ≤ $50,000. 
+   
+Race/Ethnicity:
+   White, Non-Hispanic individuals have 61.4% lower odds of being food insecure compared to American Indians.
+   
+Summary: 
+   Education and income levels show significant associations with food insecurity, with lower education and income levels increasing odds of food insecurity.Among racial/ethnic groups, only White, Non-Hispanic individuals show significantly lower odds of food insecurity compared to American Indians.
