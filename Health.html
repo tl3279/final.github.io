@@ -392,7 +392,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>OR interpretation:individuals who are food insecure have
+<p>OR interpretation: Individuals who are food insecure have
 approximately 53% lower odds of having good health compared to those who
 are not food insecure, holding all else constant. Because this result
 shows that food insecure is a potential risk factor for general health
@@ -451,12 +451,16 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+OR interpretation: Individuals who are food insecure have approximately
+37.7% lower odds of having good physical health compared to those who
+are not food insecure, holding all else constant. Therefore, food
+insecure is associated with physical health.</p>
 </div>
 </div>
-<div id="is-food-insecure-associated-with-physical-health-1"
+<div id="is-food-insecure-associated-with-mental-health"
 class="section level2">
-<h2>Is Food Insecure Associated With Physical Health?</h2>
+<h2>Is Food Insecure Associated With Mental Health?</h2>
 <pre class="r"><code>logit_mental = 
   glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -505,7 +509,11 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+OR interpretation: Individuals who are food insecure have approximately
+49.9% lower odds of having good mental health compared to those who are
+not food insecure, holding all else constant. Therefore, food insecure
+is associated with mental health.</p>
 <p>Results show that food insecure have impacts on both individuals’
 physical and mental health, separately. Then we move on to explore how
 food insecure affects diabetes which is a main outcome of
@@ -563,8 +571,11 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Food insecure is asscociated with diabetes.</p>
+<p><img src="Health_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+OR interpretation: Individuals who are food insecure have 27.4% higher
+odds of having diabetes compared to those who are not food insecure,
+holding all else constant. Food insecure is associated with
+diabetes.</p>
 </div>
 </div>
 

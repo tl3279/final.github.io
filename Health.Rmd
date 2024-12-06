@@ -100,7 +100,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_general
 ```
 
-OR interpretation:individuals who are food insecure have approximately 53% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
+OR interpretation: Individuals who are food insecure have approximately 53% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
 
@@ -114,7 +114,6 @@ exp_physical = exp(cbind(OR=coef(logit_physical),confint(logit_physical)))
 
 knitr::kable(exp_physical)
 ```
-
 
 ### Confidence Interval
 ```{r}
@@ -135,9 +134,11 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_physical
 ```
+OR interpretation: Individuals who are food insecure have approximately 37.7% lower odds of having good physical health compared to those who are not food insecure, holding all else constant.
+Therefore, food insecure is associated with physical health.
 
 
-## Is Food Insecure Associated With Physical Health?
+## Is Food Insecure Associated With Mental Health?
 
 ```{r}
 logit_mental = 
@@ -168,6 +169,8 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_mental
 ```
+OR interpretation: Individuals who are food insecure have approximately 49.9% lower odds of having good mental health compared to those who are not food insecure, holding all else constant.
+Therefore, food insecure is associated with mental health.
 
 Results show that food insecure have impacts on both individuals' physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition. 
 
@@ -203,5 +206,5 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete
 ```
-
-Food insecure is asscociated with diabetes. 
+OR interpretation: Individuals who are food insecure have 27.4% higher odds of having diabetes compared to those who are not food insecure, holding all else constant.
+Food insecure is associated with diabetes. 
