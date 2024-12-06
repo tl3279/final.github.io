@@ -1264,7 +1264,7 @@ knitr::kable(exp_health)</code></pre>
 </tr>
 </tbody>
 </table>
-<p>OR interpretation:individuals who are food insecure have
+<p>OR interpretation: Individuals who are food insecure have
 approximately 53% lower odds of having good health compared to those who
 are not food insecure, holding all else constant. Because this result
 shows that food insecure is a potential risk factor for general health
@@ -1304,10 +1304,14 @@ knitr::kable(exp_physical)</code></pre>
 </tr>
 </tbody>
 </table>
+<p>OR interpretation: Individuals who are food insecure have
+approximately 37.7% lower odds of having good physical health compared
+to those who are not food insecure, holding all else constant.
+Therefore, food insecure is associated with physical health.</p>
 </div>
-<div id="is-food-insecure-associated-with-physical-health-1"
+<div id="is-food-insecure-associated-with-mental-health"
 class="section level3">
-<h3>Is Food Insecure Associated With Physical Health?</h3>
+<h3>Is Food Insecure Associated With Mental Health?</h3>
 <pre class="r"><code>logit_mental = 
   glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -1338,6 +1342,14 @@ knitr::kable(exp_mental)</code></pre>
 </tr>
 </tbody>
 </table>
+<p>OR interpretation: Individuals who are food insecure have
+approximately 49.9% lower odds of having good mental health compared to
+those who are not food insecure, holding all else constant. Therefore,
+food insecure is associated with mental health.</p>
+<p>Results show that food insecure have impacts on both individuals’
+physical and mental health, separately. Then we move on to explore how
+food insecure affects diabetes which is a main outcome of
+malnutrition.</p>
 </div>
 <div id="is-food-insecure-associated-with-diabetes"
 class="section level3">
@@ -1372,6 +1384,10 @@ knitr::kable(exp_diabete)</code></pre>
 </tr>
 </tbody>
 </table>
+<p>OR interpretation: Individuals who are food insecure have
+approximately 27.4% higher odds of having diabetes compared to those who
+are not food insecure, holding all else constant. Therefore, food
+insecure is associated with diabetes.</p>
 </div>
 </div>
 <div id="discussion" class="section level2">
@@ -1437,6 +1453,26 @@ of being food insecure compared to college graduates.</p>
 </div>
 <div id="health" class="section level3">
 <h3>Health</h3>
+<p>These findings highlight the multifaceted impact of food insecurity
+on both physical and mental health, as well as its association with
+diabetes. The results suggest that individuals experiencing food
+insecurity have significantly lower odds of maintaining good physical
+and mental health, with 37.7% and 49.9% lower odds, respectively. This
+emphasizes the detrimental effect of food insecurity on overall
+well-being, particularly its disproportionate impact on mental health.
+The mental strain associated with food insecurity, such as stress and
+anxiety over limited access to nutritious food, could be a key driver of
+this disparity. Additionally, the 27.4% higher odds of developing
+diabetes among food-insecure individuals underscore the potential
+physiological consequences of inadequate nutrition. Food insecurity
+often limits access to healthy, nutrient-rich foods, forcing individuals
+to rely on cheaper, calorie-dense, and nutritionally poor options, which
+can increase the risk of metabolic disorders like diabetes. Therefore,
+these findings suggest a cyclical relationship in which food insecurity
+exacerbates both physical and mental health outcomes, ultimately
+increasing the risk of chronic conditions like diabetes. Addressing food
+insecurity through targeted interventions could therefore play a crucial
+role in improving health outcomes and breaking this cycle.</p>
 </div>
 </div>
 <div id="limitations" class="section level2">
