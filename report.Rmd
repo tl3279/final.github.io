@@ -42,9 +42,9 @@ Our initial questions are:
 
 After conducting exploratory analysis and gaining a better understanding of the datasets, we refined our questions as follows:   
 - Where are food deserts located in NYC, specifically at a more granular level?   
-- How does the spatial proximity to retail stores influence food access and availability for different communities?
-- Which socioeconomic factors affects the food insecure the most? 
-- Does food insecurity increase the likelihood of other adverse health conditions, such as mental health or diabetes?
+- How does the spatial proximity to retail stores influence food access and availability for different communities?   
+- Which socioeconomic factors affects the food insecure the most?    
+- Does food insecurity increase the likelihood of other adverse health conditions, such as mental health or diabetes?   
 
 ## Data Sources and Cleaning
 ### NYC 2020 Census Tract Dataset
@@ -410,7 +410,7 @@ In the regression analysis section, we explore the association between several s
 
 ### Key Socioeconomic Factors Distribution
 
-```{r}
+```{r, fig.height=8,fig.width=8,}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
   labs(
@@ -419,7 +419,7 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
     y = "Count"
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 
@@ -843,7 +843,7 @@ Here, we propose potential policies and practices that can serve as solutions to
 - Health and Nutrition Education: Provide education on nutrition and chronic disease prevention tailored to food-insecure populations.   
 - Healthcare Access: Enhance healthcare services for food-insecure individuals, including diabetes prevention and management programs.   
 
-By implementing comprehensive strategies such as expanding income support and food assistance programs, promoting affordable housing, and fostering educational equity, systemic socioeconomic disparities can be addressed. In parallel, community-based initiatives, health education, and improved healthcare access can mitigate health disparities tied to food insecurity, fostering equitable access to nutritious foods and improving overall well-being.
+By incentivizing grocery store development, subsidizing healthy food costs, and expanding community-supported agriculture programs, access to fresh, nutritious foods in underserved areas can be significantly enhanced, thereby mitigating the problem of food deserts. In parallel, implementing comprehensive strategies such as expanding income support and food assistance programs, promoting affordable housing, and fostering educational equity can address systemic socioeconomic disparities. Additionally, community-based initiatives, health education, and improved healthcare access can help mitigate health disparities tied to food insecurity, fostering equitable access to nutritious foods and improving overall well-being.
 
 ## Limitations
 
