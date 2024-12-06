@@ -41,8 +41,9 @@ Our initial questions are:
 
 After conducting exploratory analysis and gaining a better understanding of the datasets, we refined our questions as follows:   
 - Where are food deserts located in NYC, specifically at a more granular level?   
-- How does the spatial proximity to retail stores influence food access and availability for different communities?   
-- What 
+- How does the spatial proximity to retail stores influence food access and availability for different communities?
+- Which socioeconomic factors affects the food insecure the most? 
+- Does food insecurity increase the likelihood of other adverse health conditions, such as mental health or diabetes?
 
 ## Data Sources and Cleaning
 ### NYC 2020 Census Tract Dataset
@@ -178,16 +179,20 @@ cleaned_df =
       genhlth %in% c("Fair", "Poor") ~ 0),
     
     physical_health = case_when(
-      phys14d %in% c("Zero days when physical health not good") ~ 0,
-      phys14d %in% c("1-13 days when physical health not good", "14+ days when physical health not good") ~ 1),
+      phys14d %in% c("Zero days when physical health not good") ~ 1,
+      phys14d %in% c("1-13 days when physical health not good", "14+ days when physical health not good") ~ 0),
     
     mental_health = case_when(
-      ment14d %in% c("Zero days when mental health not good") ~ 0,
-      ment14d %in% c("1-13 days when mental health not good", "14+ days when physical health not good") ~ 1)
+      ment14d %in% c("Zero days when mental health not good") ~ 1,
+      ment14d %in% c("1-13 days when mental health not good", "14+ days when physical health not good") ~ 0),
+    
+    diabete = case_when(
+      diabete4 %in% c("No") ~0,
+      diabete4%in% c("Yes") ~ 1)
     
    )|>
-  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health))|>
-  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d)
+  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|>
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d, -diabete4)
 ```
 
 
@@ -400,9 +405,9 @@ Same as above, the retail stores are categorized into Small, Medium, and Large, 
 For Brooklyn, the coverage zones overlap significantly in densely populated areas, ensuring better coverage for residents. However, small gaps remain in the eastern parts. Queens has a mix of small and medium store buffers, indicating for moderate coverage. Sparse large store buffers in some areas leave room for improvement, especially in central and eastern Queens. For Staten Island, the central and southernmost tracts have very few store buffers, indicating limited accessibility to nutritious food options for residents in these regions. This combined map highlights potential food deserts and areas requiring improved access to retail stores offering fresh and nutritious food. 
 
 
-## Regression Analysis 
+## Regression Analysis - Socioeconomic Factors
 
-In the regression analysis section, we explore the association between several socioeconomic factors, `income`, `education`, and `race` and `food insecure` separately, and finally examine the association between `food insecure` and `general health` to emphasize how limited or uncertain access to adequate food impacts individuals' physical, mental, and overall well-being. Food insecurity has been linked to poorer self-rated health, increased prevalence of chronic diseases, and higher stress levels, which can exacerbate health inequalities. Analyzing this relationship helps identify vulnerable populations and inform public health interventions aimed at improving food access and promoting better health outcomes. 
+In the regression analysis section, we explore the association between several socioeconomic factors, `income`, `education`, and `race` and `food insecure` separately. We also examined the association between `food insecure` and `general health`. Then we explored how each `physical health` and `mental health` are associated with `food insecure`. Lastly, we also examined how `food insecure` associated with `diabetes`. We ran this regression to emphasize how limited or uncertain access to adequate food impacts individuals' physical, mental, and overall well-being. Food insecurity has been linked to poorer self-rated health, increased prevalence of chronic diseases, and higher stress levels, which can exacerbate health inequalities. Analyzing this relationship helps identify vulnerable populations and inform public health interventions aimed at improving food access and promoting better health outcomes. 
 
 
 ### Key Socioeconomic Factors Distribution
@@ -453,13 +458,15 @@ ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insec
 
 This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
 
-### Is income associated with food insecure? 
+### Is Income Associated With Food Insecure? 
 
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
 
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+rownames(exp_income) = gsub("income", "", rownames(exp_income))
 
 knitr::kable(exp_income)
 ```
@@ -476,13 +483,15 @@ Statistical significance: confidence intervals of OR of both predictor levels ex
 
 
 
-### Is race associated with food insecure?
+### Is Race Associated With Food Insecure?
 
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
 
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+rownames(exp_race) = gsub("imprace", "", rownames(exp_race))
 
 knitr::kable(exp_race)
 ```
@@ -504,13 +513,15 @@ OR:
 Statistical significance: confidence intervals of OR of all predictor levels except Black and Hispanic exclude 1, indicating that these predictor levels are statistically significant. 
 
 
-### Is education associated with food insecure?
+### Is Education Associated With Food Insecure?
 
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
 
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+rownames(exp_edu) = gsub("education", "", rownames(exp_edu))
 
 knitr::kable(exp_edu)
 ```
@@ -529,13 +540,15 @@ Statistical significance: confidence intervals of OR of all three predictor leve
 
 
 
-### Are race, education, and income associated with food insecure?
+### Are Race, Education, and Income Associated With Food Insecure?
 
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
 
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+rownames(exp_all) = gsub("education|income|imprace", "", rownames(exp_all))
 
 knitr::kable(exp_all)
 ```
@@ -561,9 +574,12 @@ Race/Ethnicity:
 Summary: 
    Education and income levels show significant associations with food insecurity, with lower education and income levels increasing odds of food insecurity.Among racial/ethnic groups, only White, Non-Hispanic individuals show significantly lower odds of food insecurity compared to American Indians.
    
-   
-### Is food insecure associated with general health?
 
+
+
+## Regression Analysis - Health
+
+### Is Food Insecure Associated With General Health?
 ```{r}
 logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
@@ -573,14 +589,47 @@ exp_health = exp(cbind(OR=coef(logit_health),confint(logit_health)))
 knitr::kable(exp_health)
 ```
 
-OR: 
-  
-  - Individuals who are food insecure have 73.2% lower odds of reporting "Poor" health compared to "Fair" health when compared to non-food insecure individuals.
-  - Food-insecure individuals have 67.4% lower odds of reporting "Good" health compared to "Fair" health than non-food insecure individuals.
-  - Food-insecure individuals have 33.4% lower odds of reporting "Very Good" health compared to "Fair" health than non-food insecure individuals.
-  - Food-insecure individuals have 59.6% higher odds of reporting "Excellent" health compared to "Fair" health than non-food insecure individuals.
+OR interpretation:individuals who are food insecure have approximately 53% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
+Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
-Statistical significance: confidence intervals of OR of "Good", "Very Good", and "Excellent" health group exclude 1, indicating that these predictor levels are statistically significant. 
+
+### Is Food Insecure Associated With Physical Health?
+
+```{r}
+logit_physical = 
+  glm(physical_health ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_physical = exp(cbind(OR=coef(logit_physical),confint(logit_physical)))
+
+knitr::kable(exp_physical)
+```
+
+
+### Is Food Insecure Associated With Physical Health?
+
+```{r}
+logit_mental = 
+  glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_mental = exp(cbind(OR=coef(logit_mental),confint(logit_mental)))
+
+knitr::kable(exp_mental)
+```
+
+
+### Is Food Insecure Associated With Diabetes
+
+```{r}
+logit_diabete = 
+  glm(diabete ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_diabete = exp(cbind(OR=coef(logit_diabete),confint(logit_diabete)))
+
+knitr::kable(exp_diabete)
+```
+
+
+
 
 ## Discussion
 
@@ -599,15 +648,18 @@ The analysis underscores the need for tailored policies and interventions to add
 
 Efforts could include incentivizing grocery stores to open in underserved areas, enhancing transportation options to food hubs, and supporting local farmers' markets to improve accessibility to nutritious food in food deserts. These actions could help bridge the food access gap and promote equitable food security across New York City.
 
-### Food Insecure
-
+### Socioeconomic Factors
 The regression analysis highlights the significant associations between food insecurity and key predictors, including income, race/ethnicity, education, and self-rated health. 
 Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 83.4% lower odds, and those earning between $50,000 and $100,000 have 65.1% lower odds of food insecurity compared to those earning less than $50,000. 
 Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have the lowest odds of food insecurity (77% lower), followed by Asian, Non-Hispanic individuals (68.2% lower), and Other Race, Non-Hispanic individuals (57.4% lower) compared to American Indians. Associations between levels of Black, Non-Hispanic and Hispanic individuals and food insecure are not significant. 
 Lower education levels are strongly associated with higher odds of food insecurity. Individuals with less than a high school education have 424.1% higher odds, those with a high school diploma or GED have 144.4% higher odds, and those with some post-high school education have 111.9% higher odds of being food insecure compared to college graduates.
-The last regression emphasizes that food insecurity significantly affects perceived health levels. The result that individuals with food insecure have a higher odds ratio to report "Excellent" health compared to "Fair" health is very weird. The result may be influenced by individuals' perceptions, cultural norms, and personal experiences. Furthermore, individuals who recently are experiencing food insecurity might still maintain good physical health but are at the early stages of economic or food-related struggles, leading them to perceive their health as excellent. 
+
+
+### Health
+
+
 
 ## Limitations
 
-The limitation for regression analysis is that the regression to explore the association between food insecure and general health does not include any confounding variables. As we examined before this regression, we found that income, education, and race can influence individuals' perspectives on food insecure. We may explore more socioeconomic factors and control them in the regression to  better determine whether food insecurity independently contributes to differences in health outcomes. 
+
 

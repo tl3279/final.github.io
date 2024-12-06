@@ -340,8 +340,10 @@ follows:<br />
 - Where are food deserts located in NYC, specifically at a more granular
 level?<br />
 - How does the spatial proximity to retail stores influence food access
-and availability for different communities?<br />
-- What</p>
+and availability for different communities? - Which socioeconomic
+factors affects the food insecure the most? - Does food insecurity
+increase the likelihood of other adverse health conditions, such as
+mental health or diabetes?</p>
 </div>
 <div id="data-sources-and-cleaning" class="section level2">
 <h2>Data Sources and Cleaning</h2>
@@ -520,16 +522,20 @@ cleaned_df =
       genhlth %in% c(&quot;Fair&quot;, &quot;Poor&quot;) ~ 0),
     
     physical_health = case_when(
-      phys14d %in% c(&quot;Zero days when physical health not good&quot;) ~ 0,
-      phys14d %in% c(&quot;1-13 days when physical health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 1),
+      phys14d %in% c(&quot;Zero days when physical health not good&quot;) ~ 1,
+      phys14d %in% c(&quot;1-13 days when physical health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 0),
     
     mental_health = case_when(
-      ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 0,
-      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 1)
+      ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 1,
+      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 0),
+    
+    diabete = case_when(
+      diabete4 %in% c(&quot;No&quot;) ~0,
+      diabete4%in% c(&quot;Yes&quot;) ~ 1)
     
    )|&gt;
-  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d)</code></pre>
+  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|&gt;
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d, -diabete4)</code></pre>
 <p>Downlaoded the csv file from <a
 href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
 2022</a>. It is used for regression analysis. It provides monitors
@@ -819,21 +825,25 @@ access to retail stores offering fresh and nutritious food.</p>
 </div>
 </div>
 </div>
-<div id="regression-analysis" class="section level2">
-<h2>Regression Analysis</h2>
+<div id="regression-analysis---socioeconomic-factors"
+class="section level2">
+<h2>Regression Analysis - Socioeconomic Factors</h2>
 <p>In the regression analysis section, we explore the association
 between several socioeconomic factors, <code>income</code>,
 <code>education</code>, and <code>race</code> and
-<code>food insecure</code> separately, and finally examine the
-association between <code>food insecure</code> and
-<code>general health</code> to emphasize how limited or uncertain access
-to adequate food impacts individuals’ physical, mental, and overall
-well-being. Food insecurity has been linked to poorer self-rated health,
-increased prevalence of chronic diseases, and higher stress levels,
-which can exacerbate health inequalities. Analyzing this relationship
-helps identify vulnerable populations and inform public health
-interventions aimed at improving food access and promoting better health
-outcomes.</p>
+<code>food insecure</code> separately. We also examined the association
+between <code>food insecure</code> and <code>general health</code>. Then
+we explored how each <code>physical health</code> and
+<code>mental health</code> are associated with
+<code>food insecure</code>. Lastly, we also examined how
+<code>food insecure</code> associated with <code>diabetes</code>. We ran
+this regression to emphasize how limited or uncertain access to adequate
+food impacts individuals’ physical, mental, and overall well-being. Food
+insecurity has been linked to poorer self-rated health, increased
+prevalence of chronic diseases, and higher stress levels, which can
+exacerbate health inequalities. Analyzing this relationship helps
+identify vulnerable populations and inform public health interventions
+aimed at improving food access and promoting better health outcomes.</p>
 <div id="key-socioeconomic-factors-distribution" class="section level3">
 <h3>Key Socioeconomic Factors Distribution</h3>
 <pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
@@ -895,11 +905,13 @@ missing data (NA) for food insecurity status.</p>
 </div>
 <div id="is-income-associated-with-food-insecure"
 class="section level3">
-<h3>Is income associated with food insecure?</h3>
+<h3>Is Income Associated With Food Insecure?</h3>
 <pre class="r"><code>logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
 
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+rownames(exp_income) = gsub(&quot;income&quot;, &quot;&quot;, rownames(exp_income))
 
 knitr::kable(exp_income)</code></pre>
 <table>
@@ -914,21 +926,21 @@ knitr::kable(exp_income)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.9625963</td>
-<td align="right">0.8772272</td>
-<td align="right">1.0562152</td>
+<td align="right">0.9408419</td>
+<td align="right">0.8555652</td>
+<td align="right">1.0345234</td>
 </tr>
 <tr class="even">
-<td align="left">income&gt;100,000</td>
-<td align="right">0.1755147</td>
-<td align="right">0.1502525</td>
-<td align="right">0.2045577</td>
+<td align="left">&gt;100,000</td>
+<td align="right">0.1809548</td>
+<td align="right">0.1546263</td>
+<td align="right">0.2112893</td>
 </tr>
 <tr class="odd">
-<td align="left">income50,000 ~ 100,000</td>
-<td align="right">0.3792408</td>
-<td align="right">0.3299022</td>
-<td align="right">0.4355688</td>
+<td align="left">50,000 ~ 100,000</td>
+<td align="right">0.3817321</td>
+<td align="right">0.3311699</td>
+<td align="right">0.4396114</td>
 </tr>
 </tbody>
 </table>
@@ -951,11 +963,13 @@ predictor levels exclude 1, indicating that they are statistically
 associated with food insecure.</p>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
-<h3>Is race associated with food insecure?</h3>
+<h3>Is Race Associated With Food Insecure?</h3>
 <pre class="r"><code>logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
 
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+rownames(exp_race) = gsub(&quot;imprace&quot;, &quot;&quot;, rownames(exp_race))
 
 knitr::kable(exp_race)</code></pre>
 <table>
@@ -970,39 +984,39 @@ knitr::kable(exp_race)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.1538462</td>
-<td align="right">0.5479650</td>
-<td align="right">2.4622389</td>
+<td align="right">1.2500000</td>
+<td align="right">0.5860610</td>
+<td align="right">2.7244906</td>
 </tr>
 <tr class="even">
-<td align="left">impraceAsian, Non-Hispanic</td>
-<td align="right">0.3791667</td>
-<td align="right">0.1704651</td>
-<td align="right">0.8326280</td>
+<td align="left">Asian, Non-Hispanic</td>
+<td align="right">0.3422460</td>
+<td align="right">0.1505818</td>
+<td align="right">0.7621665</td>
 </tr>
 <tr class="odd">
-<td align="left">impraceBlack, Non-Hispanic</td>
-<td align="right">0.6137705</td>
-<td align="right">0.2821394</td>
-<td align="right">1.3182904</td>
+<td align="left">Black, Non-Hispanic</td>
+<td align="right">0.5534247</td>
+<td align="right">0.2489528</td>
+<td align="right">1.2050943</td>
 </tr>
 <tr class="even">
-<td align="left">impraceHispanic</td>
-<td align="right">1.0067340</td>
-<td align="right">0.4646362</td>
-<td align="right">2.1536196</td>
+<td align="left">Hispanic</td>
+<td align="right">0.9083333</td>
+<td align="right">0.4103881</td>
+<td align="right">1.9691008</td>
 </tr>
 <tr class="odd">
-<td align="left">impraceOther race, Non-Hispanic</td>
-<td align="right">0.4333333</td>
-<td align="right">0.1782453</td>
-<td align="right">1.0366315</td>
+<td align="left">Other race, Non-Hispanic</td>
+<td align="right">0.3924528</td>
+<td align="right">0.1580104</td>
+<td align="right">0.9530085</td>
 </tr>
 <tr class="even">
-<td align="left">impraceWhite, Non-Hispanic</td>
-<td align="right">0.2686804</td>
-<td align="right">0.1254936</td>
-<td align="right">0.5676891</td>
+<td align="left">White, Non-Hispanic</td>
+<td align="right">0.2445381</td>
+<td align="right">0.1118263</td>
+<td align="right">0.5233818</td>
 </tr>
 </tbody>
 </table>
@@ -1033,11 +1047,13 @@ predictor levels are statistically significant.</p>
 </div>
 <div id="is-education-associated-with-food-insecure"
 class="section level3">
-<h3>Is education associated with food insecure?</h3>
+<h3>Is Education Associated With Food Insecure?</h3>
 <pre class="r"><code>logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
 
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+rownames(exp_edu) = gsub(&quot;education&quot;, &quot;&quot;, rownames(exp_edu))
 
 knitr::kable(exp_edu)</code></pre>
 <table>
@@ -1052,27 +1068,27 @@ knitr::kable(exp_edu)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.264363</td>
-<td align="right">0.242041</td>
-<td align="right">0.2883149</td>
+<td align="right">0.2617935</td>
+<td align="right">0.2393831</td>
+<td align="right">0.285862</td>
 </tr>
 <tr class="even">
-<td align="left">educationHigh school or GED</td>
-<td align="right">2.400981</td>
-<td align="right">2.066532</td>
-<td align="right">2.7889341</td>
+<td align="left">High school or GED</td>
+<td align="right">2.3881117</td>
+<td align="right">2.0503297</td>
+<td align="right">2.780818</td>
 </tr>
 <tr class="odd">
-<td align="left">educationLess than high school</td>
-<td align="right">5.582203</td>
-<td align="right">4.289584</td>
-<td align="right">7.2915963</td>
+<td align="left">Less than high school</td>
+<td align="right">5.5525003</td>
+<td align="right">4.2313674</td>
+<td align="right">7.314305</td>
 </tr>
 <tr class="even">
-<td align="left">educationSome post-high school</td>
-<td align="right">2.048004</td>
-<td align="right">1.772791</td>
-<td align="right">2.3652860</td>
+<td align="left">Some post-high school</td>
+<td align="right">2.0082064</td>
+<td align="right">1.7337919</td>
+<td align="right">2.325266</td>
 </tr>
 </tbody>
 </table>
@@ -1097,11 +1113,13 @@ significant.</p>
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
 class="section level3">
-<h3>Are race, education, and income associated with food insecure?</h3>
+<h3>Are Race, Education, and Income Associated With Food Insecure?</h3>
 <pre class="r"><code>logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
 
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+rownames(exp_all) = gsub(&quot;education|income|imprace&quot;, &quot;&quot;, rownames(exp_all))
 
 knitr::kable(exp_all)</code></pre>
 <table>
@@ -1116,69 +1134,69 @@ knitr::kable(exp_all)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.3061957</td>
-<td align="right">0.5915117</td>
-<td align="right">2.9363848</td>
+<td align="right">1.4277837</td>
+<td align="right">0.6360390</td>
+<td align="right">3.2867440</td>
 </tr>
 <tr class="even">
-<td align="left">educationHigh school or GED</td>
-<td align="right">1.3776536</td>
-<td align="right">1.1658961</td>
-<td align="right">1.6265583</td>
+<td align="left">High school or GED</td>
+<td align="right">1.3843537</td>
+<td align="right">1.1684543</td>
+<td align="right">1.6387536</td>
 </tr>
 <tr class="odd">
-<td align="left">educationLess than high school</td>
-<td align="right">1.8150326</td>
-<td align="right">1.3504507</td>
-<td align="right">2.4438710</td>
+<td align="left">Less than high school</td>
+<td align="right">1.8393045</td>
+<td align="right">1.3565459</td>
+<td align="right">2.4984827</td>
 </tr>
 <tr class="even">
-<td align="left">educationSome post-high school</td>
-<td align="right">1.4617004</td>
-<td align="right">1.2512580</td>
-<td align="right">1.7063711</td>
+<td align="left">Some post-high school</td>
+<td align="right">1.4478138</td>
+<td align="right">1.2362127</td>
+<td align="right">1.6943779</td>
 </tr>
 <tr class="odd">
-<td align="left">income&gt;100,000</td>
-<td align="right">0.2451549</td>
-<td align="right">0.2066958</td>
-<td align="right">0.2902541</td>
+<td align="left">&gt;100,000</td>
+<td align="right">0.2516835</td>
+<td align="right">0.2117802</td>
+<td align="right">0.2985828</td>
 </tr>
 <tr class="even">
-<td align="left">income50,000 ~ 100,000</td>
-<td align="right">0.4789864</td>
-<td align="right">0.4131403</td>
-<td align="right">0.5550137</td>
+<td align="left">50,000 ~ 100,000</td>
+<td align="right">0.4795379</td>
+<td align="right">0.4125349</td>
+<td align="right">0.5570999</td>
 </tr>
 <tr class="odd">
-<td align="left">impraceAsian, Non-Hispanic</td>
-<td align="right">0.5937271</td>
-<td align="right">0.2546111</td>
-<td align="right">1.3620134</td>
+<td align="left">Asian, Non-Hispanic</td>
+<td align="right">0.5285990</td>
+<td align="right">0.2214473</td>
+<td align="right">1.2329806</td>
 </tr>
 <tr class="even">
-<td align="left">impraceBlack, Non-Hispanic</td>
-<td align="right">0.7509072</td>
-<td align="right">0.3297541</td>
-<td align="right">1.6810226</td>
+<td align="left">Black, Non-Hispanic</td>
+<td align="right">0.6804921</td>
+<td align="right">0.2918774</td>
+<td align="right">1.5487448</td>
 </tr>
 <tr class="odd">
-<td align="left">impraceHispanic</td>
-<td align="right">1.0624049</td>
-<td align="right">0.4682561</td>
-<td align="right">2.3688189</td>
+<td align="left">Hispanic</td>
+<td align="right">0.9564788</td>
+<td align="right">0.4119119</td>
+<td align="right">2.1670660</td>
 </tr>
 <tr class="even">
-<td align="left">impraceOther race, Non-Hispanic</td>
-<td align="right">0.5913135</td>
-<td align="right">0.2311089</td>
-<td align="right">1.4850650</td>
+<td align="left">Other race, Non-Hispanic</td>
+<td align="right">0.5275042</td>
+<td align="right">0.2014337</td>
+<td align="right">1.3481416</td>
 </tr>
 <tr class="odd">
-<td align="left">impraceWhite, Non-Hispanic</td>
-<td align="right">0.4116274</td>
-<td align="right">0.1837100</td>
-<td align="right">0.9064304</td>
+<td align="left">White, Non-Hispanic</td>
+<td align="right">0.3700909</td>
+<td align="right">0.1614169</td>
+<td align="right">0.8278295</td>
 </tr>
 </tbody>
 </table>
@@ -1210,9 +1228,12 @@ odds of food insecurity.Among racial/ethnic groups, only White,
 Non-Hispanic individuals show significantly lower odds of food
 insecurity compared to American Indians.</p>
 </div>
+</div>
+<div id="regression-analysis---health" class="section level2">
+<h2>Regression Analysis - Health</h2>
 <div id="is-food-insecure-associated-with-general-health"
 class="section level3">
-<h3>Is food insecure associated with general health?</h3>
+<h3>Is Food Insecure Associated With General Health?</h3>
 <pre class="r"><code>logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -1231,36 +1252,126 @@ knitr::kable(exp_health)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">10.8694362</td>
-<td align="right">9.738412</td>
-<td align="right">12.1738224</td>
+<td align="right">11.0338462</td>
+<td align="right">9.866898</td>
+<td align="right">12.3831763</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4674195</td>
-<td align="right">0.394007</td>
-<td align="right">0.5548997</td>
+<td align="right">0.4704308</td>
+<td align="right">0.394936</td>
+<td align="right">0.5608241</td>
 </tr>
 </tbody>
 </table>
-<p>OR:</p>
-<ul>
-<li>Individuals who are food insecure have 73.2% lower odds of reporting
-“Poor” health compared to “Fair” health when compared to non-food
-insecure individuals.</li>
-<li>Food-insecure individuals have 67.4% lower odds of reporting “Good”
-health compared to “Fair” health than non-food insecure
-individuals.</li>
-<li>Food-insecure individuals have 33.4% lower odds of reporting “Very
-Good” health compared to “Fair” health than non-food insecure
-individuals.</li>
-<li>Food-insecure individuals have 59.6% higher odds of reporting
-“Excellent” health compared to “Fair” health than non-food insecure
-individuals.</li>
-</ul>
-<p>Statistical significance: confidence intervals of OR of “Good”, “Very
-Good”, and “Excellent” health group exclude 1, indicating that these
-predictor levels are statistically significant.</p>
+<p>OR interpretation:individuals who are food insecure have
+approximately 53% lower odds of having good health compared to those who
+are not food insecure, holding all else constant. Because this result
+shows that food insecure is a potential risk factor for general health
+of individuals, we want to further explore the association between food
+insecure with physical health and mental health, separately.</p>
+</div>
+<div id="is-food-insecure-associated-with-physical-health"
+class="section level3">
+<h3>Is Food Insecure Associated With Physical Health?</h3>
+<pre class="r"><code>logit_physical = 
+  glm(physical_health ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_physical = exp(cbind(OR=coef(logit_physical),confint(logit_physical)))
+
+knitr::kable(exp_physical)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.245236</td>
+<td align="right">2.0986075</td>
+<td align="right">2.4035258</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure</td>
+<td align="right">0.623140</td>
+<td align="right">0.5524433</td>
+<td align="right">0.7030173</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="is-food-insecure-associated-with-physical-health-1"
+class="section level3">
+<h3>Is Food Insecure Associated With Physical Health?</h3>
+<pre class="r"><code>logit_mental = 
+  glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_mental = exp(cbind(OR=coef(logit_mental),confint(logit_mental)))
+
+knitr::kable(exp_mental)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">2.6987724</td>
+<td align="right">2.5159770</td>
+<td align="right">2.8970566</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure</td>
+<td align="right">0.5013494</td>
+<td align="right">0.4438596</td>
+<td align="right">0.5663271</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="is-food-insecure-associated-with-diabetes"
+class="section level3">
+<h3>Is Food Insecure Associated With Diabetes</h3>
+<pre class="r"><code>logit_diabete = 
+  glm(diabete ~ food_insecure, data = cleaned_df, family = binomial)
+
+exp_diabete = exp(cbind(OR=coef(logit_diabete),confint(logit_diabete)))
+
+knitr::kable(exp_diabete)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.1185037</td>
+<td align="right">0.1068903</td>
+<td align="right">0.1310214</td>
+</tr>
+<tr class="even">
+<td align="left">food_insecure</td>
+<td align="right">1.2743192</td>
+<td align="right">1.0655753</td>
+<td align="right">1.5199902</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div id="discussion" class="section level2">
@@ -1303,8 +1414,8 @@ food in food deserts. These actions could help bridge the food access
 gap and promote equitable food security across New York City.</p>
 </div>
 </div>
-<div id="food-insecure" class="section level3">
-<h3>Food Insecure</h3>
+<div id="socioeconomic-factors" class="section level3">
+<h3>Socioeconomic Factors</h3>
 <p>The regression analysis highlights the significant associations
 between food insecurity and key predictors, including income,
 race/ethnicity, education, and self-rated health. Results indicate that
@@ -1322,28 +1433,14 @@ levels are strongly associated with higher odds of food insecurity.
 Individuals with less than a high school education have 424.1% higher
 odds, those with a high school diploma or GED have 144.4% higher odds,
 and those with some post-high school education have 111.9% higher odds
-of being food insecure compared to college graduates. The last
-regression emphasizes that food insecurity significantly affects
-perceived health levels. The result that individuals with food insecure
-have a higher odds ratio to report “Excellent” health compared to “Fair”
-health is very weird. The result may be influenced by individuals’
-perceptions, cultural norms, and personal experiences. Furthermore,
-individuals who recently are experiencing food insecurity might still
-maintain good physical health but are at the early stages of economic or
-food-related struggles, leading them to perceive their health as
-excellent.</p>
+of being food insecure compared to college graduates.</p>
+</div>
+<div id="health" class="section level3">
+<h3>Health</h3>
 </div>
 </div>
 <div id="limitations" class="section level2">
 <h2>Limitations</h2>
-<p>The limitation for regression analysis is that the regression to
-explore the association between food insecure and general health does
-not include any confounding variables. As we examined before this
-regression, we found that income, education, and race can influence
-individuals’ perspectives on food insecure. We may explore more
-socioeconomic factors and control them in the regression to better
-determine whether food insecurity independently contributes to
-differences in health outcomes.</p>
 </div>
 
 

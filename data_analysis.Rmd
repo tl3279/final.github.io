@@ -51,22 +51,26 @@ cleaned_df =
       genhlth %in% c("Fair", "Poor") ~ 0),
     
     physical_health = case_when(
-      phys14d %in% c("Zero days when physical health not good") ~ 0,
-      phys14d %in% c("1-13 days when physical health not good", "14+ days when physical health not good") ~ 1),
+      phys14d %in% c("Zero days when physical health not good") ~ 1,
+      phys14d %in% c("1-13 days when physical health not good", "14+ days when physical health not good") ~ 0),
     
     mental_health = case_when(
-      ment14d %in% c("Zero days when mental health not good") ~ 0,
-      ment14d %in% c("1-13 days when mental health not good", "14+ days when physical health not good") ~ 1)
+      ment14d %in% c("Zero days when mental health not good") ~ 1,
+      ment14d %in% c("1-13 days when mental health not good", "14+ days when physical health not good") ~ 0),
+    
+    diabete = case_when(
+      diabete4 %in% c("No") ~0,
+      diabete4%in% c("Yes") ~ 1)
     
    )|>
-  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health))|>
-  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d)
+  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|>
+  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d, -diabete4)
 
 ```
 
 
 
-### Key Socioeconomic Factors Distribution
+## Key Socioeconomic Factors Distribution
 
 ```{r}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
@@ -135,12 +139,14 @@ cleaned_df =
 
 ## Logistic Regression Models
 
-### Is income associated with food insecure? 
+### Is Income Associated With Food Insecure? 
 ```{r}
 logit_income = 
   glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
 
 exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+rownames(exp_income) = gsub("income", "", rownames(exp_income))
 
 knitr::kable(exp_income)
 ```
@@ -162,11 +168,8 @@ ci_income = as.data.frame(exp_income)
 ci_income = 
   ci_income |> 
   rownames_to_column("Variable") |> 
-  filter(Variable != "(Intercept)") 
-```
-
-```{r}
-ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   geom_pointrange() +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   labs(
@@ -176,16 +179,19 @@ ggplot(ci_income, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
+ci_income
 ```
 
 
 
-### Is race associated with food insecure?
+### Is Race Associated With Food Insecure?
 ```{r}
 logit_race = 
   glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
 
 exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+rownames(exp_race) = gsub("imprace", "", rownames(exp_race))
 
 knitr::kable(exp_race)
 ```
@@ -213,32 +219,32 @@ ci_race = as.data.frame(exp_race)
 ci_race = 
   ci_race |> 
   rownames_to_column("Variable") |> 
-  filter(Variable != "(Intercept)") 
-```
-
-```{r}
-ggplot(ci_race, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   geom_pointrange() +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
     x = "Odds Ratio (OR)",
-    y = "Income Category"
+    y = "Race Category"
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
+ci_race
 ```
 
 
 
 
 
-### Is education associated with food insecure?
+### Is Education Associated With Food Insecure?
 ```{r}
 logit_edu = 
   glm(food_insecure ~ education, data = cleaned_df, family = binomial)
 
 exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+rownames(exp_edu) = gsub("education", "", rownames(exp_edu))
 
 knitr::kable(exp_edu)
 ```
@@ -263,30 +269,30 @@ ci_edu = as.data.frame(exp_edu)
 ci_edu = 
   ci_edu |> 
   rownames_to_column("Variable") |> 
-  filter(Variable != "(Intercept)") 
-```
-
-```{r}
-ggplot(ci_edu, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   geom_pointrange() +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
     x = "Odds Ratio (OR)",
-    y = "Income Category"
+    y = "Education Category"
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
+ci_edu
 ```
 
 
 
-### Are race, education, and income associated with food insecure?
+### Are Race, Education, and Income Associated With Food Insecure?
 ```{r}
 logit_all = 
   glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
 
 exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+rownames(exp_all) = gsub("education|income|imprace", "", rownames(exp_all))
 
 knitr::kable(exp_all)
 ```
@@ -318,20 +324,18 @@ ci_all = as.data.frame(exp_all)
 ci_all = 
   ci_all |> 
   rownames_to_column("Variable") |> 
-  filter(Variable != "(Intercept)") 
-```
-
-```{r}
-ggplot(ci_all, aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  filter(Variable != "(Intercept)") |>
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   geom_pointrange() +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
     x = "Odds Ratio (OR)",
-    y = "Income Category"
+    y = "Categories"
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
+ci_all
 ```
 
 
