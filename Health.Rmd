@@ -206,7 +206,7 @@ ggplot(aes(x = "", fill = factor(diabete))) +
 The chart clearly shows a significant imbalance, with a much larger proportion of participants being free from diabetes compared to those who have diabetes. This highlights that the prevalence of diabetes in this dataset is relatively low.
 
 
-
+## Regression Analysis
 ### Is Food Insecure Associated With General Health?
 #### Odds Ratio
 ```{r}
