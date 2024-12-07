@@ -1,5 +1,5 @@
 ---
-title: "Data Analysis"
+title: "Data Analysis - Socioeconomic Factors"
 output: 
   html_document:
     toc: true
@@ -141,7 +141,7 @@ cleaned_df =
 
 
 ## Logistic Regression Models
-      
+For all regression analyses, logistic regression was utilized, and the calculated odds ratios (ORs) were presented to interpret the relationships between variables.
 
 ### Is Income Associated With Food Insecure? 
 #### Odds Ratio
@@ -178,7 +178,7 @@ ci_income
 
 Intercept:
 
-- The odds ratio for the intercept (1.13) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (1.039, 1.235) does not include 1, it is statistically significant. 
+- The odds ratio for the intercept (1.13) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (1.039, 1.235) does not include 1, it is statistically significant. Individuals with income less than $50,000 are 13% more likely to experience food insecurity compared to individuals not in this category.
 
 OR:
 
@@ -272,7 +272,7 @@ ci_edu
 
 Intercept:  
 
-- The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. Since the 95% confidence interval (0.282, 0.331) does not include 1, it is statistically significant.
+- The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. Since the 95% confidence interval (0.282, 0.331) does not include 1, it is statistically significant. Individuals who are college graduates are 69% less likely to experience food insecurity compared to individuals not in this category.
 
 OR:
 

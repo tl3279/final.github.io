@@ -32,7 +32,7 @@ The NYC map aims to understand urban-specific challenges, such as access in dens
 
 ## Related Work
 
-Our project was inspired initially by an article [Emergency Food in NYC](https://council.nyc.gov/data/emergency-food-in-nyc/) illustrating the dire situation New York citizens faced in terms of food security. The statistics gathered within this article shocked us and triggered us to investigate further on access to affordable and nutritious food within NYC. 
+Our project was inspired initially by an article [Emergency Food in NYC](https://council.nyc.gov/data/emergency-food-in-nyc/) illustrating the dire situation New York citizens faced in terms of food security. The statistics gathered within this article shocked us and triggered us to investigate further on access to affordable and nutritious food in NY and NYC. 
 
 ## Initial Questions
 Our initial questions are：
@@ -898,7 +898,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
     x = "Odds Ratio (OR)",
-    y = "Physical Health Category"
+    y = "Mental Health Category"
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
@@ -933,7 +933,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   labs(
     title = "Odds Ratios with 95% Confidence Intervals",
     x = "Odds Ratio (OR)",
-    y = "Physical Health Category"
+    y = "Diabete Status"
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))

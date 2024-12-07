@@ -444,15 +444,17 @@ covered_df =
     )
   ) |&gt;
   mutate(geometry = st_buffer(geometry, dist = coverage_radius))</code></pre>
+<p>Food deserts are areas with limited access to affordable and
+nutritious food options, particularly fresh fruits and vegetables. To
+identify food deserts, we examined the distribution of retail stores
+across New York City. This analysis combines population density data
+with the spatial distribution of retail stores. To enhance visualization
+and clarity, the analysis for the distribution of retail stores is
+divided into two geographic regions: <strong>Manhattan + Bronx</strong>
+and <strong>Brooklyn + Queens + Staten Island.</strong></p>
 </div>
-<div id="nyc-population" class="section level2">
-<h2>NYC Population</h2>
-<p>This plot shows the population distribution across New York City’s
-census tracts using data from the 2020 New York City Decennial Census
-Data. Manhattan exhibits the highest population density, with
-significant concentrations in its central and southern regions. In
-contrast, areas like Staten Island show comparatively lower population
-densities.</p>
+<div id="nyc-population-distribution" class="section level2">
+<h2>NYC Population Distribution</h2>
 <pre class="r"><code>nyc_tracts |&gt;
   ggplot() +
   annotation_map_tile(zoom = 12, type = &quot;cartolight&quot;) +  
@@ -461,31 +463,32 @@ densities.</p>
     values = c(&quot;#fee5d9&quot;, &quot;#fcbba1&quot;, &quot;#fc9272&quot;, &quot;#fb6a4a&quot;, &quot;#de2d26&quot;),
     name = &quot;Population by Census Tract&quot;
   ) +
-  labs(
-    title = &quot;Distribution of Population Density&quot;,
-    subtitle = &quot;New York City&quot;
-  ) +
+  labs(title = &quot;Population Distribution in New York City&quot;) +
   theme_minimal() +
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1), 
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+<p>The map visualizes the population distribution across New York City
+by census tract, derived from the 2020 Census data. The tracts are
+color-coded to reflect population density, categorized into five
+population ranges: ≤ 1,000; 1,001–5,000; 5,001–10,000; 10,001–15,000;
+&gt; 15,000.</p>
+<p>Manhattan exhibits densely populated tracts, particularly in the
+central and lower regions, which are major commercial and residential
+hubs. Parts of Brooklyn and Queens also show significant population
+concentrations, particularly in areas near transportation centers and
+urban neighborhoods. Staten Island generally has lower population
+density, especially in its southern and central tracts, reflecting its
+more suburban nature. Peripheral regions in Queens and the Bronx have
+relatively sparse populations compared to urban centers.</p>
 </div>
-<div id="retail-stores-location" class="section level2">
-<h2>Retail Stores Location</h2>
-<p>To identify food deserts, we examined the distribution of retail
-stores across New York City. To enhance visualization and clarity, the
-analysis is divided into two geographic regions: <strong>Manhattan +
-Bronx</strong> and <strong>Brooklyn + Queens + Staten
-Island</strong>.</p>
-<div id="manhattan-and-bronx" class="section level3">
-<h3>Manhattan and Bronx</h3>
-<p>The map below depicts the locations of retail stores in Manhattan and
-the Bronx, plotted over a population density map by census tract.</p>
+<div id="manhattan-and-bronx" class="section level2">
+<h2>Manhattan and Bronx</h2>
+<div id="retail-store-dirtributions" class="section level3">
+<h3>Retail store dirtributions</h3>
 <pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)) |&gt;
   ggplot() +
@@ -512,13 +515,21 @@ the Bronx, plotted over a population density map by census tract.</p>
 <p><img src="plots_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
 <p>Retail stores are heavily concentrated in central and lower
 Manhattan, which aligns with areas of higher population density and
-commercial activity. The Bronx shows a more evenly distributed pattern
-of retail stores. However, northern and central Bronx census tracts with
+commercial activity. This clustering likely reflects the demand for
+retail services in densely populated and economically vibrant
+neighborhoods. The Bronx shows a more evenly distributed pattern of
+retail stores. However, northern and central Bronx census tracts with
 higher populations have fewer stores, indicating possible underserved
 areas.</p>
-<p>We will add coverage zones that align with population density to
-highlight underserved areas that may require interventions to improve
-access to nutritious food.</p>
+<p>The combination of population density and retail store distribution
+in this visualization provides insights into potential gaps in food
+accessibility. Areas with sparse retail store coverage and relatively
+high populations might be indicative of underserved communities,
+highlighting regions where interventions or additional resources may be
+required to improve access to nutritious food.</p>
+</div>
+<div id="add-coverage-zones" class="section level3">
+<h3>Add Coverage Zones</h3>
 <pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Manhattan&quot;, &quot;Bronx&quot;)) |&gt;
   ggplot() +
@@ -565,18 +576,31 @@ access to nutritious food.</p>
     plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
-<p>For Manhattan, overlapping coverage zones indicate high
-accessibility, suggesting these areas are well-served by retail options.
-For the Bronx, retail stores are less densely distributed, especially in
-the upper-left corner, where coverage zones are nearly absent. This
-highlights potential food desert areas with limited access to retail
-stores</p>
+<p>This graph shows the retail store distribution and their respective
+coverage zones in Manhattan and the Bronx. The store categories are
+classified by square footage:</p>
+<ul>
+<li>Small stores: Represented in yellow with a coverage radius of 0.15
+miles.<br />
+</li>
+<li>Medium stores: Represented in green with a coverage radius of 0.25
+miles.<br />
+</li>
+<li>Large stores: Represented in blue with a coverage radius of 0.35
+miles.</li>
+</ul>
+<p>A dense clustering of retail stores is evident in central and lower
+Manhattan. Overlapping coverage zones indicate high accessibility,
+suggesting these areas are well-served by retail options. Retail stores
+are less densely distributed, especially in the upper-left corner of the
+Bronx, where coverage zones are sparse or absent. This highlights
+potential food desert areas with limited access to retail stores.</p>
 </div>
-<div id="brooklyn-queens-and-staten-island" class="section level3">
-<h3>Brooklyn, Queens, and Staten Island</h3>
-<p>In this visualization, the distribution of retail stores across
-Brooklyn, Queens, and Staten Island is shown overlaid on the population
-density map by census tract.</p>
+</div>
+<div id="brooklyn-queens-and-staten-island" class="section level2">
+<h2>Brooklyn, Queens, and Staten Island</h2>
+<div id="retail-store-dirtributions-1" class="section level3">
+<h3>Retail Store Dirtributions</h3>
 <pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)) |&gt;
   ggplot() +
@@ -596,17 +620,25 @@ density map by census tract.</p>
   theme(
     legend.position = c(0.05, 0.9), 
     legend.justification = c(0, 1),
-    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;),
-    plot.title = element_text(size=17.5, hjust=0.5),
-    plot.subtitle = element_text(hjust=.5)
+    legend.background = element_rect(fill = &quot;white&quot;, color = &quot;black&quot;)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-6-1.png" width="768" /></p>
 <p>Brooklyn has a high density of retail stores, particularly in areas
-of moderate to high population density. Queens also displays significant
-coverage of retail stores, though there are noticeable gaps in the
-central and eastern parts of the borough. Staten Island has retail
-stores distributed relatively loosely, and the southernmost tracts with
-lower population density have limited retail store presence.</p>
+of moderate to high population density. This reflects a pattern of urban
+development and commercial activity aligning with residential areas.
+Queens also displays significant coverage of retail stores, though there
+are noticeable gaps in the central and eastern parts of the borough.
+These gaps might indicate areas of potential food deserts.Staten Island
+has retail stores distributed relatively loosely, and the southernmost
+tracts with lower population density have limited retail store
+presence.</p>
+<p>These findings suggest that while Brooklyn and parts of Queens enjoy
+relatively good retail store coverage, some areas, particularly in
+Staten Island and parts of Queens, may lack sufficient access to stores
+that provide fresh and nutritious food options.</p>
+</div>
+<div id="add-coverage-zones-1" class="section level3">
+<h3>Add Coverage Zones</h3>
 <pre class="r"><code>nyc_tracts |&gt;
   filter(boroname %in% c(&quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;)) |&gt;
   ggplot() +
@@ -655,13 +687,19 @@ lower population density have limited retail store presence.</p>
     plot.subtitle = element_text(hjust=.5)
   )</code></pre>
 <p><img src="plots_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<p>Same as above, the retail stores are categorized into Small, Medium,
+and Large, represented by yellow, green, and blue buffer zones,
+respectively.</p>
 <p>For Brooklyn, the coverage zones overlap significantly in densely
-populated areas but small gaps remain in the eastern parts. Queens has a
-mix of small and medium store coverage, indicating moderate coverage.
-Sparse large store buffers in some areas leave room for improvement,
-especially in central and eastern Queens. For Staten Island, the
-southernmost and central tracts have very few store buffers, indicating
-potential food desert areas.</p>
+populated areas, ensuring better coverage for residents. However, small
+gaps remain in the eastern parts. Queens has a mix of small and medium
+store buffers, indicating for moderate coverage. Sparse large store
+buffers in some areas leave room for improvement, especially in central
+and eastern Queens. For Staten Island, the central and southernmost
+tracts have very few store buffers, indicating limited accessibility to
+nutritious food options for residents in these regions. This combined
+map highlights potential food deserts and areas requiring improved
+access to retail stores offering fresh and nutritious food.</p>
 </div>
 </div>
 

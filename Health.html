@@ -11,7 +11,7 @@
 
 
 
-<title>Data Analysis</title>
+<title>Data Analysis - Health</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -362,7 +362,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Data Analysis</h1>
+<h1 class="title toc-ignore">Data Analysis - Health</h1>
 
 </div>
 
@@ -422,8 +422,10 @@ cleaned_df =
   select(-incomg1, -educag, -strsmeal_sa, -diabete4)</code></pre>
 <p>We are interested in understanding the associations between food
 insecurity and its potential impacts on various health outcomes,
-including general health, physical health, mental health, and
-diabetes.</p>
+including general health, physical health, mental health, and diabetes.
+For all regression analyses, logistic regression was utilized, and the
+calculated odds ratios (ORs) were presented to interpret the
+relationships between variables.</p>
 </div>
 <div id="key-health-factors-distribution" class="section level2">
 <h2>Key Health Factors Distribution</h2>
@@ -442,14 +444,20 @@ diabetes.</p>
   ) +
   theme_minimal()</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>This bar chart visualizes the distribution of general health
-responses among individuals categorized into five levels: “Poor”,
-“Fair”, “Good”, “Very Good”, and “Excellent”. The largest group is those
-who reported their health as “Very Good,” comprising the highest count,
-followed closely by individuals reporting “Good” health. The category
-“Excellent” ranks third, with a moderate number of respondents. A
-smaller number of individuals rated their health as “Fair,” while “Poor”
-health is the least common category.</p>
+<p>Using the original <strong><code>genhlth</code></strong> variable
+defined in the BRFSS dataset, this bar chart visualizes the distribution
+of general health responses among individuals categorized into five
+levels: <strong>Poor</strong>, <strong>Fair</strong>,
+<strong>Good</strong>, <strong>Very Good</strong>, and
+<strong>Excellent</strong>. The largest group is those who reported
+their health as “Very Good,” comprising the highest count, followed
+closely by individuals reporting “Good” health. The category “Excellent”
+ranks third, with a moderate number of respondents. A smaller number of
+individuals rated their health as “Fair,” while “Poor” health is the
+least common category. The chart highlights a trend where most
+individuals perceive their health positively, with the majority
+clustering around “Very Good” and “Good” ratings, and relatively fewer
+reporting “Fair” or “Poor” health.</p>
 </div>
 <div id="using-binary-variable-health" class="section level4">
 <h4>Using Binary Variable <strong><code>health</code></strong></h4>
@@ -467,11 +475,15 @@ ggplot(aes(x = factor(health), fill = factor(health))) +
                     )+
   theme_minimal()</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>The plot demonstrates levels of general health distribution. The
-majority of individuals are in the “Good” category (1), as reflected by
-the much taller blue bar. Conversely, fewer individuals are categorized
-as having “Poor” (0), corresponding to the shorter pink bar. This
-indicates a predominantly healthy population in the dataset.</p>
+<p>We categorized general health into a binary variable for our
+regression analysis, with status <strong>Good</strong> + <strong>Very
+good</strong> + <strong>Excellent</strong> as healthy, and
+<strong>Fair</strong> + <strong>Poor</strong> as unhealthy. The plot
+demonstrates levels of general health distribution. The majority of
+individuals are in the “Good” category (1), as reflected by the much
+taller blue bar. Conversely, fewer individuals are categorized as having
+“Poor” (0), corresponding to the shorter pink bar. This indicates a
+predominantly healthy population in the dataset.</p>
 </div>
 </div>
 <div id="physical-health" class="section level3">
@@ -489,13 +501,16 @@ indicates a predominantly healthy population in the dataset.</p>
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>This bar chart visualizes the distribution of physical health status
-based on self-reported days of poor physical health over the past 14
-days. The blue bar represents individuals who reported no days of poor
-physical health, indicating a significant majority. The red bar accounts
-for those who experienced 1 to 13 days of poor physical health, while
-the green bar represents individuals with 14 or more days of poor
-physical health, suggesting chronic physical health challenges.</p>
+<p>Using the original <strong><code>phys14d</code></strong> variable
+defined in the BRFSS dataset, this bar chart visualizes the distribution
+of physical health status based on self-reported days of poor physical
+health over the past 14 days. The blue bar represents individuals who
+reported no days of poor physical health, indicating a significant
+majority. The red bar accounts for those who experienced 1 to 13 days of
+poor physical health, while the green bar represents individuals with 14
+or more days of poor physical health, suggesting chronic physical health
+challenges. This distribution highlights the varying degrees of physical
+health within the population.</p>
 </div>
 <div id="using-binary-variable-physical_health" class="section level4">
 <h4>Using Binary Variable
@@ -514,12 +529,17 @@ ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
                     )+
   theme_minimal()</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>The blue bar corresponds to individuals who reported having 0 days of
-poor physical health, categorized as “Healthy”. The pink bar corresponds
-to individuals who reported having 1 or more days of poor physical
-health, categorized as “Unhealthy”. The chart highlights that the
-majority of the population maintains good physical health, with only a
-smaller fraction reporting significant physical health challenges.</p>
+<p>We categorized physical health into a binary variable for our
+regression analysis, with status <strong>Zero days when physical health
+not good</strong> as healthy, and <strong>1-13 days when physical health
+not good</strong> + <strong>14+ days when physical health not
+good</strong> as unhealthy. The blue bar corresponds to individuals who
+reported having 0 days of poor physical health, categorized as
+“Healthy”. The pink bar corresponds to individuals who reported having 1
+or more days of poor physical health, categorized as “Unhealthy”. The
+chart highlights that the majority of the population maintains good
+physical health, with only a smaller fraction reporting significant
+physical health challenges.</p>
 </div>
 </div>
 <div id="mental-health" class="section level3">
@@ -537,14 +557,18 @@ smaller fraction reporting significant physical health challenges.</p>
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>This bar chart illustrates the distribution of mental health status
-based on the number of days individuals reported poor mental health over
-the past 14 days. Similar to the pattern observed in physical health,
-the majority of individuals (blue bar) reported zero days of poor mental
-health. The red bar represents those who experienced 1 to 13 days of
-poor mental health, while the green bar accounts for individuals with 14
-or more days of poor mental health, indicating potential chronic mental
-health challenges.</p>
+<p>Using the original <strong><code>ment14d</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of mental health status based on the number of days
+individuals reported poor mental health over the past 14 days. Similar
+to the pattern observed in physical health, the majority of individuals
+(blue bar) reported zero days of poor mental health. The red bar
+represents those who experienced 1 to 13 days of poor mental health,
+while the green bar accounts for individuals with 14 or more days of
+poor mental health, indicating potential chronic mental health
+challenges. This distribution emphasizes the prevalence of good mental
+health among the population, while also highlighting a smaller group
+with significant mental health difficulties.</p>
 </div>
 <div id="using-binary-variable-mental_health" class="section level4">
 <h4>Using Binary Variable
@@ -563,13 +587,17 @@ ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
                     )+
   theme_minimal()</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>The blue bar (healthy mental health) is taller than the pink bar,
-indicating the majority of individuals reported 0 days of poor mental
-health.</p>
+<p>We categorized mental health into a binary variable, adopting a
+similar approach to the coding of physical health. Individuals who
+reported <strong>zero days when mental health was not good</strong> were
+classified as “healthy,” while those reporting <strong>1-13 days when
+mental health was not good</strong> or <strong>14+ days when mental
+health was not good</strong> were grouped as “unhealthy.” The blue bar
+(healthy mental health) is taller than the pink bar, indicating the
+majority of individuals reported 0 days of poor mental health.</p>
 </div>
-</div>
-<div id="diabetes-a-binary-variable" class="section level3">
-<h3>Diabetes (a binary variable)</h3>
+<div id="diabetes-a-binary-variable" class="section level4">
+<h4>Diabetes (a binary variable)</h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
   geom_bar(width = 1, stat = &quot;count&quot;) +
@@ -590,10 +618,11 @@ who have diabetes. This highlights that the prevalence of diabetes in
 this dataset is relatively low.</p>
 </div>
 </div>
-<div id="general-health-1" class="section level2">
-<h2>General Health</h2>
-<div id="odds-ratio" class="section level3">
-<h3>Odds Ratio</h3>
+<div id="is-food-insecure-associated-with-general-health"
+class="section level3">
+<h3>Is Food Insecure Associated With General Health?</h3>
+<div id="odds-ratio" class="section level4">
+<h4>Odds Ratio</h4>
 <pre class="r"><code>logit_health = 
   glm(health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -625,8 +654,8 @@ knitr::kable(exp_health)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="confidence-interval" class="section level3">
-<h3>Confidence Interval</h3>
+<div id="confidence-interval" class="section level4">
+<h4>Confidence Interval</h4>
 <pre class="r"><code>ci_general = as.data.frame(exp_health)
 ci_general = 
   ci_general |&gt; 
@@ -644,19 +673,25 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>OR interpretation: Individuals who are food insecure have
-approximately 58.5% lower odds of having good health compared to those
-who are not food insecure, holding all else constant. Because this
-result shows that food insecure is a potential risk factor for general
-health of individuals, we want to further explore the association
-between food insecure with physical health and mental health,
-separately.</p>
+<p>Individuals who are food insecure have approximately 58.5% lower odds
+(OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to
+those who are not food insecure, holding all else constant. This
+suggests that food insecurity is significantly associated with worse
+general health outcomes. Food insecurity emerges as a strong risk factor
+for poor general health. This could be due to the limited availability
+of nutritious food, leading to a higher prevalence of diet-related
+illnesses such as obesity, hypertension, and chronic conditions.</p>
+<p>Because this result shows that food insecure is a potential risk
+factor for general health of individuals, we want to further explore the
+association between food insecure with physical health and mental
+health, separately.</p>
 </div>
 </div>
-<div id="physical-health-1" class="section level2">
-<h2>Physical Health</h2>
-<div id="odds-ratio-1" class="section level3">
-<h3>Odds Ratio</h3>
+<div id="is-food-insecure-associated-with-physical-health"
+class="section level3">
+<h3>Is Food Insecure Associated With Physical Health?</h3>
+<div id="odds-ratio-1" class="section level4">
+<h4>Odds Ratio</h4>
 <pre class="r"><code>logit_physical = 
   glm(physical_health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -688,8 +723,8 @@ knitr::kable(exp_physical)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="confidence-interval-1" class="section level3">
-<h3>Confidence Interval</h3>
+<div id="confidence-interval-1" class="section level4">
+<h4>Confidence Interval</h4>
 <pre class="r"><code>ci_physical = as.data.frame(exp_physical)
 ci_physical = 
   ci_physical |&gt; 
@@ -707,16 +742,21 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>OR interpretation: Individuals who are food insecure have
-approximately 44.7% lower odds of having good physical health compared
-to those who are not food insecure, holding all else constant.
-Therefore, food insecure is associated with physical health.</p>
+<p>Individuals who are food insecure have approximately 44.7% lower odds
+(OR = 0.553, 95% CI: 0.496–0.615) of having good physical health
+compared to those who are not food insecure, holding all else constant.
+The results are statistically significant, indicating a robust
+relationship between food insecurity and physical health. Poor physical
+health among food-insecure individuals may result from inadequate
+nutrition, increased stress levels, or reduced access to healthcare
+resources.</p>
 </div>
 </div>
-<div id="mental-health-1" class="section level2">
-<h2>Mental Health</h2>
-<div id="odds-ratio-2" class="section level3">
-<h3>Odds Ratio</h3>
+<div id="is-food-insecure-associated-with-mental-health"
+class="section level3">
+<h3>Is Food Insecure Associated With Mental Health?</h3>
+<div id="odds-ratio-2" class="section level4">
+<h4>Odds Ratio</h4>
 <pre class="r"><code>logit_mental = 
   glm(mental_health ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -748,8 +788,8 @@ knitr::kable(exp_mental)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="confidence-interval-2" class="section level3">
-<h3>Confidence Interval</h3>
+<div id="confidence-interval-2" class="section level4">
+<h4>Confidence Interval</h4>
 <pre class="r"><code>ci_mental = as.data.frame(exp_mental)
 ci_mental = 
   ci_mental |&gt; 
@@ -761,26 +801,31 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   labs(
     title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
     x = &quot;Odds Ratio (OR)&quot;,
-    y = &quot;Physical Health Category&quot;
+    y = &quot;Mental Health Category&quot;
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>OR interpretation: Individuals who are food insecure have
-approximately 59.7% lower odds of having good mental health compared to
-those who are not food insecure, holding all else constant. Therefore,
-food insecure is associated with mental health.</p>
-<p>Results show that food insecure have impacts on both individuals’
-physical and mental health, separately. Then we move on to explore how
-food insecure affects diabetes which is a main outcome of
+<p>Individuals who are food insecure have approximately 59.7% lower odds
+(OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared
+to those who are not food insecure, holding all else constant. This
+strong association highlights the significant mental health burden food
+insecurity places on individuals.</p>
+<p>The stress of uncertain food access likely exacerbates mental health
+conditions, including anxiety and depression. Food insecurity could also
+interact with other socioeconomic stressors, amplifying its effects on
+mental health. Results show that food insecure have impacts on both
+individuals’ physical and mental health, separately. Then we move on to
+explore how food insecure affects diabetes which is a main outcome of
 malnutrition.</p>
 </div>
 </div>
-<div id="diabetes" class="section level2">
-<h2>Diabetes</h2>
-<div id="odds-ratio-3" class="section level3">
-<h3>Odds Ratio</h3>
+<div id="is-food-insecure-associated-with-diabetes"
+class="section level3">
+<h3>Is Food Insecure Associated With Diabetes</h3>
+<div id="odds-ratio-3" class="section level4">
+<h4>Odds Ratio</h4>
 <pre class="r"><code>logit_diabete = 
   glm(diabete ~ food_insecure, data = cleaned_df, family = binomial)
 
@@ -812,8 +857,8 @@ knitr::kable(exp_diabete)</code></pre>
 </tbody>
 </table>
 </div>
-<div id="confidence-interval-3" class="section level3">
-<h3>Confidence Interval</h3>
+<div id="confidence-interval-3" class="section level4">
+<h4>Confidence Interval</h4>
 <pre class="r"><code>ci_diabete = as.data.frame(exp_diabete)
 ci_diabete = 
   ci_diabete |&gt; 
@@ -825,16 +870,20 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   labs(
     title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
     x = &quot;Odds Ratio (OR)&quot;,
-    y = &quot;Physical Health Category&quot;
+    y = &quot;Diabete Status&quot;
   ) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>OR interpretation: Individuals who are food insecure have
-approximately 31.2% higher odds of having diabetes compared to those who
-are not food insecure, holding all else constant. Food insecure is
-associated with diabetes.</p>
+<p>Individuals who are food insecure have approximately 31.2% higher
+odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to
+those who are not food insecure, holding all else constant. This
+association indicates a notable link between food insecurity and
+diet-related chronic diseases. Food insecurity often leads to reliance
+on low-cost, calorie-dense but nutrient-poor foods, increasing the risk
+of diabetes and other metabolic conditions.</p>
+</div>
 </div>
 </div>
 
