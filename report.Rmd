@@ -526,7 +526,7 @@ ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insec
 ```
 
 
-We categorized food insecurity into a binary variable for our regression analysis, with status **Rarely** + **Sometimes** + **Usually** + **Always** as food insecure, and **Never** as secure. This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
+We categorized food insecurity into a binary variable for our regression analysis, with status **Rarely** + **Sometimes** + **Usually** + **Always** as food insecure, and **Never** as secure. This bar graph presents the distribution of food insecurity status among individuals in the dataset. The larger group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The smaller group, shown in pink, represents individuals who are food insecure, numbering around 2,500. 
 
 ### Is Income Associated With Food Insecure? 
 #### Odds Ratio
