@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Analysis - Socioeconomic Factors</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="plots.html">Food Deserts</a>
+</li>
+<li>
+  <a href="data_analysis.html">Socioeconomic Factors</a>
+</li>
+<li>
+  <a href="Health.html">Health</a>
+</li>
+<li>
+  <a href="report.html">Report</a>
+</li>
+<li>
+  <a href="https://github.com/tl3279/final.github.io">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Data Analysis - Socioeconomic Factors</h1>
+
+</div>
+
+
+<div id="data-importing-and-cleaning" class="section level2">
+<h2>Data Importing and Cleaning</h2>
+<p>Visit <a href="report.html">report</a> for detailed steps on how the
+data is cleaned.</p>
+<pre class="r"><code>brfss_22 = read_csv(&quot;NYSDOH_BRFSS_Survey_Data_2022.csv&quot;)|&gt;
+  janitor::clean_names()
+
+cleaned_df = 
+  brfss_22 |&gt;
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
+         !str_detect(genhlth, &quot;Not Sure|Refused&quot;),
+         !str_detect(strsmeal_sa, &quot;Not&quot;),
+         !str_detect(incomg1, &quot;Not&quot;))|&gt;
+  select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
+
+cleaned_df = 
+  cleaned_df |&gt;
+  mutate(
+    income = case_when(
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$15,000 to &lt; $25,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
+      incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
+      TRUE ~ NA_character_),
+    
+    education = case_when(
+      educag == &quot;Did not graduate High School&quot; ~ &quot;Less than high school&quot;,
+      educag == &quot;Graduated High School&quot; ~ &quot;High school or GED&quot;,
+      educag == &quot;Attended College or Technical School&quot; ~ &quot;Some post-high school&quot;,
+      educag == &quot;Graduated from College or Technical School&quot; ~ &quot;College graduate&quot;
+    ),
+    
+    food_insecure = case_when(
+      strsmeal_sa %in% c(&quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;) ~ 1,
+      strsmeal_sa == &quot;Never&quot; ~ 0),
+    
+    health = case_when(
+      genhlth %in% c(&quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;) ~ 1,
+      genhlth %in% c(&quot;Fair&quot;, &quot;Poor&quot;) ~ 0),
+    
+    physical_health = case_when(
+      phys14d %in% c(&quot;Zero days when physical health not good&quot;) ~ 1,
+      phys14d %in% c(&quot;1-13 days when physical health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 0),
+    
+    mental_health = case_when(
+      ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 1,
+      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when mental health not good&quot;) ~ 0),
+    
+    diabete = case_when(
+      diabete4 %in% c(&quot;No&quot;) ~0,
+      diabete4%in% c(&quot;Yes&quot;) ~ 1)
+    
+   )|&gt;
+  filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|&gt;
+  select(-educag, -diabete4)</code></pre>
+</div>
+<div id="key-socioeconomic-factors-distribution" class="section level2">
+<h2>Key Socioeconomic Factors Distribution</h2>
+<div id="income" class="section level3">
+<h3>Income</h3>
+<div id="using-original-incomg1-variable" class="section level4">
+<h4>Using Original <strong><code>incomg1</code></strong> Variable</h4>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(incomg1 = factor(incomg1, levels = c(&quot;Less than $15,000&quot;, &quot;$15,000 to &lt; $25,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;, &quot;$50,000 to &lt; $100,000&quot;, &quot;$100,000 to &lt; $200,000&quot;, &quot;$200,000 or more&quot;))) |&gt;
+  ggplot(aes(x = incomg1, fill = incomg1))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Income&quot;,
+    x = &quot;Income Category&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Using the original <strong><code>incomg1</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of income among individuals categorized into 7 levels:
+“Less than $15,000”, “$15,000 to &lt; $25,000”, “$25,000 to &lt;
+$35,000”, “$35,000 to &lt; $50,000”, “$50,000 to &lt; $100,000”,
+“$100,000 to &lt; $200,000”, and “$200,000 or more”. The largest group
+comprises individuals earning $50,000 to &lt; $100,000, followed closely
+by those earning $100,000 to &lt; $200,000. The other categories are
+more evenly distributed, with the fewest individuals earning less than
+$15,000. This chart highlights a trend toward middle- to higher-income
+brackets, suggesting a skew toward financially stable individuals within
+the dataset.</p>
+</div>
+<div id="using-created-variable-income" class="section level4">
+<h4>Using Created Variable <strong><code>income</code></strong></h4>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(income = factor(income, levels = c(&quot;&lt;50,000&quot;, &quot;50,000 ~ 100,000&quot;, &quot;&gt;100,000&quot;))) |&gt;
+  ggplot(aes(x = factor(income), fill = factor(income))) +
+  geom_bar() +
+  labs(
+    title = &quot;Bar Plot of Income&quot;,
+    x = &quot;Income Status&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Income&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We categorized income into a three-level variable for our regression
+analysis, with “Less than $15,000” + “$15,000 to &lt; $25,000” +
+“$25,000 to &lt; $35,000” + “$35,000 to &lt; $50,000” grouped as
+“&lt;50,000”, “$50,000 to &lt; $100,000” as “50,000 ~ 100,000”, and
+“$100,000 to &lt; $200,000” + “$200,000 or more” grouped as
+“&gt;100,000”. People earning less than $50,000 make up the largest
+group, followed by those earning over $100,000, with individuals earning
+between $50,000 and $100,000 forming the smallest group.</p>
+</div>
+</div>
+<div id="race" class="section level3">
+<h3>Race</h3>
+<pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Race/Ethnicity&quot;,
+    x = &quot;Race/Ethnicity&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 75, hjust = 1)) </code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-4-1.png" width="768" /></p>
+<p>This bar graph illustrates the distribution of race/ethnicity in the
+dataset. The categories include American Indian/Alaskan Native, Asian,
+Black, Hispanic, Other Race, and White, all specified as Non-Hispanic
+except for the Hispanic group. Among these groups, White, Non-Hispanic
+individuals dominate, with the highest count exceeding 6,000. The second
+most prevalent group is Hispanic, followed by Black, Non-Hispanic, while
+Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly
+smaller counts. The American Indian/Alaskan Native, Non-Hispanic
+category represents the smallest group.</p>
+</div>
+<div id="education" class="section level3">
+<h3>Education</h3>
+<pre class="r"><code>ggplot(cleaned_df, aes(x = &quot;&quot;, fill = education)) +
+  geom_bar(width = 1, stat = &quot;count&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  labs(
+    title = &quot;Distribution of Education Levels&quot;,
+    fill = &quot;Education Level&quot;
+  ) +
+  theme_void() +
+  theme(legend.position = &quot;right&quot;)</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>This pie chart shows the distribution of education levels within a
+dataset. The largest portion of the chart is represented by college
+graduates, shown in red, indicating that a significant proportion of
+individuals have completed higher education. The second-largest
+category, represented in purple, corresponds to individuals with some
+post-high school education. High school graduates or those with a GED,
+shown in green, form a smaller segment, while the smallest portion of
+the chart, in teal, represents individuals with less than a high school
+education.</p>
+</div>
+<div id="food-insecurity" class="section level3">
+<h3>Food Insecurity</h3>
+<div id="using-original-strsmeal_sa-variable" class="section level4">
+<h4>Using Original <strong><code>strsmeal_sa</code></strong>
+Variable</h4>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(strsmeal_sa = factor(strsmeal_sa, levels = c(&quot;Never&quot;, &quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;))) |&gt;
+  ggplot(aes(x = strsmeal_sa, fill = strsmeal_sa))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Food Insecurity&quot;,
+    x = &quot;Food Insecurity Category&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Using the original <strong><code>strsmeal_sa</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of income among individuals categorized into 5 levels:
+<strong>Never</strong>, <strong>Rarely</strong>,
+<strong>Sometimes</strong>, <strong>Usually</strong>, and
+<strong>Always</strong>. The largest group comprises individuals who
+never experience food insecurity, followed by those who rarely and
+sometimes experience it, both at similar levels. The “Always” category
+comes next, while “Usually” represents the smallest group. This
+distribution highlights a trend where the majority of individuals report
+never or infrequently experiencing meal insecurity.</p>
+</div>
+<div id="using-created-variable-food_insecure" class="section level4">
+<h4>Using Created Variable
+<strong><code>food_insecure</code></strong></h4>
+<pre class="r"><code>ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
+  geom_bar() +
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;lightblue&quot;, &quot;1&quot; = &quot;pink&quot;), labels = c(&quot;Not Food Insecure&quot;, &quot;Food Insecure&quot;)) +
+  labs(
+    title = &quot;Distribution of Food Insecurity&quot;,
+    x = &quot;Food Insecurity&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Status&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>We categorized food insecurity into a binary variable for our
+regression analysis, with status <strong>Rarely</strong> +
+<strong>Sometimes</strong> + <strong>Usually</strong> +
+<strong>Always</strong> as food insecure, and <strong>Never</strong> as
+secure. This bar graph presents the distribution of food insecurity
+status among individuals in the dataset. The larger group, represented
+in light blue, comprises individuals who are not food insecure, with a
+count exceeding 4,000. The smaller group, shown in pink, represents
+individuals who are food insecure, numbering around 2,500.</p>
+<pre class="r"><code>cleaned_df = 
+  cleaned_df |&gt;
+  mutate(
+    imprace = as.factor(imprace),
+    income = as.factor(income),
+    education = as.factor(education)
+  )</code></pre>
+</div>
+</div>
+</div>
+<div id="logistic-regression-models" class="section level2">
+<h2>Logistic Regression Models</h2>
+<p>For all regression analyses, logistic regression was utilized, and
+the calculated odds ratios (ORs) were presented to interpret the
+relationships between variables.</p>
+<div id="is-income-associated-with-food-insecure"
+class="section level3">
+<h3>Is Income Associated With Food Insecure?</h3>
+<div id="odds-ratio" class="section level4">
+<h4>Odds Ratio</h4>
+<pre class="r"><code>logit_income = 
+  glm(formula = food_insecure ~ income, data = cleaned_df, family = binomial)
+
+exp_income = exp(cbind(OR=coef(logit_income),confint(logit_income)))
+
+rownames(exp_income) = gsub(&quot;income&quot;, &quot;&quot;, rownames(exp_income))
+
+knitr::kable(exp_income)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.2643678</td>
+<td align="right">1.1729452</td>
+<td align="right">1.3632163</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;100,000</td>
+<td align="right">0.1534791</td>
+<td align="right">0.1338561</td>
+<td align="right">0.1756158</td>
+</tr>
+<tr class="odd">
+<td align="left">50,000 ~ 100,000</td>
+<td align="right">0.3206974</td>
+<td align="right">0.2838710</td>
+<td align="right">0.3619826</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="confidence-interval" class="section level4">
+<h4>Confidence Interval</h4>
+<pre class="r"><code>ci_income = as.data.frame(exp_income)
+ci_income = 
+  ci_income |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) |&gt;
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Income Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_income</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Intercept:</p>
+<ul>
+<li>The odds ratio for the intercept (1.26) represents the baseline odds
+of being food insecure for income less than $50,000 when all predictors
+are 0. Since the 95% confidence interval (1.173, 1.363) does not include
+1, it is statistically significant. Individuals with income less than
+$50,000 are 26% more likely to experience food insecurity compared to
+individuals not in this category.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>Income &gt; 100,000: Individuals with an income level of over
+$100,000 are 85% less likely to experience food insecurity compared to
+the the reference group (income less than $50,000).</li>
+<li>Income 50,000–100,000: Individuals with an income level of
+$50,000–$100,000 are 68% less likely to experience food insecurity
+compared to the reference group.</li>
+</ul>
+<p>Statistical significance: Two ORs are significant because do not
+contain 1. Income is associated with food insecurity.</p>
+</div>
+</div>
+<div id="is-race-associated-with-food-insecure" class="section level3">
+<h3>Is Race Associated With Food Insecure?</h3>
+<div id="odds-ratio-1" class="section level4">
+<h4>Odds Ratio</h4>
+<pre class="r"><code>logit_race = 
+  glm(food_insecure ~ imprace, data = cleaned_df, family = binomial)
+
+exp_race = exp(cbind(OR=coef(logit_race),confint(logit_race)))
+
+rownames(exp_race) = gsub(&quot;imprace&quot;, &quot;&quot;, rownames(exp_race))
+
+knitr::kable(exp_race)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.7333333</td>
+<td align="right">0.9298898</td>
+<td align="right">3.3510888</td>
+</tr>
+<tr class="even">
+<td align="left">Asian, Non-Hispanic</td>
+<td align="right">0.3089683</td>
+<td align="right">0.1539648</td>
+<td align="right">0.5998713</td>
+</tr>
+<tr class="odd">
+<td align="left">Black, Non-Hispanic</td>
+<td align="right">0.5617409</td>
+<td align="right">0.2858429</td>
+<td align="right">1.0663615</td>
+</tr>
+<tr class="even">
+<td align="left">Hispanic</td>
+<td align="right">0.8552220</td>
+<td align="right">0.4368488</td>
+<td align="right">1.6166813</td>
+</tr>
+<tr class="odd">
+<td align="left">Other race, Non-Hispanic</td>
+<td align="right">0.4305396</td>
+<td align="right">0.2029831</td>
+<td align="right">0.8869536</td>
+</tr>
+<tr class="even">
+<td align="left">White, Non-Hispanic</td>
+<td align="right">0.2327993</td>
+<td align="right">0.1200835</td>
+<td align="right">0.4352774</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="confidence-interval-1" class="section level4">
+<h4>Confidence Interval</h4>
+<pre class="r"><code>ci_race = as.data.frame(exp_race)
+ci_race = 
+  ci_race |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) |&gt;
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Race Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_race</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Intercept:</p>
+<ul>
+<li>The intercept represents the baseline odds of food insecurity for
+the reference group (American Indian/Alaskan Native). It is not
+significant because the 95% CI contains 1.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>Asian, Non-Hispanic: Non-Hispanic Asians have 69% lower odds of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native).</li>
+<li>Black, Non-Hispanic: Non-Hispanic Blacks have 44% lower odds of
+experiencing food insecurity compared to the reference group.</li>
+<li>Hispanic: Hispanics have slightly lower odds (14% lower) of
+experiencing food insecurity compared to the reference group. It is not
+significant because the 95% CI contains 1.</li>
+<li>Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of
+other races have 67% lower odds of experiencing food insecurity compared
+to the reference group.</li>
+<li>White, Non-Hispanic: Non-Hispanic Whites have 77% lower odds of
+experiencing food insecurity compared to the reference group.</li>
+</ul>
+<p>Statistical significance: Race is associated with food insecurity in
+certain groups. Non-Hispanic Asians, Whites, and individuals of other
+races have significantly lower odds of food insecurity compared to the
+reference group. However, the association is not statistically
+significant for Non-Hispanic Blacks and Hispanics.</p>
+</div>
+</div>
+<div id="is-education-associated-with-food-insecure"
+class="section level3">
+<h3>Is Education Associated With Food Insecure?</h3>
+<div id="odds-ratio-2" class="section level4">
+<h4>Odds Ratio</h4>
+<pre class="r"><code>logit_edu = 
+  glm(food_insecure ~ education, data = cleaned_df, family = binomial)
+
+exp_edu = exp(cbind(OR=coef(logit_edu),confint(logit_edu)))
+
+rownames(exp_edu) = gsub(&quot;education&quot;, &quot;&quot;, rownames(exp_edu))
+
+knitr::kable(exp_edu)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.3310212</td>
+<td align="right">0.3062865</td>
+<td align="right">0.3573961</td>
+</tr>
+<tr class="even">
+<td align="left">High school or GED</td>
+<td align="right">2.5420228</td>
+<td align="right">2.2383501</td>
+<td align="right">2.8874147</td>
+</tr>
+<tr class="odd">
+<td align="left">Less than high school</td>
+<td align="right">5.2714644</td>
+<td align="right">4.2553306</td>
+<td align="right">6.5520655</td>
+</tr>
+<tr class="even">
+<td align="left">Some post-high school</td>
+<td align="right">2.1372314</td>
+<td align="right">1.8865285</td>
+<td align="right">2.4213518</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="confidence-interval-2" class="section level4">
+<h4>Confidence Interval</h4>
+<pre class="r"><code>ci_edu = as.data.frame(exp_edu)
+ci_edu = 
+  ci_edu |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) |&gt;
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Education Category&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_edu</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Intercept:</p>
+<ul>
+<li>The intercept represents the baseline odds of food insecurity for
+the reference group (college graduates) when all predictors are zero.
+Since the 95% confidence interval (0.306, 0.357) does not include 1, it
+is statistically significant. Individuals who are college graduates are
+67% less likely to experience food insecurity compared to individuals
+not in this category.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>High School or GED: Individuals with a high school diploma or GED
+have 154% the odds of experiencing food insecurity compared to the
+reference group (college graduates).</li>
+<li>Less than High School: Individuals with less than a high school
+education have 427% higher odds of experiencing food insecurity compared
+to the reference group.</li>
+<li>Some Post-High School: Individuals with some post-high school
+education have 114% higher odds of experiencing food insecurity compared
+to the reference group.</li>
+</ul>
+<p>Statistical significance: The odds of food insecurity increase as the
+level of education decreases. Those with less than a high school
+education have the greatest increase in odds compared to the reference
+group.</p>
+</div>
+</div>
+<div id="are-race-education-and-income-associated-with-food-insecure"
+class="section level3">
+<h3>Are Race, Education, and Income Associated With Food Insecure?</h3>
+<div id="odds-ratio-3" class="section level4">
+<h4>Odds Ratio</h4>
+<pre class="r"><code>logit_all = 
+  glm(food_insecure ~ education + income + imprace, data = cleaned_df, family = binomial)
+
+exp_all = exp(cbind(OR=coef(logit_all),confint(logit_all)))
+
+rownames(exp_all) = gsub(&quot;education|income|imprace&quot;, &quot;&quot;, rownames(exp_all))
+
+knitr::kable(exp_all)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">OR</th>
+<th align="right">2.5 %</th>
+<th align="right">97.5 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">1.8961390</td>
+<td align="right">0.9737757</td>
+<td align="right">3.8342042</td>
+</tr>
+<tr class="even">
+<td align="left">High school or GED</td>
+<td align="right">1.3693978</td>
+<td align="right">1.1863615</td>
+<td align="right">1.5800515</td>
+</tr>
+<tr class="odd">
+<td align="left">Less than high school</td>
+<td align="right">1.5853740</td>
+<td align="right">1.2451754</td>
+<td align="right">2.0222613</td>
+</tr>
+<tr class="even">
+<td align="left">Some post-high school</td>
+<td align="right">1.4689584</td>
+<td align="right">1.2818859</td>
+<td align="right">1.6827543</td>
+</tr>
+<tr class="odd">
+<td align="left">&gt;100,000</td>
+<td align="right">0.2104580</td>
+<td align="right">0.1812010</td>
+<td align="right">0.2440199</td>
+</tr>
+<tr class="even">
+<td align="left">50,000 ~ 100,000</td>
+<td align="right">0.4014218</td>
+<td align="right">0.3527578</td>
+<td align="right">0.4564932</td>
+</tr>
+<tr class="odd">
+<td align="left">Asian, Non-Hispanic</td>
+<td align="right">0.5142870</td>
+<td align="right">0.2457193</td>
+<td align="right">1.0402914</td>
+</tr>
+<tr class="even">
+<td align="left">Black, Non-Hispanic</td>
+<td align="right">0.7158818</td>
+<td align="right">0.3500425</td>
+<td align="right">1.4118335</td>
+</tr>
+<tr class="odd">
+<td align="left">Hispanic</td>
+<td align="right">0.9450719</td>
+<td align="right">0.4640768</td>
+<td align="right">1.8546070</td>
+</tr>
+<tr class="even">
+<td align="left">Other race, Non-Hispanic</td>
+<td align="right">0.5909596</td>
+<td align="right">0.2660921</td>
+<td align="right">1.2737355</td>
+</tr>
+<tr class="odd">
+<td align="left">White, Non-Hispanic</td>
+<td align="right">0.3763712</td>
+<td align="right">0.1866237</td>
+<td align="right">0.7309784</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="confidence-interval-3" class="section level4">
+<h4>Confidence Interval</h4>
+<pre class="r"><code>ci_all = as.data.frame(exp_all)
+ci_all = 
+  ci_all |&gt; 
+  rownames_to_column(&quot;Variable&quot;) |&gt; 
+  filter(Variable != &quot;(Intercept)&quot;) |&gt;
+ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 1, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  labs(
+    title = &quot;Odds Ratios with 95% Confidence Intervals&quot;,
+    x = &quot;Odds Ratio (OR)&quot;,
+    y = &quot;Categories&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 12))
+ci_all</code></pre>
+<p><img src="data_analysis_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Statistical Significant Predictors:</p>
+<p>Education:</p>
+<ul>
+<li>Individuals with a high school diploma or GED have 36.9% higher odds
+of experiencing food insecurity compared to the reference group (college
+graduates).<br />
+</li>
+<li>Individuals with less than a high school education have 58.5% higher
+odds of experiencing food insecurity compared to the reference
+group.<br />
+</li>
+<li>Individuals with some post-high school education have 46.9% higher
+odds of experiencing food insecurity compared to the reference
+group.</li>
+</ul>
+<p>Income:</p>
+<ul>
+<li>Individuals with an income over $100,000 have 79.0% lower odds of
+experiencing food insecurity compared to the reference group (≤
+50,000).<br />
+</li>
+<li>Individuals with an income between $50,000 and $100,000 have 59.9%
+lower odds of experiencing food insecurity compared to the reference
+group.</li>
+</ul>
+<p>Race/Ethnicity:</p>
+<ul>
+<li>Non-Hispanic Whites have 62.4% lower odds of experiencing food
+insecurity compared to the reference group.</li>
+</ul>
+<p>Summary: Higher education levels are protective against food
+insecurity, with individuals who have less than a high school education
+facing the highest risk. Those with less than a high school education
+have 58.5% higher odds of experiencing food insecurity compared to those
+with a college education. Income also plays a significant role, as
+individuals earning more than $100,000 have 79.0% lower odds of food
+insecurity, highlighting the strong protective effect of higher income
+levels. Finally, race and ethnicity are associated with differences in
+food insecurity, with non-Hispanic Whites showing significantly lower
+odds of food insecurity compared to other racial groups. However,
+results for other racial groups are not statistically significant,
+indicating variability in these associations.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
