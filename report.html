@@ -589,15 +589,15 @@ cleaned_df =
   brfss_22 |&gt;
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
          !str_detect(genhlth, &quot;Not Sure|Refused&quot;),
-         !str_detect(strsmeal_sa, &quot;Not&quot;))|&gt;
+         !str_detect(strsmeal_sa, &quot;Not&quot;),
+         !str_detect(incomg1, &quot;Not&quot;))|&gt;
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
-  
 
 cleaned_df = 
   cleaned_df |&gt;
   mutate(
     income = case_when(
-      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$15,000 to &lt; $25,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
       incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
       incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
       TRUE ~ NA_character_),
@@ -631,7 +631,7 @@ cleaned_df =
     
    )|&gt;
   filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa, -diabete4)</code></pre>
+  select(-educag, -diabete4)</code></pre>
 <p>Downlaoded the csv file from <a
 href="https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data">BRSFF
 2022</a>. It is used for regression analysis. It provides monitors
@@ -663,10 +663,8 @@ food insecurity questions<br />
 health.</li>
 </ul>
 <p>The cleaned dataset excludes the original
-<strong><code>incomg1</code></strong>,
-<strong><code>educag</code></strong>,
-<strong><code>strsmeal_sa</code></strong>, and
-<strong><code>diabete4</code></strong> variables and keeps only the
+<strong><code>educag</code></strong> and
+<strong><code>diabete4</code></strong> variable and keeps only the
 relevant and recoded columns, excluding those who are unsure or refused
 to answer.</p>
 </div>
@@ -955,6 +953,59 @@ ratios (ORs) were presented to interpret the relationships between
 variables.</p>
 <div id="key-socioeconomic-factors-distribution" class="section level3">
 <h3>Key Socioeconomic Factors Distribution</h3>
+<div id="income" class="section level4">
+<h4>Income</h4>
+<div id="using-original-incomg1-variable" class="section level5">
+<h5>Using Original <strong><code>incomg1</code></strong> Variable</h5>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(incomg1 = factor(incomg1, levels = c(&quot;Less than $15,000&quot;, &quot;$15,000 to &lt; $25,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;, &quot;$50,000 to &lt; $100,000&quot;, &quot;$100,000 to &lt; $200,000&quot;, &quot;$200,000 or more&quot;))) |&gt;
+  ggplot(aes(x = incomg1, fill = incomg1))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Income&quot;,
+    x = &quot;Income Category&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Using the original <strong><code>incomg1</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of income among individuals categorized into 7 levels:
+“Less than $15,000”, “$15,000 to &lt; $25,000”, “$25,000 to &lt;
+$35,000”, “$35,000 to &lt; $50,000”, “$50,000 to &lt; $100,000”,
+“$100,000 to &lt; $200,000”, and “$200,000 or more”. The largest group
+comprises individuals earning $50,000 to &lt; $100,000, followed closely
+by those earning $100,000 to &lt; $200,000. The other categories are
+more evenly distributed, with the fewest individuals earning less than
+$15,000. This chart highlights a trend toward middle- to higher-income
+brackets, suggesting a skew toward financially stable individuals within
+the dataset.</p>
+</div>
+<div id="using-created-variable-income" class="section level5">
+<h5>Using Created Variable <strong><code>income</code></strong></h5>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(income = factor(income, levels = c(&quot;&lt;50,000&quot;, &quot;50,000 ~ 100,000&quot;, &quot;&gt;100,000&quot;))) |&gt;
+  ggplot(aes(x = factor(income), fill = factor(income))) +
+  geom_bar() +
+  labs(
+    title = &quot;Bar Plot of Income&quot;,
+    x = &quot;Income Status&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Income&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>We categorized income into a three-level variable for our regression
+analysis, with “Less than $15,000” + “$15,000 to &lt; $25,000” +
+“$25,000 to &lt; $35,000” + “$35,000 to &lt; $50,000” grouped as
+“&lt;50,000”, “$50,000 to &lt; $100,000” as “50,000 ~ 100,000”, and
+“$100,000 to &lt; $200,000” + “$200,000 or more” grouped as
+“&gt;100,000”. People earning less than $50,000 make up the largest
+group, followed by those earning over $100,000, with individuals earning
+between $50,000 and $100,000 forming the smallest group.</p>
+</div>
+</div>
 <div id="race" class="section level4">
 <h4>Race</h4>
 <pre class="r"><code>ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
@@ -966,7 +1017,7 @@ variables.</p>
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 75, hjust = 1))</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
 <p>This bar graph illustrates the distribution of race/ethnicity in the
 dataset. The categories include American Indian/Alaskan Native, Asian,
 Black, Hispanic, Other Race, and White, all specified as Non-Hispanic
@@ -988,7 +1039,7 @@ category represents the smallest group.</p>
   ) +
   theme_void() +
   theme(legend.position = &quot;right&quot;)</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>This pie chart shows the distribution of education levels within a
 dataset. The largest portion of the chart is represented by college
 graduates, shown in red, indicating that a significant proportion of
@@ -1001,6 +1052,36 @@ education.</p>
 </div>
 <div id="food-insecurity" class="section level4">
 <h4>Food Insecurity</h4>
+<div id="using-original-strsmeal_sa-variable" class="section level5">
+<h5>Using Original <strong><code>strsmeal_sa</code></strong>
+Variable</h5>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(strsmeal_sa = factor(strsmeal_sa, levels = c(&quot;Never&quot;, &quot;Rarely&quot;,&quot;Sometimes&quot;,&quot;Usually&quot;, &quot;Always&quot;))) |&gt;
+  ggplot(aes(x = strsmeal_sa, fill = strsmeal_sa))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Food Insecurity&quot;,
+    x = &quot;Food Insecurity Category&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Using the original <strong><code>strsmeal_sa</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of income among individuals categorized into 5 levels:
+<strong>Never</strong>, <strong>Rarely</strong>,
+<strong>Sometimes</strong>, <strong>Usually</strong>, and
+<strong>Always</strong>. The largest group comprises individuals who
+never experience food insecurity, followed by those who rarely and
+sometimes experience it, both at similar levels. The “Always” category
+comes next, while “Usually” represents the smallest group. This
+distribution highlights a trend where the majority of individuals report
+never or infrequently experiencing meal insecurity.</p>
+</div>
+<div id="using-created-variable-food_insecure" class="section level5">
+<h5>Using Created Variable
+<strong><code>food_insecure</code></strong></h5>
 <pre class="r"><code>ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
   geom_bar() +
   scale_fill_manual(values = c(&quot;0&quot; = &quot;lightblue&quot;, &quot;1&quot; = &quot;pink&quot;), labels = c(&quot;Not Food Insecure&quot;, &quot;Food Insecure&quot;)) +
@@ -1011,14 +1092,19 @@ education.</p>
     fill = &quot;Status&quot;
   ) +
   theme_minimal()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>This bar graph presents the distribution of food insecurity status
-among individuals in the dataset. The largest group, represented in
-light blue, comprises individuals who are not food insecure, with a
+<p><img src="report_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>We categorized food insecurity into a binary variable for our
+regression analysis, with status <strong>Rarely</strong> +
+<strong>Sometimes</strong> + <strong>Usually</strong> +
+<strong>Always</strong> as food insecure, and <strong>Never</strong> as
+secure. This bar graph presents the distribution of food insecurity
+status among individuals in the dataset. The largest group, represented
+in light blue, comprises individuals who are not food insecure, with a
 count exceeding 4,000. The second-largest group, shown in pink,
 represents individuals who are food insecure, numbering slightly over
 2,000. A very small proportion, represented in gray, corresponds to
 missing data (NA) for food insecurity status.</p>
+</div>
 </div>
 </div>
 <div id="is-income-associated-with-food-insecure"
@@ -1046,21 +1132,21 @@ knitr::kable(exp_income)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.1328527</td>
-<td align="right">1.0392494</td>
-<td align="right">1.2350781</td>
+<td align="right">1.2643678</td>
+<td align="right">1.1729452</td>
+<td align="right">1.3632163</td>
 </tr>
 <tr class="even">
 <td align="left">&gt;100,000</td>
-<td align="right">0.1712968</td>
-<td align="right">0.1484454</td>
-<td align="right">0.1972953</td>
+<td align="right">0.1534791</td>
+<td align="right">0.1338561</td>
+<td align="right">0.1756158</td>
 </tr>
 <tr class="odd">
 <td align="left">50,000 ~ 100,000</td>
-<td align="right">0.3579278</td>
-<td align="right">0.3145710</td>
-<td align="right">0.4069432</td>
+<td align="right">0.3206974</td>
+<td align="right">0.2838710</td>
+<td align="right">0.3619826</td>
 </tr>
 </tbody>
 </table>
@@ -1083,27 +1169,27 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_income</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>Intercept:</p>
 <ul>
-<li>The odds ratio for the intercept (1.13) represents the baseline odds
+<li>The odds ratio for the intercept (1.26) represents the baseline odds
 of being food insecure for income less than 50,000 when all predictors
-are 0. Since the 95% confidence interval (1.039, 1.235) does not include
+are 0. Since the 95% confidence interval (1.173, 1.363) does not include
 1, it is statistically significant. Individuals with income less than
-$50,000 are 13% more likely to experience food insecurity compared to
+$50,000 are 26% more likely to experience food insecurity compared to
 individuals not in this category.</li>
 </ul>
 <p>OR:</p>
 <ul>
 <li>Income &gt; 100,000: Individuals with an income level of over
-100,000 are 83% less likely to experience food insecurity compared to
+100,000 are 85% less likely to experience food insecurity compared to
 the the reference group (income less than $50,000).</li>
 <li>Income 50,000–100,000: Individuals with an income level of
-50,000–100,000 are 64% less likely to experience food insecurity
+50,000–100,000 are 68% less likely to experience food insecurity
 compared to the reference group.</li>
 </ul>
-<p>Two ORs are significant because do not contain 1. Income is
-associated with food insecurity.</p>
+<p>Statistical significance: Two ORs are significant because do not
+contain 1. Income is associated with food insecurity.</p>
 </div>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
@@ -1130,39 +1216,39 @@ knitr::kable(exp_race)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.7500000</td>
-<td align="right">0.8744733</td>
-<td align="right">3.6681253</td>
+<td align="right">1.7333333</td>
+<td align="right">0.9298898</td>
+<td align="right">3.3510888</td>
 </tr>
 <tr class="even">
 <td align="left">Asian, Non-Hispanic</td>
-<td align="right">0.2814919</td>
-<td align="right">0.1294988</td>
-<td align="right">0.5864757</td>
+<td align="right">0.3089683</td>
+<td align="right">0.1539648</td>
+<td align="right">0.5998713</td>
 </tr>
 <tr class="odd">
 <td align="left">Black, Non-Hispanic</td>
-<td align="right">0.4749773</td>
-<td align="right">0.2227487</td>
-<td align="right">0.9691129</td>
+<td align="right">0.5617409</td>
+<td align="right">0.2858429</td>
+<td align="right">1.0663615</td>
 </tr>
 <tr class="even">
 <td align="left">Hispanic</td>
-<td align="right">0.7116564</td>
-<td align="right">0.3349581</td>
-<td align="right">1.4461908</td>
+<td align="right">0.8552220</td>
+<td align="right">0.4368488</td>
+<td align="right">1.6166813</td>
 </tr>
 <tr class="odd">
 <td align="left">Other race, Non-Hispanic</td>
-<td align="right">0.3809524</td>
-<td align="right">0.1654258</td>
-<td align="right">0.8444651</td>
+<td align="right">0.4305396</td>
+<td align="right">0.2029831</td>
+<td align="right">0.8869536</td>
 </tr>
 <tr class="even">
 <td align="left">White, Non-Hispanic</td>
-<td align="right">0.2074678</td>
-<td align="right">0.0987074</td>
-<td align="right">0.4164822</td>
+<td align="right">0.2327993</td>
+<td align="right">0.1200835</td>
+<td align="right">0.4352774</td>
 </tr>
 </tbody>
 </table>
@@ -1185,7 +1271,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_race</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <p>Intercept:</p>
 <ul>
 <li>The intercept represents the baseline odds of food insecurity for
@@ -1194,25 +1280,25 @@ significant because the 95% CI contains 1.</li>
 </ul>
 <p>OR:</p>
 <ul>
-<li>Asian, Non-Hispanic: Non-Hispanic Asians have 62% lower odds of
+<li>Asian, Non-Hispanic: Non-Hispanic Asians have 69% lower odds of
 experiencing food insecurity compared to the reference group (American
 Indian/Alaskan Native).</li>
-<li>Black, Non-Hispanic: Non-Hispanic Blacks have 53% lower odds of
+<li>Black, Non-Hispanic: Non-Hispanic Blacks have 44% lower odds of
 experiencing food insecurity compared to the reference group.</li>
-<li>Hispanic: Hispanics have slightly lower odds (29% lower) of
+<li>Hispanic: Hispanics have slightly lower odds (14% lower) of
 experiencing food insecurity compared to the reference group. It is not
 significant because the 95% CI contains 1.</li>
 <li>Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of
-other races have 62% lower odds of experiencing food insecurity compared
+other races have 67% lower odds of experiencing food insecurity compared
 to the reference group.</li>
-<li>White, Non-Hispanic: Non-Hispanic Whites have 79% lower odds of
+<li>White, Non-Hispanic: Non-Hispanic Whites have 77% lower odds of
 experiencing food insecurity compared to the reference group.</li>
 </ul>
-<p>Race is associated with food insecurity in certain groups.
-Non-Hispanic Asians, Whites, and individuals of other races have
-significantly lower odds of food insecurity compared to the reference
-group. However, the association is not statistically significant for
-Non-Hispanic Blacks and Hispanics.</p>
+<p>Statistical significance: Race is associated with food insecurity in
+certain groups. Non-Hispanic Asians, Whites, and individuals of other
+races have significantly lower odds of food insecurity compared to the
+reference group. However, the association is not statistically
+significant for Non-Hispanic Blacks and Hispanics.</p>
 </div>
 </div>
 <div id="is-education-associated-with-food-insecure"
@@ -1240,27 +1326,27 @@ knitr::kable(exp_edu)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.3052714</td>
-<td align="right">0.2815279</td>
-<td align="right">0.3306375</td>
+<td align="right">0.3310212</td>
+<td align="right">0.3062865</td>
+<td align="right">0.3573961</td>
 </tr>
 <tr class="even">
 <td align="left">High school or GED</td>
-<td align="right">2.3832043</td>
-<td align="right">2.0756547</td>
-<td align="right">2.7361844</td>
+<td align="right">2.5420228</td>
+<td align="right">2.2383501</td>
+<td align="right">2.8874147</td>
 </tr>
 <tr class="odd">
 <td align="left">Less than high school</td>
-<td align="right">5.1645073</td>
-<td align="right">4.0248338</td>
-<td align="right">6.6528969</td>
+<td align="right">5.2714644</td>
+<td align="right">4.2553306</td>
+<td align="right">6.5520655</td>
 </tr>
 <tr class="even">
 <td align="left">Some post-high school</td>
-<td align="right">2.0776727</td>
-<td align="right">1.8208116</td>
-<td align="right">2.3705616</td>
+<td align="right">2.1372314</td>
+<td align="right">1.8865285</td>
+<td align="right">2.4213518</td>
 </tr>
 </tbody>
 </table>
@@ -1283,31 +1369,32 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_edu</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>Intercept:</p>
 <ul>
 <li>The intercept represents the baseline odds of food insecurity for
 the reference group (college graduates) when all predictors are zero.
-Since the 95% confidence interval (0.282, 0.331) does not include 1, it
+Since the 95% confidence interval (0.306, 0.357) does not include 1, it
 is statistically significant. Individuals who are college graduates are
-69% less likely to experience food insecurity compared to individuals
+67% less likely to experience food insecurity compared to individuals
 not in this category.</li>
 </ul>
 <p>OR:</p>
 <ul>
 <li>High School or GED: Individuals with a high school diploma or GED
-have 138% the odds of experiencing food insecurity compared to the
+have 154% the odds of experiencing food insecurity compared to the
 reference group (college graduates).</li>
 <li>Less than High School: Individuals with less than a high school
-education have 416% higher odds of experiencing food insecurity compared
+education have 427% higher odds of experiencing food insecurity compared
 to the reference group.</li>
 <li>Some Post-High School: Individuals with some post-high school
-education have 108% higher odds of experiencing food insecurity compared
+education have 114% higher odds of experiencing food insecurity compared
 to the reference group.</li>
 </ul>
-<p>The odds of food insecurity increase as the level of education
-decreases. Those with less than a high school education have the
-greatest increase in odds compared to the reference group.</p>
+<p>Statistical significance: The odds of food insecurity increase as the
+level of education decreases. Those with less than a high school
+education have the greatest increase in odds compared to the reference
+group.</p>
 </div>
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
@@ -1335,69 +1422,69 @@ knitr::kable(exp_all)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.0249203</td>
-<td align="right">0.9622511</td>
-<td align="right">4.4627609</td>
+<td align="right">1.8961390</td>
+<td align="right">0.9737757</td>
+<td align="right">3.8342042</td>
 </tr>
 <tr class="even">
 <td align="left">High school or GED</td>
-<td align="right">1.3826951</td>
-<td align="right">1.1858796</td>
-<td align="right">1.6112223</td>
+<td align="right">1.3693978</td>
+<td align="right">1.1863615</td>
+<td align="right">1.5800515</td>
 </tr>
 <tr class="odd">
 <td align="left">Less than high school</td>
-<td align="right">1.6950363</td>
-<td align="right">1.2832960</td>
-<td align="right">2.2438699</td>
+<td align="right">1.5853740</td>
+<td align="right">1.2451754</td>
+<td align="right">2.0222613</td>
 </tr>
 <tr class="even">
 <td align="left">Some post-high school</td>
-<td align="right">1.4763721</td>
-<td align="right">1.2801763</td>
-<td align="right">1.7018413</td>
+<td align="right">1.4689584</td>
+<td align="right">1.2818859</td>
+<td align="right">1.6827543</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt;100,000</td>
-<td align="right">0.2317958</td>
-<td align="right">0.1982999</td>
-<td align="right">0.2705379</td>
+<td align="right">0.2104580</td>
+<td align="right">0.1812010</td>
+<td align="right">0.2440199</td>
 </tr>
 <tr class="even">
 <td align="left">50,000 ~ 100,000</td>
-<td align="right">0.4414774</td>
-<td align="right">0.3852649</td>
-<td align="right">0.5056176</td>
+<td align="right">0.4014218</td>
+<td align="right">0.3527578</td>
+<td align="right">0.4564932</td>
 </tr>
 <tr class="odd">
 <td align="left">Asian, Non-Hispanic</td>
-<td align="right">0.4421616</td>
-<td align="right">0.1942124</td>
-<td align="right">0.9649866</td>
+<td align="right">0.5142870</td>
+<td align="right">0.2457193</td>
+<td align="right">1.0402914</td>
 </tr>
 <tr class="even">
 <td align="left">Black, Non-Hispanic</td>
-<td align="right">0.5944904</td>
-<td align="right">0.2665895</td>
-<td align="right">1.2679984</td>
+<td align="right">0.7158818</td>
+<td align="right">0.3500425</td>
+<td align="right">1.4118335</td>
 </tr>
 <tr class="odd">
 <td align="left">Hispanic</td>
-<td align="right">0.7835159</td>
-<td align="right">0.3526618</td>
-<td align="right">1.6638462</td>
+<td align="right">0.9450719</td>
+<td align="right">0.4640768</td>
+<td align="right">1.8546070</td>
 </tr>
 <tr class="even">
 <td align="left">Other race, Non-Hispanic</td>
-<td align="right">0.5043174</td>
-<td align="right">0.2083413</td>
-<td align="right">1.1752719</td>
+<td align="right">0.5909596</td>
+<td align="right">0.2660921</td>
+<td align="right">1.2737355</td>
 </tr>
 <tr class="odd">
 <td align="left">White, Non-Hispanic</td>
-<td align="right">0.3203737</td>
-<td align="right">0.1458182</td>
-<td align="right">0.6722167</td>
+<td align="right">0.3763712</td>
+<td align="right">0.1866237</td>
+<td align="right">0.7309784</td>
 </tr>
 </tbody>
 </table>
@@ -1420,52 +1507,49 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_all</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Statistical Significant Predictors:</p>
 <p>Education:</p>
 <ul>
-<li>Individuals with a high school diploma or GED have 38.3% higher odds
+<li>Individuals with a high school diploma or GED have 36.9% higher odds
 of experiencing food insecurity compared to the reference group (college
 graduates).<br />
 </li>
-<li>Individuals with less than a high school education have 69.5% higher
+<li>Individuals with less than a high school education have 58.5% higher
 odds of experiencing food insecurity compared to the reference
 group.<br />
 </li>
-<li>Individuals with some post-high school education have 47.6% higher
+<li>Individuals with some post-high school education have 46.9% higher
 odds of experiencing food insecurity compared to the reference
 group.</li>
 </ul>
 <p>Income:</p>
 <ul>
-<li>Individuals with an income over $100,000 have 76.9% lower odds of
+<li>Individuals with an income over $100,000 have 78.6% lower odds of
 experiencing food insecurity compared to the reference group (≤
 50,000).<br />
 </li>
-<li>Individuals with an income between $50,000 and $100,000 have 55.9%
+<li>Individuals with an income between $50,000 and $100,000 have 59.9%
 lower odds of experiencing food insecurity compared to the reference
 group.</li>
 </ul>
 <p>Race/Ethnicity:</p>
 <ul>
-<li>Non-Hispanic Asians have 55.8% lower odds of experiencing food
-insecurity compared to the reference group (American Indian/Alaskan
-Native).</li>
-<li>Non-Hispanic Whites have 68.0% lower odds of experiencing food
+<li>Non-Hispanic Whites have 62.4% lower odds of experiencing food
 insecurity compared to the reference group.</li>
 </ul>
 <p>Higher education levels are protective against food insecurity, with
 individuals who have less than a high school education facing the
-highest risk. Those with less than a high school education have 69.5%
+highest risk. Those with less than a high school education have 58.5%
 higher odds of experiencing food insecurity compared to those with a
 college education. Income also plays a significant role, as individuals
-earning more than $100,000 have 76.9% lower odds of food insecurity,
+earning more than $100,000 have 78.6% lower odds of food insecurity,
 highlighting the strong protective effect of higher income levels.
 Finally, race and ethnicity are associated with differences in food
-insecurity, with non-Hispanic Whites and Asians showing significantly
-lower odds of food insecurity compared to other racial groups. However,
-results for other racial groups are not statistically significant,
-indicating variability in these associations.</p>
+insecurity, with non-Hispanic Whites showing significantly lower odds of
+food insecurity compared to other racial groups. However, results for
+other racial groups are not statistically significant, indicating
+variability in these associations.</p>
 </div>
 </div>
 </div>
@@ -1487,7 +1571,7 @@ indicating variability in these associations.</p>
     y = &quot;Count&quot;
   ) +
   theme_minimal()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>Using the original <strong><code>genhlth</code></strong> variable
 defined in the BRFSS dataset, this bar chart visualizes the distribution
 of general health responses among individuals categorized into five
@@ -1518,7 +1602,7 @@ ggplot(aes(x = factor(health), fill = factor(health))) +
                     labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
                     )+
   theme_minimal()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>We categorized general health into a binary variable for our
 regression analysis, with status <strong>Good</strong> + <strong>Very
 good</strong> + <strong>Excellent</strong> as healthy, and
@@ -1544,7 +1628,7 @@ predominantly healthy population in the dataset.</p>
   ) +
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <p>Using the original <strong><code>phys14d</code></strong> variable
 defined in the BRFSS dataset, this bar chart visualizes the distribution
 of physical health status based on self-reported days of poor physical
@@ -1572,7 +1656,7 @@ ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
                     labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
                     )+
   theme_minimal()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>We categorized physical health into a binary variable for our
 regression analysis, with status <strong>Zero days when physical health
 not good</strong> as healthy, and <strong>1-13 days when physical health
@@ -1600,7 +1684,7 @@ physical health challenges.</p>
   ) +
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>Using the original <strong><code>ment14d</code></strong> variable
 defined in the BRFSS dataset, this bar chart illustrates the
 distribution of mental health status based on the number of days
@@ -1630,7 +1714,7 @@ ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
                     labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
                     )+
   theme_minimal()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <p>We categorized mental health into a binary variable, adopting a
 similar approach to the coding of physical health. Individuals who
 reported <strong>zero days when mental health was not good</strong> were
@@ -1656,7 +1740,7 @@ ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
     labels = c(&quot;No Diabetes&quot;, &quot;Has Diabetes&quot;)
   ) +
   theme_void()</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>The chart clearly shows a significant imbalance, with a much larger
 proportion of participants being free from diabetes compared to those
 who have diabetes. This highlights that the prevalence of diabetes in
@@ -1686,15 +1770,15 @@ knitr::kable(exp_health)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">9.120567</td>
-<td align="right">8.2603859</td>
-<td align="right">10.0975500</td>
+<td align="right">8.2408163</td>
+<td align="right">7.5117485</td>
+<td align="right">9.061465</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.414545</td>
-<td align="right">0.3580959</td>
-<td align="right">0.4798409</td>
+<td align="right">0.4071071</td>
+<td align="right">0.3565742</td>
+<td align="right">0.464629</td>
 </tr>
 </tbody>
 </table>
@@ -1717,7 +1801,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 58.5% lower odds
 (OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to
 those who are not food insecure, holding all else constant. This
@@ -1755,15 +1839,15 @@ knitr::kable(exp_physical)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.040483</td>
-<td align="right">1.9148756</td>
-<td align="right">2.1753398</td>
+<td align="right">2.0146471</td>
+<td align="right">1.8941891</td>
+<td align="right">2.1436873</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.552611</td>
-<td align="right">0.4962017</td>
-<td align="right">0.6153929</td>
+<td align="right">0.5391836</td>
+<td align="right">0.4878281</td>
+<td align="right">0.5958789</td>
 </tr>
 </tbody>
 </table>
@@ -1786,7 +1870,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 44.7% lower odds
 (OR = 0.553, 95% CI: 0.496–0.615) of having good physical health
 compared to those who are not food insecure, holding all else constant.
@@ -1820,15 +1904,15 @@ knitr::kable(exp_mental)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.0000000</td>
-<td align="right">1.8772750</td>
-<td align="right">2.1317058</td>
+<td align="right">1.9966909</td>
+<td align="right">1.8774744</td>
+<td align="right">2.1243774</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4027289</td>
-<td align="right">0.3615144</td>
-<td align="right">0.4484921</td>
+<td align="right">0.4144789</td>
+<td align="right">0.3749066</td>
+<td align="right">0.4580986</td>
 </tr>
 </tbody>
 </table>
@@ -1851,7 +1935,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 59.7% lower odds
 (OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared
 to those who are not food insecure, holding all else constant. This
@@ -1889,15 +1973,15 @@ knitr::kable(exp_diabete)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.1209741</td>
-<td align="right">0.1097044</td>
-<td align="right">0.1330763</td>
+<td align="right">0.1272094</td>
+<td align="right">0.1158928</td>
+<td align="right">0.1393253</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">1.3123230</td>
-<td align="right">1.1189138</td>
-<td align="right">1.5368343</td>
+<td align="right">1.3452866</td>
+<td align="right">1.1639346</td>
+<td align="right">1.5535861</td>
 </tr>
 </tbody>
 </table>
@@ -1920,7 +2004,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 31.2% higher
 odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to
 those who are not food insecure, holding all else constant. This
@@ -1982,19 +2066,18 @@ associations between food insecurity and key predictors, including
 income, race/ethnicity, and education.</p>
 <p>Results indicate that higher income levels are associated with
 substantially lower odds of food insecurity. Individuals earning over
-$100,000 have 76.9% lower odds, and those earning between $50,000 and
-$100,000 have 55.9% lower odds of food insecurity compared to those
+$100,000 have 78.6% lower odds, and those earning between $50,000 and
+$100,000 have 59.9% lower odds of food insecurity compared to those
 earning less than $50,000.</p>
 <p>Racial and ethnic disparities in food insecurity are evident. White,
-Non-Hispanic individuals have 68.0% lower odds of food insecurity, and
-Asian, Non-Hispanic individuals have 55.8% lower odds compared to
-American Indians. Associations between levels of Black, Non-Hispanic,
-Hispanic, and Other race individuals and food insecure are not
+Non-Hispanic individuals have62.4% lower odds of food insecurity
+compared to American Indians. Associations between levels of Black,
+Asian, Hispanic, and Other race individuals and food insecure are not
 significant.</p>
 <p>Lower education levels are strongly associated with higher odds of
 food insecurity. Individuals with less than a high school education have
-69.5% higher odds, those with a high school diploma or GED have 38.3%
-higher odds, and those with some post-high school education have 47.6%
+58.5% higher odds, those with a high school diploma or GED have 36.9%
+higher odds, and those with some post-high school education have 46.9%
 higher odds of being food insecure compared to college graduates.</p>
 </div>
 <div id="health" class="section level4">

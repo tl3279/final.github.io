@@ -160,15 +160,15 @@ cleaned_df =
   brfss_22 |>
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
          !str_detect(genhlth, "Not Sure|Refused"),
-         !str_detect(strsmeal_sa, "Not"))|>
+         !str_detect(strsmeal_sa, "Not"),
+         !str_detect(incomg1, "Not"))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
-  
 
 cleaned_df = 
   cleaned_df |>
   mutate(
     income = case_when(
-      incomg1 %in% c("Less than $15,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
+      incomg1 %in% c("Less than $15,000", "$15,000 to < $25,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
       incomg1 == "$50,000 to < $100,000" ~ "50,000 ~ 100,000",
       incomg1 %in% c ("$100,000 to < $200,000" , "$200,000 or more") ~ ">100,000",
       TRUE ~ NA_character_),
@@ -202,7 +202,7 @@ cleaned_df =
     
    )|>
   filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|>
-  select(-incomg1, -educag, -strsmeal_sa, -diabete4)
+  select(-educag, -diabete4)
 ```
 
 
@@ -214,7 +214,7 @@ We created several binary variables:
 - **`food_insecure`** based on responses to food insecurity questions  
 - **`health`**, **`physcial_health`**, and **`mental_health`** based on responses of rated health. 
 
-The cleaned dataset excludes the original **`incomg1`**, **`educag`**, **`strsmeal_sa`**, and **`diabete4`** variables and keeps only the relevant and recoded columns, excluding those who are unsure or refused to answer.  
+The cleaned dataset excludes the original **`educag`** and **`diabete4`** variable and keeps only the relevant and recoded columns, excluding those who are unsure or refused to answer.  
 
 
 ## Identifying Food Desert   
@@ -426,6 +426,41 @@ In the regression analysis section, we explore the association between several s
 
 
 ### Key Socioeconomic Factors Distribution
+#### Income
+##### Using Original **`incomg1`** Variable
+```{r}
+cleaned_df |>
+  mutate(incomg1 = factor(incomg1, levels = c("Less than $15,000", "$15,000 to < $25,000", "$25,000 to < $35,000", "$35,000 to < $50,000", "$50,000 to < $100,000", "$100,000 to < $200,000", "$200,000 or more"))) |>
+  ggplot(aes(x = incomg1, fill = incomg1))+
+  geom_bar() +
+  labs(
+    title = "Distribution of Income",
+    x = "Income Category",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())
+```
+
+Using the original **`incomg1`** variable defined in the BRFSS dataset, this bar chart illustrates the distribution of income among individuals categorized into 7 levels: "Less than $15,000", "$15,000 to < $25,000", "$25,000 to < $35,000", "$35,000 to < $50,000", "$50,000 to < $100,000", "$100,000 to < $200,000", and "$200,000 or more". The largest group comprises individuals earning $50,000 to < $100,000, followed closely by those earning $100,000 to < $200,000. The other categories are more evenly distributed, with the fewest individuals earning less than $15,000. This chart highlights a trend toward middle- to higher-income brackets, suggesting a skew toward financially stable individuals within the dataset. 
+
+##### Using Created Variable **`income`**
+```{r}
+cleaned_df |>
+  mutate(income = factor(income, levels = c("<50,000", "50,000 ~ 100,000", ">100,000"))) |>
+  ggplot(aes(x = factor(income), fill = factor(income))) +
+  geom_bar() +
+  labs(
+    title = "Bar Plot of Income",
+    x = "Income Status",
+    y = "Count",
+    fill = "Income"
+  ) +
+  theme_minimal()
+```
+
+We categorized income into a three-level variable for our regression analysis, with "Less than $15,000" + "$15,000 to < $25,000" + "$25,000 to < $35,000" + "$35,000 to < $50,000" grouped as "<50,000", "$50,000 to < $100,000" as "50,000 ~ 100,000", and "$100,000 to < $200,000" + "$200,000 or more" grouped as ">100,000". People earning less than $50,000 make up the largest group, followed by those earning over $100,000, with individuals earning between $50,000 and $100,000 forming the smallest group.
+
 #### Race
 ```{r, fig.height=8,fig.width=8,}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
@@ -459,6 +494,24 @@ ggplot(cleaned_df, aes(x = "", fill = education)) +
 This pie chart shows the distribution of education levels within a dataset. The largest portion of the chart is represented by college graduates, shown in red, indicating that a significant proportion of individuals have completed higher education. The second-largest category, represented in purple, corresponds to individuals with some post-high school education. High school graduates or those with a GED, shown in green, form a smaller segment, while the smallest portion of the chart, in teal, represents individuals with less than a high school education. 
 
 #### Food Insecurity
+##### Using Original **`strsmeal_sa`** Variable
+```{r}
+cleaned_df |>
+  mutate(strsmeal_sa = factor(strsmeal_sa, levels = c("Never", "Rarely","Sometimes","Usually", "Always"))) |>
+  ggplot(aes(x = strsmeal_sa, fill = strsmeal_sa))+
+  geom_bar() +
+  labs(
+    title = "Distribution of Food Insecurity",
+    x = "Food Insecurity Category",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())
+```
+
+Using the original **`strsmeal_sa`** variable defined in the BRFSS dataset, this bar chart illustrates the distribution of income among individuals categorized into 5 levels: **Never**, **Rarely**, **Sometimes**, **Usually**, and **Always**. The largest group comprises individuals who never experience food insecurity, followed by those who rarely and sometimes experience it, both at similar levels. The "Always" category comes next, while "Usually" represents the smallest group. This distribution highlights a trend where the majority of individuals report never or infrequently experiencing meal insecurity.
+
+##### Using Created Variable **`food_insecure`**
 ```{r}
 ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
   geom_bar() +
@@ -473,7 +526,7 @@ ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insec
 ```
 
 
-This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
+We categorized food insecurity into a binary variable for our regression analysis, with status **Rarely** + **Sometimes** + **Usually** + **Always** as food insecure, and **Never** as secure. This bar graph presents the distribution of food insecurity status among individuals in the dataset. The largest group, represented in light blue, comprises individuals who are not food insecure, with a count exceeding 4,000. The second-largest group, shown in pink, represents individuals who are food insecure, numbering slightly over 2,000. A very small proportion, represented in gray, corresponds to missing data (NA) for food insecurity status. 
 
 ### Is Income Associated With Food Insecure? 
 #### Odds Ratio
@@ -510,16 +563,14 @@ ci_income
 
 Intercept:
 
-- The odds ratio for the intercept (1.13) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (1.039, 1.235) does not include 1, it is statistically significant. Individuals with income less than $50,000 are 13% more likely to experience food insecurity compared to individuals not in this category.
+- The odds ratio for the intercept (1.26) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (1.173, 1.363) does not include 1, it is statistically significant. Individuals with income less than $50,000 are 26% more likely to experience food insecurity compared to individuals not in this category.
 
 OR:
 
-- Income > 100,000: Individuals with an income level of over 100,000 are 83% less likely to experience food insecurity compared to the the reference group (income less than $50,000).
-- Income 50,000–100,000: Individuals with an income level of 50,000–100,000 are 64% less likely to experience food insecurity compared to the reference group.
+- Income > 100,000: Individuals with an income level of over 100,000 are 85% less likely to experience food insecurity compared to the the reference group (income less than $50,000).
+- Income 50,000–100,000: Individuals with an income level of 50,000–100,000 are 68% less likely to experience food insecurity compared to the reference group.
    
-Two ORs are significant because do not contain 1. Income is associated with food insecurity. 
-
-
+Statistical significance: Two ORs are significant because do not contain 1. Income is associated with food insecurity. 
 
 
 ### Is Race Associated With Food Insecure?
@@ -555,19 +606,20 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_race
 ```
 
+
 Intercept:
 
 - The intercept represents the baseline odds of food insecurity for the reference group (American Indian/Alaskan Native). It is not significant because the 95% CI contains 1.
 
-OR:   
+OR:
 
-- Asian, Non-Hispanic: Non-Hispanic Asians have 62% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
-- Black, Non-Hispanic: Non-Hispanic Blacks have 53% lower odds of experiencing food insecurity compared to the reference group.
-- Hispanic: Hispanics have slightly lower odds (29% lower) of experiencing food insecurity compared to the reference group. It is not significant because the 95% CI contains 1.
-- Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of other races have 62% lower odds of experiencing food insecurity compared to the reference group.
-- White, Non-Hispanic: Non-Hispanic Whites have 79% lower odds of experiencing food insecurity compared to the reference group. 
+- Asian, Non-Hispanic: Non-Hispanic Asians have 69% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
+- Black, Non-Hispanic: Non-Hispanic Blacks have 44% lower odds of experiencing food insecurity compared to the reference group. 
+- Hispanic: Hispanics have slightly lower odds (14% lower) of experiencing food insecurity compared to the reference group. It is not significant because the 95% CI contains 1.
+- Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of other races have 67% lower odds of experiencing food insecurity compared to the reference group.
+- White, Non-Hispanic: Non-Hispanic Whites have 77% lower odds of experiencing food insecurity compared to the reference group. 
 
-Race is associated with food insecurity in certain groups. Non-Hispanic Asians, Whites, and individuals of other races have significantly lower odds of food insecurity compared to the reference group. However, the association is not statistically significant for Non-Hispanic Blacks and Hispanics. 
+Statistical significance: Race is associated with food insecurity in certain groups. Non-Hispanic Asians, Whites, and individuals of other races have significantly lower odds of food insecurity compared to the reference group. However, the association is not statistically significant for Non-Hispanic Blacks and Hispanics. 
 
 
 ### Is Education Associated With Food Insecure?
@@ -603,18 +655,17 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_edu
 ```
 
-Intercept:   
+Intercept:  
 
-- The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. Since the 95% confidence interval (0.282, 0.331) does not include 1, it is statistically significant. Individuals who are college graduates are 69% less likely to experience food insecurity compared to individuals not in this category.
+- The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. Since the 95% confidence interval (0.306, 0.357) does not include 1, it is statistically significant. Individuals who are college graduates are 67% less likely to experience food insecurity compared to individuals not in this category.
 
-OR:   
+OR:
 
-- High School or GED: Individuals with a high school diploma or GED have 138% the odds of experiencing food insecurity compared to the reference group (college graduates).
-- Less than High School: Individuals with less than a high school education have 416% higher odds of experiencing food insecurity compared to the reference group.
-- Some Post-High School: Individuals with some post-high school education have 108% higher odds of experiencing food insecurity compared to the reference group.
+- High School or GED: Individuals with a high school diploma or GED have 154% the odds of experiencing food insecurity compared to the reference group (college graduates).
+- Less than High School: Individuals with less than a high school education have 427% higher odds of experiencing food insecurity compared to the reference group.
+- Some Post-High School: Individuals with some post-high school education have 114% higher odds of experiencing food insecurity compared to the reference group.
 
-The odds of food insecurity increase as the level of education decreases. Those with less than a high school education have the greatest increase in odds compared to the reference group.
-
+Statistical significance: The odds of food insecurity increase as the level of education decreases. Those with less than a high school education have the greatest increase in odds compared to the reference group.
 
 
 ### Are Race, Education, and Income Associated With Food Insecure?
@@ -650,26 +701,26 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_all
 ```
 
+
 Statistical Significant Predictors: 
 
 Education:  
 
-- Individuals with a high school diploma or GED have 38.3% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
-- Individuals with less than a high school education have 69.5% higher odds of experiencing food insecurity compared to the reference group.    
-- Individuals with some post-high school education have 47.6% higher odds of experiencing food insecurity compared to the reference group.   
+- Individuals with a high school diploma or GED have 36.9% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
+- Individuals with less than a high school education have 58.5% higher odds of experiencing food insecurity compared to the reference group.    
+- Individuals with some post-high school education have 46.9% higher odds of experiencing food insecurity compared to the reference group.   
     
 Income:   
 
-- Individuals with an income over $100,000 have 76.9% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
-- Individuals with an income between $50,000 and $100,000 have 55.9% lower odds of experiencing food insecurity compared to the reference group.    
+- Individuals with an income over $100,000 have 78.6% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
+- Individuals with an income between $50,000 and $100,000 have 59.9% lower odds of experiencing food insecurity compared to the reference group.    
     
 Race/Ethnicity:   
 
-- Non-Hispanic Asians have 55.8% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
-- Non-Hispanic Whites have 68.0% lower odds of experiencing food insecurity compared to the reference group.
-   
-Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 69.5% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 76.9% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites and Asians showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
-   
+- Non-Hispanic Whites have 62.4% lower odds of experiencing food insecurity compared to the reference group.
+
+Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 58.5% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 78.6% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
+
 
 ## Regression Analysis - Health
 
@@ -964,11 +1015,11 @@ Efforts could include incentivizing grocery stores to open in underserved areas,
 #### Socioeconomic Factors
 The multivariable regression analysis highlights the significant associations between food insecurity and key predictors, including income, race/ethnicity, and education.
 
-Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 76.9% lower odds, and those earning between $50,000 and $100,000 have 55.9% lower odds of food insecurity compared to those earning less than $50,000. 
+Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 78.6% lower odds, and those earning between $50,000 and $100,000 have 59.9% lower odds of food insecurity compared to those earning less than $50,000. 
 
-Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have 68.0% lower odds of food insecurity, and Asian, Non-Hispanic individuals have 55.8% lower odds compared to American Indians. Associations between levels of Black, Non-Hispanic, Hispanic, and Other race individuals and food insecure are not significant. 
+Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have62.4% lower odds of food insecurity compared to American Indians. Associations between levels of Black, Asian, Hispanic, and Other race individuals and food insecure are not significant. 
 
-Lower education levels are strongly associated with higher odds of food insecurity. Individuals with less than a high school education have 69.5% higher odds, those with a high school diploma or GED have 38.3% higher odds, and those with some post-high school education have 47.6% higher odds of being food insecure compared to college graduates.
+Lower education levels are strongly associated with higher odds of food insecurity. Individuals with less than a high school education have 58.5% higher odds, those with a high school diploma or GED have 36.9% higher odds, and those with some post-high school education have 46.9% higher odds of being food insecure compared to college graduates.
 
 
 #### Health

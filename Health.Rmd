@@ -26,14 +26,15 @@ cleaned_df =
   brfss_22 |>
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
          !str_detect(genhlth, "Not Sure|Refused"),
-         !str_detect(strsmeal_sa, "Not"))|>
+         !str_detect(strsmeal_sa, "Not")),
+         !str_detect(incomg1, "Not"))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
   cleaned_df |>
   mutate(
     income = case_when(
-      incomg1 %in% c("Less than $15,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
+      incomg1 %in% c("Less than $15,000", "$15,000 to < $25,000", "$25,000 to < $35,000", "$35,000 to < $50,000") ~"<50,000",
       incomg1 == "$50,000 to < $100,000" ~ "50,000 ~ 100,000",
       incomg1 %in% c ("$100,000 to < $200,000" , "$200,000 or more") ~ ">100,000",
       TRUE ~ NA_character_),
@@ -67,7 +68,7 @@ cleaned_df =
 
    )|>
   filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|>
-  select(-incomg1, -educag, -strsmeal_sa, -diabete4)
+  select(-educag,-diabete4)
 
 ```
 
@@ -90,7 +91,7 @@ cleaned_df |>
   theme_minimal()
 ```
 
-Using the original **`genhlth`** variable defined in the BRFSS dataset, this bar chart visualizes the distribution of general health responses among individuals categorized into five levels: **Poor**, **Fair**, **Good**, **Very Good**, and **Excellent**. The largest group is those who reported their health as "Very Good," comprising the highest count, followed closely by individuals reporting "Good" health. The category "Excellent" ranks third, with a moderate number of respondents. A smaller number of individuals rated their health as "Fair," while "Poor" health is the least common category. The chart highlights a trend where most individuals perceive their health positively, with the majority clustering around "Very Good" and "Good" ratings, and relatively fewer reporting "Fair" or "Poor" health.
+Using the original **`genhlth`** variable defined in the BRFSS dataset, this bar chart visualizes the distribution of general health responses among individuals categorized into five levels: **Poor**, **Fair**, **Good**, **Very Good**, and **Excellent**. The largest group is those who reported their health as "Very Good", comprising the highest count, followed closely by individuals reporting "Good" health. The category "Excellent" ranks third, with a moderate number of respondents. A smaller number of individuals rated their health as "Fair", while "Poor" health is the least common category. The chart highlights a trend where most individuals perceive their health positively, with the majority clustering around "Very Good" and "Good" ratings, and relatively fewer reporting "Fair" or "Poor" health.
 
 #### Using Binary Variable **`health`**
 ```{r}
