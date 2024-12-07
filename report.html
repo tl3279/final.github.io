@@ -1044,23 +1044,18 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_income</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Intercept: The odds ratio for the intercept (1.171) represents the
-baseline odds of being food insecure when income is less than
-50,000.</p>
-<p>OR:</p>
-<ul>
-<li><p>Income &gt; 100,000: The odds ratio (0.166) indicates that
-individuals with an income greater than $100,000 have 83.4% lower odds
-of being food insecure compared to the income group less than
-50,000.</p></li>
-<li><p>Income 50,000–100,000: The odds ratio (0.349) indicates that
-individuals with an income between $50,000 and 100,000 have 65.1% lower
-odds of being food insecure compared to the income group less than
-50,000.</p></li>
-</ul>
-<p>Statistical significance: confidence intervals of OR of both
-predictor levels exclude 1, indicating that they are statistically
-associated with food insecure.</p>
+<p>Intercept: The odds ratio for the intercept (0.941) represents the
+baseline odds of being food insecure for income less than 50,000 when
+all predictors are 0. Since the 95% confidence interval (0.855, 1.035)
+does include 1, it is not statistically significant.</p>
+<p>OR: Income &gt; 100,000: Individuals with an income level of over
+100,000 are 82% less likely to experience food insecurity compared to
+the the reference group (income less than $50,000).</p>
+<p>Income 50,000–100,000: Individuals with an income level of
+50,000–100,000 are 62% less likely to experience food insecurity
+compared to the reference group (income less than $50,000).</p>
+<p>Statistical significance: Two ORs are significant because do not
+contain 1. Income is associated with food insecurity.</p>
 </div>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
@@ -1143,30 +1138,31 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_race</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<p>Intercept: The odds ratio for the intercept (1.6) represents the odds
-of being food insecure for the reference group (American Indian/Alaskan
-Native).</p>
-<p>OR:</p>
-<ul>
-<li><p>Asian, Non-Hispanic: The odds ratio (0.318) indicates that Asian,
-Non-Hispanic individuals have 68.2% lower odds of being food insecure
-compared to American Indians.</p></li>
-<li><p>Black, Non-Hispanic: The odds ratio (0.528) suggests that Black,
-Non-Hispanic individuals have 47.2% lower odds of being food insecure
-compared to American Indians.</p></li>
-<li><p>Hispanic: The odds ratio (0.832) implies that Hispanic
-individuals have 16.8% lower odds of being food insecure compared to
-American Indians.</p></li>
-<li><p>Other Race, Non-Hispanic: The odds ratio (0.426) indicates that
-individuals of Other Race, Non-Hispanic have 57.4% lower odds of being
-food insecure compared to American Indians.</p></li>
-<li><p>White, Non-Hispanic: The odds ratio (0.230) suggests that White,
-Non-Hispanic individuals have 77% lower odds of being food insecure
-compared to American Indians.</p></li>
-</ul>
-<p>Statistical significance: confidence intervals of OR of all predictor
-levels except Black and Hispanic exclude 1, indicating that these
-predictor levels are statistically significant.</p>
+<p>Intercept: The intercept represents the baseline odds of food
+insecurity for the reference group (American Indian/Alaskan Native). It
+is not significant because the 95%CI contains 1.</p>
+<p>OR: Asian, Non-Hispanic: Non-Hispanic Asians have 66% lower odds of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native).</p>
+<p>Black, Non-Hispanic: Non-Hispanic Blacks have 45% lower odds of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native). It is not significant because the 95%CI contains
+1.</p>
+<p>Hispanic: Hispanics have slightly lower odds (9% lower) of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native). It is not significant because the 95%CI contains
+1.</p>
+<p>Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of
+other races have 61% lower odds of experiencing food insecurity compared
+to the reference group (American Indian/Alaskan Native).</p>
+<p>White, Non-Hispanic: Non-Hispanic Whites have 76% lower odds of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native).</p>
+<p>Statistical significance: Race is associated with food insecurity in
+certain groups. Non-Hispanic Asians, Whites, and individuals of other
+races have significantly lower odds of food insecurity compared to the
+reference group. However, the association is not statistically
+significant for Non-Hispanic Blacks and Hispanics.</p>
 </div>
 </div>
 <div id="is-education-associated-with-food-insecure"
@@ -1238,24 +1234,22 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_edu</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
-<p>Intercept: The odds ratio for the intercept (0.309) represents the
-odds of being food insecure for individuals in the reference group
-(College graduates).</p>
-<p>OR:</p>
-<ul>
-<li><p>High School or GED: The odds ratio (2.444) indicates that
-individuals with a high school diploma or GED have 144.4% higher odds of
-being food insecure compared to college graduates.</p></li>
-<li><p>Less than High School: The odds ratio (5.241) suggests that
-individuals with less than a high school education have 424.1% higher
-odds of being food insecure compared to college graduates.</p></li>
-<li><p>Some Post-High School: The odds ratio (2.119) indicates that
-individuals with some post-high school education have 111.9% higher odds
-of being food insecure compared to college graduates.</p></li>
-</ul>
-<p>Statistical significance: confidence intervals of OR of all three
-predictor levels exclude 1, making these results statistically
-significant.</p>
+<p>Intercept: The intercept represents the baseline odds of food
+insecurity for the reference group (college graduates) when all
+predictors are zero.</p>
+<p>OR: High School or GED: Individuals with a high school diploma or GED
+have 138% the odds of experiencing food insecurity compared to the
+reference group (college graduates).</p>
+<p>Less than High School: Individuals with less than a high school
+education have 460% higher odds of experiencing food insecurity compared
+to the reference group (college graduates).</p>
+<p>Some Post-High School: Individuals with some post-high school
+education have 101% higher odds of experiencing food insecurity compared
+to the reference group (college graduates).</p>
+<p>Statistical significance: The odds of food insecurity increase as the
+level of education decreases. Those with less than a high school
+education have the greatest increase in odds compared to the reference
+group.</p>
 </div>
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
@@ -1370,37 +1364,123 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_all</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Statistical Significant Predictors:</p>
-<p>Education:</p>
-<ul>
-<li>Individuals with a high school diploma or GED have 40.1% higher odds
-of being food insecure compared to college graduates.</li>
-<li>Individuals with less than a high school education have 67.1% higher
-odds of being food insecure compared to college graduates.</li>
-<li>Individuals with some post-high school education have 49.1% higher
-odds of being food insecure compared to college graduates.</li>
-</ul>
-<p>Income:</p>
-<ul>
-<li>Individuals earning over 100,000 have 77.2% lower odds of being food
-insecure compared to those earning ≤ $50,000.</li>
-<li>Individuals earning between $50,000 and $100,000 have 56.3% lower
-odds of being food insecure compared to those earning ≤ $50,000.</li>
-</ul>
-<p>Race/Ethnicity:</p>
-<ul>
-<li>White, Non-Hispanic individuals have 61.4% lower odds of being food
-insecure compared to American Indians.</li>
-</ul>
-<p>Summary: Education and income levels show significant associations
-with food insecurity, with lower education and income levels increasing
-odds of food insecurity.Among racial/ethnic groups, only White,
-Non-Hispanic individuals show significantly lower odds of food
-insecurity compared to American Indians.</p>
+<p>Education: Individuals with a high school diploma or GED have 38%
+higher odds of experiencing food insecurity compared to the reference
+group (college graduates). Individuals with less than a high school
+education have 85% higher odds of experiencing food insecurity compared
+to the reference group (college graduates). Individuals with some
+post-high school education have 45% higher odds of experiencing food
+insecurity compared to the reference group.</p>
+<p>Income: Individuals with an income over $100,000 have 75% lower odds
+of experiencing food insecurity compared to the reference group (≤
+50,000). Individuals with an income between $50,000 and $100,000 have
+52% lower odds of experiencing food insecurity compared to the reference
+group (≤ 50,000).</p>
+<p>Race/Ethnicity: Non-Hispanic Whites have 63% lower odds of
+experiencing food insecurity compared to the reference group (American
+Indian/Alaskan Native).</p>
+<p>Summary: Higher education levels are protective against food
+insecurity, with individuals who have less than a high school education
+facing the highest risk. Those with less than a high school education
+have 85% higher odds of experiencing food insecurity compared to those
+with a college education. Income also plays a significant role, as
+individuals earning more than $100,000 have 75% lower odds of food
+insecurity, highlighting the strong protective effect of higher income
+levels. Finally, race and ethnicity are associated with differences in
+food insecurity, with non-Hispanic Whites and Asians showing
+significantly lower odds of food insecurity compared to other racial
+groups. However, results for other racial groups are not statistically
+significant, indicating variability in these associations.</p>
 </div>
 </div>
 </div>
 <div id="regression-analysis---health" class="section level2">
 <h2>Regression Analysis - Health</h2>
+<div id="key-health-factors-distribution" class="section level3">
+<h3>Key Health Factors Distribution</h3>
+<div id="general-health" class="section level4">
+<h4>General Health</h4>
+<pre class="r"><code>cleaned_df |&gt;
+ggplot(aes(x = factor(health), fill = factor(health))) +
+  geom_bar() +
+  labs(
+    title = &quot;Bar Plot of Health&quot;,
+    x = &quot;Health Status&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Health&quot;
+  ) +
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;))+
+  theme_minimal()</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>The plot demonstrates levels of general health distribution. The
+majority of individuals are in the “Good” category (1), as reflected by
+the much taller blue bar. Conversely, fewer individuals are categorized
+as having “Poor” (0), corresponding to the shorter pink bar. This
+indicates a predominantly healthy population in the dataset.</p>
+</div>
+<div id="physical-health" class="section level4">
+<h4>Physical Health</h4>
+<pre class="r"><code>cleaned_df |&gt;
+ggplot(aes(x = &quot;&quot;, fill = factor(physical_health))) +
+  geom_bar(width = 1, stat = &quot;count&quot;) +
+  coord_polar(&quot;y&quot;) +
+  labs(
+    title = &quot;Pie Chart of Physical Health&quot;,
+    fill = &quot;Physical Health&quot;
+  ) +
+  scale_fill_manual(
+    values = c(&quot;0&quot; = &quot;tomato&quot;, &quot;1&quot; = &quot;forestgreen&quot;),
+    labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
+  ) +
+  theme_void()</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>The green segment corresponds to individuals who reported having 0
+days of poor physical health, categorized as “Healthy”. The red segment
+corresponds to individuals who reported having 1 or more days of poor
+physical health, categorized as “Unhealthy”. The chart highlights that
+the majority of the population maintains good physical health, with only
+a smaller fraction reporting significant physical health challenges.</p>
+</div>
+<div id="mental-health" class="section level4">
+<h4>Mental Health</h4>
+<pre class="r"><code>cleaned_df |&gt;
+ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
+  geom_bar() +
+  labs(
+    title = &quot;Bar Plot of Mental Health&quot;,
+    x = &quot;Mental Health Status&quot;,
+    y = &quot;Count&quot;,
+    fill = &quot;Mental Health&quot;
+  ) +
+  scale_fill_manual(values = c(&quot;0&quot; = viridis(2)[1], &quot;1&quot; = viridis(2)[2]))+
+  theme_minimal()</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>The yellow bar (healthy mental health) is taller than the purple bar,
+indicating the majority of individuals reported 0 days of poor mental
+health.</p>
+</div>
+<div id="diabetes" class="section level4">
+<h4>Diabetes</h4>
+<pre class="r"><code>cleaned_df |&gt;
+ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
+  geom_bar(width = 1, stat = &quot;count&quot;) +
+  coord_polar(&quot;y&quot;) +
+  labs(
+    title = &quot;Pie Chart of Diabetes&quot;,
+    fill = &quot;Diabetes&quot;
+  ) +
+  scale_fill_manual(
+    values = c(&quot;0&quot; = &quot;skyblue&quot;, &quot;1&quot; = &quot;purple&quot;),
+    labels = c(&quot;No Diabetes&quot;, &quot;Has Diabetes&quot;)
+  ) +
+  theme_void()</code></pre>
+<p><img src="report_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>The chart clearly shows a significant imbalance, with a much larger
+proportion of participants being free from diabetes compared to those
+who have diabetes. This highlights that the prevalence of diabetes in
+this dataset is relatively low.</p>
+</div>
+</div>
 <div id="is-food-insecure-associated-with-general-health"
 class="section level3">
 <h3>Is Food Insecure Associated With General Health?</h3>
@@ -1455,7 +1535,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 53% lower odds
 (OR = 0.47, 95% CI: 0.39–0.56) of having good health compared to those
 who are not food insecure, holding all else constant. This suggests that
@@ -1524,7 +1604,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 37.7% lower odds
 (OR = 0.62, 95% CI: 0.55–0.70) of having good physical health compared
 to those who are not food insecure, holding all else constant. The
@@ -1588,7 +1668,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 49.9% lower odds
 (OR = 0.50, 95% CI: 0.44–0.57) of having good mental health compared to
 those who are not food insecure, holding all else constant. This strong
@@ -1657,7 +1737,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
-<p><img src="report_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p><img src="report_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 27.4% higher
 odds (OR = 1.27, 95% CI: 1.07–1.52) of having diabetes compared to those
 who are not food insecure, holding all else constant. This association

@@ -13,6 +13,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse)
 library(haven)
 library(VGAM)
+library(viridis)
 ```
 
 ## Data Importing and Cleaning
@@ -23,7 +24,9 @@ brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
 
 cleaned_df = 
   brfss_22 |>
-  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d))|>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
+         !str_detect(genhlth, "Not Sure|Refused"),
+         !str_detect(strsmeal_sa, "Not"))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
@@ -69,6 +72,84 @@ cleaned_df =
 ```
 
 We are interested in understanding the associations between food insecurity and its potential impacts on various health outcomes, including general health, physical health, mental health, and diabetes. 
+
+
+## Key Health Factors Distribution
+### General Health
+```{r}
+cleaned_df |>
+ggplot(aes(x = factor(health), fill = factor(health))) +
+  geom_bar() +
+  labs(
+    title = "Bar Plot of Health",
+    x = "Health Status",
+    y = "Count",
+    fill = "Health"
+  ) +
+  scale_fill_manual(values = c("0" = "pink", "1" = "lightblue"))+
+  theme_minimal()
+```
+
+
+The plot demonstrates levels of general health distribution. The majority of individuals are in the "Good" category (1), as reflected by the much taller blue bar. Conversely, fewer individuals are categorized as having "Poor" (0), corresponding to the shorter pink bar. This indicates a predominantly healthy population in the dataset.
+
+
+### Physical Health
+```{r}
+cleaned_df |>
+ggplot(aes(x = "", fill = factor(physical_health))) +
+  geom_bar(width = 1, stat = "count") +
+  coord_polar("y") +
+  labs(
+    title = "Pie Chart of Physical Health",
+    fill = "Physical Health"
+  ) +
+  scale_fill_manual(
+    values = c("0" = "tomato", "1" = "forestgreen"),
+    labels = c("Unhealthy (1+ days bad)", "Healthy (0 days bad)")
+  ) +
+  theme_void()
+```
+
+The green segment corresponds to individuals who reported having 0 days of poor physical health, categorized as "Healthy". The red segment corresponds to individuals who reported having 1 or more days of poor physical health, categorized as "Unhealthy". The chart highlights that the majority of the population maintains good physical health, with only a smaller fraction reporting significant physical health challenges. 
+
+
+### Mental Health
+```{r}
+cleaned_df |>
+ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
+  geom_bar() +
+  labs(
+    title = "Bar Plot of Mental Health",
+    x = "Mental Health Status",
+    y = "Count",
+    fill = "Mental Health"
+  ) +
+  scale_fill_manual(values = c("0" = viridis(2)[1], "1" = viridis(2)[2]))+
+  theme_minimal()
+```
+
+The yellow bar (healthy mental health) is taller than the purple bar, indicating the majority of individuals reported 0 days of poor mental health.
+
+### Diabetes
+```{r}
+cleaned_df |>
+ggplot(aes(x = "", fill = factor(diabete))) +
+  geom_bar(width = 1, stat = "count") +
+  coord_polar("y") +
+  labs(
+    title = "Pie Chart of Diabetes",
+    fill = "Diabetes"
+  ) +
+  scale_fill_manual(
+    values = c("0" = "skyblue", "1" = "purple"),
+    labels = c("No Diabetes", "Has Diabetes")
+  ) +
+  theme_void()
+```
+
+The chart clearly shows a significant imbalance, with a much larger proportion of participants being free from diabetes compared to those who have diabetes. This highlights that the prevalence of diabetes in this dataset is relatively low.
+
 
 ## General Health
 ### Odds Ratio
