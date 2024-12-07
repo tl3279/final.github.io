@@ -125,7 +125,7 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
 ```
 
 
-This bar graph illustrates the distribution of race/ethnicity in the dataset. The categories include American Indian/Alaskan Native, Asian, Black, Hispanic, Other Race, and White, all specified as Non-Hispanic except for the Hispanic group. Among these groups, White, Non-Hispanic individuals dominate, with the highest count exceeding 6,000. The second most prevalent group is Hispanic, followed by Black, Non-Hispanic, while Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly smaller counts. The American Indian/Alaskan Native, Non-Hispanic category represents the smallest group. 
+This bar graph illustrates the distribution of race/ethnicity in the dataset. The categories include American Indian/Alaskan Native, Asian, Black, Hispanic, Other Race, and White, all specified as Non-Hispanic except for the Hispanic group. Among these groups, White, Non-Hispanic individuals dominate, with the highest count reaching 5,000. The second most prevalent group is Hispanic, followed by Black, Non-Hispanic, while Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly smaller counts. The American Indian/Alaskan Native, Non-Hispanic category represents the smallest group. 
 
 ### Education
 ```{r}
@@ -281,7 +281,7 @@ Intercept:
 OR:
 
 - Asian, Non-Hispanic: Non-Hispanic Asians have 69% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
-- Black, Non-Hispanic: Non-Hispanic Blacks have 44% lower odds of experiencing food insecurity compared to the reference group. 
+- Black, Non-Hispanic: Non-Hispanic Blacks have 44% lower odds of experiencing food insecurity compared to the reference group. It is not significant because the 95% CI contains 1.
 - Hispanic: Hispanics have slightly lower odds (14% lower) of experiencing food insecurity compared to the reference group. It is not significant because the 95% CI contains 1.
 - Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of other races have 67% lower odds of experiencing food insecurity compared to the reference group.
 - White, Non-Hispanic: Non-Hispanic Whites have 77% lower odds of experiencing food insecurity compared to the reference group. 
