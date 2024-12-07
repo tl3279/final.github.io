@@ -68,6 +68,8 @@ Enju Zhang(ez2384)
 The repository of this project can be found [here](https://github.com/tl3279/final.github.io).
 
 ## **Screencast**
-![](https://www.youtube.com/watch?v=rZgZswohWzU)
+<iframe src="https://www.youtube.com/watch?v=rZgZswohWzU" data-external= "1" > </iframe>
+
+
 
 
