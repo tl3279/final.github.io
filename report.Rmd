@@ -152,8 +152,11 @@ brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
 
 cleaned_df = 
   brfss_22 |>
-  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d))|>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
+         !str_detect(genhlth, "Not Sure|Refused"),
+         !str_detect(strsmeal_sa, "Not"))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
+  
 
 cleaned_df = 
   cleaned_df |>
@@ -198,7 +201,7 @@ cleaned_df =
 
 
 
-Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It is used for regression analysis. It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, `genhlth`, `phys14d`, and `ment14d`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`, `education`. Additionally, we created two binary variable,`food_insecure` based on responses to food insecurity questions, and `health`, `physcial_health`, and `mental_health`based on responses of rated health. Finally, the cleaned dataset excludes the original incomg1, educag, strsmeal_sa, and genhlth, phys14d and -ment14d variables and keeps only the relevant and recoded columns. 
+Downlaoded the csv file from [BRSFF 2022](https://health.data.ny.gov/Health/Behavioral-Risk-Factor-Surveillance-Survey-2022/2nna-hj5u/about_data). It is used for regression analysis. It provides monitors modifiable risk behaviors and other factors contributing to the leading causes of morbidity and mortality in the population. This dataset was imported using `read_csv()` and cleans the variable names for easier handling using `janitor::clean_names()`, and then processes the dataset to focus on relevant variables (`imprace`, `educag`, `incomg1`, `strsmeal_sa`, `genhlth`, `phys14d`, and `ment14d`). It filters out rows with missing values in these variables and recodes the income and education variables into simplified categories. New categorical variables are `income`, `education`. Additionally, we created two binary variable,`food_insecure` based on responses to food insecurity questions, and `health`, `physcial_health`, and `mental_health`based on responses of rated health. Finally, the cleaned dataset excludes the original incomg1, educag, strsmeal_sa, and genhlth, phys14d and -ment14d variables and keeps only the relevant and recoded columns, including those who are unsure or refused to answer.  
 
 
 ## Identifying Food Desert   
@@ -409,7 +412,7 @@ In the regression analysis section, we explore the association between several s
 
 
 ### Key Socioeconomic Factors Distribution
-
+#### Race
 ```{r, fig.height=8,fig.width=8,}
 ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
   geom_bar() +
@@ -419,12 +422,13 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
     y = "Count"
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 75, hjust = 1))
 ```
 
 
 This bar graph illustrates the distribution of race/ethnicity in the dataset. The categories include American Indian/Alaskan Native, Asian, Black, Hispanic, Other Race, and White, all specified as Non-Hispanic except for the Hispanic group. Among these groups, White, Non-Hispanic individuals dominate, with the highest count exceeding 6,000. The second most prevalent group is Hispanic, followed by Black, Non-Hispanic, while Other Race, Non-Hispanic, and Asian, Non-Hispanic, show significantly smaller counts. The American Indian/Alaskan Native, Non-Hispanic category represents the smallest group. 
 
+#### Education
 ```{r}
 ggplot(cleaned_df, aes(x = "", fill = education)) +
   geom_bar(width = 1, stat = "count") +
@@ -440,6 +444,7 @@ ggplot(cleaned_df, aes(x = "", fill = education)) +
 
 This pie chart shows the distribution of education levels within a dataset. The largest portion of the chart is represented by college graduates, shown in red, indicating that a significant proportion of individuals have completed higher education. The second-largest category, represented in purple, corresponds to individuals with some post-high school education. High school graduates or those with a GED, shown in green, form a smaller segment, while the smallest portion of the chart, in teal, represents individuals with less than a high school education. 
 
+#### Food Insecurity
 ```{r}
 ggplot(cleaned_df, aes(x = as.factor(food_insecure), fill = as.factor(food_insecure))) +
   geom_bar() +

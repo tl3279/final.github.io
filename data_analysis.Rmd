@@ -24,7 +24,9 @@ brfss_22 = read_csv("NYSDOH_BRFSS_Survey_Data_2022.csv")|>
 
 cleaned_df = 
   brfss_22 |>
-  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d))|>
+  filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
+         !str_detect(genhlth, "Not Sure|Refused"),
+         !str_detect(strsmeal_sa, "Not"))|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
@@ -82,7 +84,7 @@ ggplot(data = cleaned_df, aes(x = imprace, fill = imprace))+
     y = "Count"
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  theme(axis.text.x = element_text(angle = 75, hjust = 1)) 
 ```
 
 
