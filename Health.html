@@ -411,7 +411,7 @@ cleaned_df =
     
     mental_health = case_when(
       ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 1,
-      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 0),
+      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when mental health not good&quot;) ~ 0),
     
     diabete = case_when(
       diabete4 %in% c(&quot;No&quot;) ~0,
@@ -419,7 +419,7 @@ cleaned_df =
 
    )|&gt;
   filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa, -genhlth, -phys14d, -ment14d, -diabete4)</code></pre>
+  select(-incomg1, -educag, -strsmeal_sa, -diabete4)</code></pre>
 <p>We are interested in understanding the associations between food
 insecurity and its potential impacts on various health outcomes,
 including general health, physical health, mental health, and
@@ -429,6 +429,30 @@ diabetes.</p>
 <h2>Key Health Factors Distribution</h2>
 <div id="general-health" class="section level3">
 <h3>General Health</h3>
+<div id="using-original-genhlth-variable" class="section level4">
+<h4>Using Original <code>genhlth</code> Variable</h4>
+<pre class="r"><code>cleaned_df |&gt;
+  mutate(genhlth = factor(genhlth, levels = c(&quot;Poor&quot;, &quot;Fair&quot;, &quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;))) |&gt;
+  ggplot(aes(x = genhlth, fill = genhlth))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of General Health&quot;,
+    x = &quot;General Health&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal()</code></pre>
+<p><img src="Health_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>This bar chart visualizes the distribution of general health
+responses among individuals categorized into five levels: “Poor,”
+“Fair,” “Good,” “Very Good,” and “Excellent.” The largest group is those
+who reported their health as “Very Good,” comprising the highest count,
+followed closely by individuals reporting “Good” health. The category
+“Excellent” ranks third, with a moderate number of respondents. A
+smaller number of individuals rated their health as “Fair,” while “Poor”
+health is the least common category.</p>
+</div>
+<div id="using-binary-variable-health" class="section level4">
+<h4>Using Binary Variable <code>health</code></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(health), fill = factor(health))) +
   geom_bar() +
@@ -438,40 +462,91 @@ ggplot(aes(x = factor(health), fill = factor(health))) +
     y = &quot;Count&quot;,
     fill = &quot;Health&quot;
   ) +
-  scale_fill_manual(values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;))+
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;),
+                    labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
+                    )+
   theme_minimal()</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>The plot demonstrates levels of general health distribution. The
 majority of individuals are in the “Good” category (1), as reflected by
 the much taller blue bar. Conversely, fewer individuals are categorized
 as having “Poor” (0), corresponding to the shorter pink bar. This
 indicates a predominantly healthy population in the dataset.</p>
 </div>
+</div>
 <div id="physical-health" class="section level3">
 <h3>Physical Health</h3>
+<div id="using-original-phys14d-variable" class="section level4">
+<h4>Using Original <code>phys14d</code> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
-ggplot(aes(x = &quot;&quot;, fill = factor(physical_health))) +
-  geom_bar(width = 1, stat = &quot;count&quot;) +
-  coord_polar(&quot;y&quot;) +
+  ggplot(aes(x = phys14d, fill = phys14d))+
+  geom_bar() +
   labs(
-    title = &quot;Pie Chart of Physical Health&quot;,
+    title = &quot;Distribution of Physical Health&quot;,
+    x = &quot;Physical Health&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="Health_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>This bar chart visualizes the distribution of physical health status
+based on self-reported days of poor physical health over the past 14
+days. The blue bar represents individuals who reported no days of poor
+physical health, indicating a significant majority. The red bar accounts
+for those who experienced 1 to 13 days of poor physical health, while
+the green bar represents individuals with 14 or more days of poor
+physical health, suggesting chronic physical health challenges.</p>
+</div>
+<div id="using-binary-variable-physical_health" class="section level4">
+<h4>Using Binary Variable <code>physical_health</code></h4>
+<pre class="r"><code>cleaned_df |&gt;
+ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
+  geom_bar() +
+  labs(
+    title = &quot;Bar Plot of Physical Health&quot;,
+    x = &quot;Physical Health Status&quot;,
+    y = &quot;Count&quot;,
     fill = &quot;Physical Health&quot;
   ) +
-  scale_fill_manual(
-    values = c(&quot;0&quot; = &quot;tomato&quot;, &quot;1&quot; = &quot;forestgreen&quot;),
-    labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
-  ) +
-  theme_void()</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>The green segment corresponds to individuals who reported having 0
-days of poor physical health, categorized as “Healthy”. The red segment
-corresponds to individuals who reported having 1 or more days of poor
-physical health, categorized as “Unhealthy”. The chart highlights that
-the majority of the population maintains good physical health, with only
-a smaller fraction reporting significant physical health challenges.</p>
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;),
+                    labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
+                    )+
+  theme_minimal()</code></pre>
+<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The blue bar corresponds to individuals who reported having 0 days of
+poor physical health, categorized as “Healthy”. The pink bar corresponds
+to individuals who reported having 1 or more days of poor physical
+health, categorized as “Unhealthy”. The chart highlights that the
+majority of the population maintains good physical health, with only a
+smaller fraction reporting significant physical health challenges.</p>
+</div>
 </div>
 <div id="mental-health" class="section level3">
 <h3>Mental Health</h3>
+<div id="using-original-ment14d-variable" class="section level4">
+<h4>Using Original <code>ment14d</code> Variable</h4>
+<pre class="r"><code>cleaned_df |&gt;
+  ggplot(aes(x = ment14d, fill = ment14d))+
+  geom_bar() +
+  labs(
+    title = &quot;Distribution of Mental Health&quot;,
+    x = &quot;Mental Health Status&quot;,
+    y = &quot;Count&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x=element_blank())</code></pre>
+<p><img src="Health_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This bar chart illustrates the distribution of mental health status
+based on the number of days individuals reported poor mental health over
+the past 14 days. Similar to the pattern observed in physical health,
+the majority of individuals (blue bar) reported zero days of poor mental
+health. The red bar represents those who experienced 1 to 13 days of
+poor mental health, while the green bar accounts for individuals with 14
+or more days of poor mental health, indicating potential chronic mental
+health challenges.</p>
+</div>
+<div id="using-binary-variable-mentl_health" class="section level4">
+<h4>Using Binary Variable <code>mentl_health</code></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
   geom_bar() +
@@ -481,15 +556,18 @@ ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
     y = &quot;Count&quot;,
     fill = &quot;Mental Health&quot;
   ) +
-  scale_fill_manual(values = c(&quot;0&quot; = viridis(2)[1], &quot;1&quot; = viridis(2)[2]))+
+  scale_fill_manual(values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;),
+                    labels = c(&quot;Unhealthy (1+ days bad)&quot;, &quot;Healthy (0 days bad)&quot;)
+                    )+
   theme_minimal()</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>The yellow bar (healthy mental health) is taller than the purple bar,
+<p><img src="Health_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>The blue bar (healthy mental health) is taller than the pink bar,
 indicating the majority of individuals reported 0 days of poor mental
 health.</p>
 </div>
-<div id="diabetes" class="section level3">
-<h3>Diabetes</h3>
+</div>
+<div id="diabetes-a-binary-variable" class="section level3">
+<h3>Diabetes (a binary variable)</h3>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
   geom_bar(width = 1, stat = &quot;count&quot;) +
@@ -499,11 +577,11 @@ ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
     fill = &quot;Diabetes&quot;
   ) +
   scale_fill_manual(
-    values = c(&quot;0&quot; = &quot;skyblue&quot;, &quot;1&quot; = &quot;purple&quot;),
+    values = c(&quot;0&quot; = &quot;pink&quot;, &quot;1&quot; = &quot;lightblue&quot;),
     labels = c(&quot;No Diabetes&quot;, &quot;Has Diabetes&quot;)
   ) +
   theme_void()</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>The chart clearly shows a significant imbalance, with a much larger
 proportion of participants being free from diabetes compared to those
 who have diabetes. This highlights that the prevalence of diabetes in
@@ -532,15 +610,15 @@ knitr::kable(exp_health)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">11.0338462</td>
-<td align="right">9.866898</td>
-<td align="right">12.3831763</td>
+<td align="right">9.120567</td>
+<td align="right">8.2603859</td>
+<td align="right">10.0975500</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4704308</td>
-<td align="right">0.394936</td>
-<td align="right">0.5608241</td>
+<td align="right">0.414545</td>
+<td align="right">0.3580959</td>
+<td align="right">0.4798409</td>
 </tr>
 </tbody>
 </table>
@@ -563,7 +641,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
 approximately 53% lower odds of having good health compared to those who
 are not food insecure, holding all else constant. Because this result
@@ -594,15 +672,15 @@ knitr::kable(exp_physical)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.242952</td>
-<td align="right">2.0963912</td>
-<td align="right">2.4011736</td>
+<td align="right">2.040483</td>
+<td align="right">1.9148756</td>
+<td align="right">2.1753398</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.624043</td>
-<td align="right">0.5532018</td>
-<td align="right">0.7040903</td>
+<td align="right">0.552611</td>
+<td align="right">0.4962017</td>
+<td align="right">0.6153929</td>
 </tr>
 </tbody>
 </table>
@@ -625,7 +703,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
 approximately 37.7% lower odds of having good physical health compared
 to those who are not food insecure, holding all else constant.
@@ -654,15 +732,15 @@ knitr::kable(exp_mental)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.7000946</td>
-<td align="right">2.517056</td>
-<td align="right">2.8986581</td>
+<td align="right">2.0000000</td>
+<td align="right">1.8772750</td>
+<td align="right">2.1317058</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.5012974</td>
-<td align="right">0.443774</td>
-<td align="right">0.5663188</td>
+<td align="right">0.4027289</td>
+<td align="right">0.3615144</td>
+<td align="right">0.4484921</td>
 </tr>
 </tbody>
 </table>
@@ -685,9 +763,9 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
-approximately 49.9% lower odds of having good mental health compared to
+approximately 59.7% lower odds of having good mental health compared to
 those who are not food insecure, holding all else constant. Therefore,
 food insecure is associated with mental health.</p>
 <p>Results show that food insecure have impacts on both individuals’
@@ -696,7 +774,7 @@ food insecure affects diabetes which is a main outcome of
 malnutrition.</p>
 </div>
 </div>
-<div id="diabetes-1" class="section level2">
+<div id="diabetes" class="section level2">
 <h2>Diabetes</h2>
 <div id="odds-ratio-3" class="section level3">
 <h3>Odds Ratio</h3>
@@ -718,15 +796,15 @@ knitr::kable(exp_diabete)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.1187071</td>
-<td align="right">0.1070728</td>
-<td align="right">0.1312475</td>
+<td align="right">0.1209741</td>
+<td align="right">0.1097044</td>
+<td align="right">0.1330763</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">1.2739769</td>
-<td align="right">1.0652717</td>
-<td align="right">1.5196077</td>
+<td align="right">1.3123230</td>
+<td align="right">1.1189138</td>
+<td align="right">1.5368343</td>
 </tr>
 </tbody>
 </table>
@@ -749,7 +827,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme_minimal() +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
-<p><img src="Health_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="Health_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
 approximately 27.4% higher odds of having diabetes compared to those who
 are not food insecure, holding all else constant. Food insecure is

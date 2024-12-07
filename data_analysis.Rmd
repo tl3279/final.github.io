@@ -317,17 +317,17 @@ ci_all
 
 Statistical Significant Predictors: 
 
-Education:
-   Individuals with a high school diploma or GED have 38% higher odds of experiencing food insecurity compared to the reference group (college graduates). 
-   Individuals with less than a high school education have 85% higher odds of experiencing food insecurity compared to the reference group (college graduates). 
-   Individuals with some post-high school education have 45% higher odds of experiencing food insecurity compared to the reference group.
+Education:   
+   Individuals with a high school diploma or GED have 38% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
+   Individuals with less than a high school education have 85% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
+   Individuals with some post-high school education have 45% higher odds of experiencing food insecurity compared to the reference group.   
     
-Income: 
-   Individuals with an income over $100,000 have 75% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).
-   Individuals with an income between $50,000 and $100,000 have 52% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000). 
-   
-Race/Ethnicity:
+Income:   
+   Individuals with an income over $100,000 have 75% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
+   Individuals with an income between $50,000 and $100,000 have 52% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).    
+    
+Race/Ethnicity:   
    Non-Hispanic Whites have 63% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
    
-Summary: 
+Summary:    
    Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 85% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 75% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites and Asians showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
