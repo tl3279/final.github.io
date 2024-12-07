@@ -378,14 +378,16 @@ cleaned_df =
   brfss_22 |&gt;
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
          !str_detect(genhlth, &quot;Not Sure|Refused&quot;),
-         !str_detect(strsmeal_sa, &quot;Not&quot;))|&gt;
+         !str_detect(strsmeal_sa, &quot;Not&quot;),
+         !str_detect(incomg1, &quot;Not&quot;)
+         )|&gt;
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
   cleaned_df |&gt;
   mutate(
     income = case_when(
-      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
+      incomg1 %in% c(&quot;Less than $15,000&quot;, &quot;$15,000 to &lt; $25,000&quot;, &quot;$25,000 to &lt; $35,000&quot;, &quot;$35,000 to &lt; $50,000&quot;) ~&quot;&lt;50,000&quot;,
       incomg1 == &quot;$50,000 to &lt; $100,000&quot; ~ &quot;50,000 ~ 100,000&quot;,
       incomg1 %in% c (&quot;$100,000 to &lt; $200,000&quot; , &quot;$200,000 or more&quot;) ~ &quot;&gt;100,000&quot;,
       TRUE ~ NA_character_),
@@ -419,7 +421,7 @@ cleaned_df =
 
    )|&gt;
   filter(!is.na(income), !is.na(education), !is.na(physical_health), !is.na(mental_health), !is.na(diabete))|&gt;
-  select(-incomg1, -educag, -strsmeal_sa, -diabete4)</code></pre>
+  select(-educag,-diabete4)</code></pre>
 <p>We are interested in understanding the associations between food
 insecurity and its potential impacts on various health outcomes,
 including general health, physical health, mental health, and diabetes.
@@ -644,15 +646,15 @@ knitr::kable(exp_health)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">9.120567</td>
-<td align="right">8.2603859</td>
-<td align="right">10.0975500</td>
+<td align="right">8.2408163</td>
+<td align="right">7.5117485</td>
+<td align="right">9.061465</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.414545</td>
-<td align="right">0.3580959</td>
-<td align="right">0.4798409</td>
+<td align="right">0.4071071</td>
+<td align="right">0.3565742</td>
+<td align="right">0.464629</td>
 </tr>
 </tbody>
 </table>
@@ -676,8 +678,8 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 58.5% lower odds
-(OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to
+<p>Individuals who are food insecure have approximately 59.3% lower odds
+(OR = 0.407, 95% CI: 0.357–0.465) of having good health compared to
 those who are not food insecure, holding all else constant. This
 suggests that food insecurity is significantly associated with worse
 general health outcomes. Food insecurity emerges as a strong risk factor
@@ -713,15 +715,15 @@ knitr::kable(exp_physical)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.040483</td>
-<td align="right">1.9148756</td>
-<td align="right">2.1753398</td>
+<td align="right">2.0146471</td>
+<td align="right">1.8941891</td>
+<td align="right">2.1436873</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.552611</td>
-<td align="right">0.4962017</td>
-<td align="right">0.6153929</td>
+<td align="right">0.5391836</td>
+<td align="right">0.4878281</td>
+<td align="right">0.5958789</td>
 </tr>
 </tbody>
 </table>
@@ -745,8 +747,8 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 44.7% lower odds
-(OR = 0.553, 95% CI: 0.496–0.615) of having good physical health
+<p>Individuals who are food insecure have approximately 46.1% lower odds
+(OR = 0.539, 95% CI: 0.488–0.596) of having good physical health
 compared to those who are not food insecure, holding all else constant.
 The results are statistically significant, indicating a robust
 relationship between food insecurity and physical health. Poor physical
@@ -778,15 +780,15 @@ knitr::kable(exp_mental)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.0000000</td>
-<td align="right">1.8772750</td>
-<td align="right">2.1317058</td>
+<td align="right">1.9966909</td>
+<td align="right">1.8774744</td>
+<td align="right">2.1243774</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4027289</td>
-<td align="right">0.3615144</td>
-<td align="right">0.4484921</td>
+<td align="right">0.4144789</td>
+<td align="right">0.3749066</td>
+<td align="right">0.4580986</td>
 </tr>
 </tbody>
 </table>
@@ -810,8 +812,8 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_mental</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 59.7% lower odds
-(OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared
+<p>Individuals who are food insecure have approximately 58.6% lower odds
+(OR = 0.414, 95% CI: 0.375–0.458) of having good mental health compared
 to those who are not food insecure, holding all else constant. This
 strong association highlights the significant mental health burden food
 insecurity places on individuals.</p>
@@ -847,15 +849,15 @@ knitr::kable(exp_diabete)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.1209741</td>
-<td align="right">0.1097044</td>
-<td align="right">0.1330763</td>
+<td align="right">0.1272094</td>
+<td align="right">0.1158928</td>
+<td align="right">0.1393253</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">1.3123230</td>
-<td align="right">1.1189138</td>
-<td align="right">1.5368343</td>
+<td align="right">1.3452866</td>
+<td align="right">1.1639346</td>
+<td align="right">1.5535861</td>
 </tr>
 </tbody>
 </table>
@@ -879,8 +881,8 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 31.2% higher
-odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to
+<p>Individuals who are food insecure have approximately 34.5% higher
+odds (OR = 1.345, 95% CI: 1.164–1.554) of having diabetes compared to
 those who are not food insecure, holding all else constant. This
 association indicates a notable link between food insecurity and
 diet-related chronic diseases. Food insecurity often leads to reliance

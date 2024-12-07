@@ -712,14 +712,14 @@ Education:
     
 Income:   
 
-- Individuals with an income over $100,000 have 78.6% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
+- Individuals with an income over $100,000 have 79.0% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
 - Individuals with an income between $50,000 and $100,000 have 59.9% lower odds of experiencing food insecurity compared to the reference group.    
     
 Race/Ethnicity:   
 
 - Non-Hispanic Whites have 62.4% lower odds of experiencing food insecurity compared to the reference group.
 
-Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 58.5% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 78.6% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
+Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 58.5% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 79.0% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
 
 
 ## Regression Analysis - Health
@@ -888,7 +888,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_general
 ```
 
-Individuals who are food insecure have approximately 58.5% lower odds (OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to those who are not food insecure, holding all else constant. This suggests that food insecurity is significantly associated with worse general health outcomes. Food insecurity emerges as a strong risk factor for poor general health. This could be due to the limited availability of nutritious food, leading to a higher prevalence of diet-related illnesses such as obesity, hypertension, and chronic conditions. 
+Individuals who are food insecure have approximately 59.3% lower odds (OR = 0.407, 95% CI: 0.357–0.465) of having good health compared to those who are not food insecure, holding all else constant. This suggests that food insecurity is significantly associated with worse general health outcomes. Food insecurity emerges as a strong risk factor for poor general health. This could be due to the limited availability of nutritious food, leading to a higher prevalence of diet-related illnesses such as obesity, hypertension, and chronic conditions. 
 
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
@@ -923,7 +923,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_physical
 ```
 
-Individuals who are food insecure have approximately 44.7% lower odds (OR = 0.553, 95% CI: 0.496–0.615) of having good physical health compared to those who are not food insecure, holding all else constant. The results are statistically significant, indicating a robust relationship between food insecurity and physical health. Poor physical health among food-insecure individuals may result from inadequate nutrition, increased stress levels, or reduced access to healthcare resources.
+Individuals who are food insecure have approximately 46.1% lower odds (OR = 0.539, 95% CI: 0.488–0.596) of having good physical health compared to those who are not food insecure, holding all else constant. The results are statistically significant, indicating a robust relationship between food insecurity and physical health. Poor physical health among food-insecure individuals may result from inadequate nutrition, increased stress levels, or reduced access to healthcare resources.
 
 ### Is Food Insecure Associated With Mental Health?
 #### Odds Ratio
@@ -956,7 +956,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_mental
 ```
 
-Individuals who are food insecure have approximately 59.7% lower odds (OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared to those who are not food insecure, holding all else constant. This strong association highlights the significant mental health burden food insecurity places on individuals.
+Individuals who are food insecure have approximately 58.6% lower odds (OR = 0.414, 95% CI: 0.375–0.458) of having good mental health compared to those who are not food insecure, holding all else constant. This strong association highlights the significant mental health burden food insecurity places on individuals.
 
 The stress of uncertain food access likely exacerbates mental health conditions, including anxiety and depression. Food insecurity could also interact with other socioeconomic stressors, amplifying its effects on mental health. Results show that food insecure have impacts on both individuals’ physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition.
 
@@ -991,7 +991,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_diabete
 ```
 
-Individuals who are food insecure have approximately 31.2% higher odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to those who are not food insecure, holding all else constant. This association indicates a notable link between food insecurity and diet-related chronic diseases. Food insecurity often leads to reliance on low-cost, calorie-dense but nutrient-poor foods, increasing the risk of diabetes and other metabolic conditions.
+Individuals who are food insecure have approximately 34.5% higher odds (OR = 1.345, 95% CI: 1.164–1.554) of having diabetes compared to those who are not food insecure, holding all else constant. This association indicates a notable link between food insecurity and diet-related chronic diseases. Food insecurity often leads to reliance on low-cost, calorie-dense but nutrient-poor foods, increasing the risk of diabetes and other metabolic conditions.
 
 ## Discussion
 
@@ -1015,7 +1015,7 @@ Efforts could include incentivizing grocery stores to open in underserved areas,
 #### Socioeconomic Factors
 The multivariable regression analysis highlights the significant associations between food insecurity and key predictors, including income, race/ethnicity, and education.
 
-Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 78.6% lower odds, and those earning between $50,000 and $100,000 have 59.9% lower odds of food insecurity compared to those earning less than $50,000. 
+Results indicate that higher income levels are associated with substantially lower odds of food insecurity. Individuals earning over $100,000 have 79.0% lower odds, and those earning between $50,000 and $100,000 have 59.9% lower odds of food insecurity compared to those earning less than $50,000. 
 
 Racial and ethnic disparities in food insecurity are evident. White, Non-Hispanic individuals have62.4% lower odds of food insecurity compared to American Indians. Associations between levels of Black, Asian, Hispanic, and Other race individuals and food insecure are not significant. 
 
@@ -1023,7 +1023,7 @@ Lower education levels are strongly associated with higher odds of food insecuri
 
 
 #### Health
-These findings highlight the multifaceted impact of food insecurity on both physical and mental health, as well as its association with diabetes. The results suggest that individuals experiencing food insecurity have significantly lower odds of maintaining good physical and mental health, with 44.7% and 59.7% lower odds, respectively. This emphasizes the detrimental effect of food insecurity on overall well-being, particularly its disproportionate impact on mental health. The mental strain associated with food insecurity, such as stress and anxiety over limited access to nutritious food, could be a key driver of this disparity. Additionally, the 31.2% higher odds of developing diabetes among food-insecure individuals underscore the potential physiological consequences of inadequate nutrition. Food insecurity often limits access to healthy, nutrient-rich foods, forcing individuals to rely on cheaper, calorie-dense, and nutritionally poor options, which can increase the risk of metabolic disorders like diabetes. 
+These findings highlight the multifaceted impact of food insecurity on both physical and mental health, as well as its association with diabetes. The results suggest that individuals experiencing food insecurity have significantly lower odds of maintaining good physical and mental health, with 46.1% and 58.6% lower odds, respectively. This emphasizes the detrimental effect of food insecurity on overall well-being, particularly its disproportionate impact on mental health. The mental strain associated with food insecurity, such as stress and anxiety over limited access to nutritious food, could be a key driver of this disparity. Additionally, the 34.5% higher odds of developing diabetes among food-insecure individuals underscore the potential physiological consequences of inadequate nutrition. Food insecurity often limits access to healthy, nutrient-rich foods, forcing individuals to rely on cheaper, calorie-dense, and nutritionally poor options, which can increase the risk of metabolic disorders like diabetes. 
 
 These findings underscore how limited access to nutritious food exacerbates health disparities, disproportionately affecting vulnerable populations. The relationship between food insecurity and poor health outcomes is likely driven by a combination of factors, including reduced access to affordable, nutrient-rich foods, increased stress, and limited healthcare access. For instance, the reliance on calorie-dense, nutrient-poor diets due to financial constraints may contribute to both physical health conditions and poor mental health outcomes.
 

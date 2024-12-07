@@ -26,8 +26,9 @@ cleaned_df =
   brfss_22 |>
   filter(complete.cases(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d),
          !str_detect(genhlth, "Not Sure|Refused"),
-         !str_detect(strsmeal_sa, "Not")),
-         !str_detect(incomg1, "Not"))|>
+         !str_detect(strsmeal_sa, "Not"),
+         !str_detect(incomg1, "Not")
+         )|>
   select(imprace, educag, incomg1, strsmeal_sa, genhlth, diabete4, ment14d, phys14d)
 
 cleaned_df = 
@@ -239,7 +240,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_general
 ```
 
-Individuals who are food insecure have approximately 58.5% lower odds (OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to those who are not food insecure, holding all else constant. This suggests that food insecurity is significantly associated with worse general health outcomes. Food insecurity emerges as a strong risk factor for poor general health. This could be due to the limited availability of nutritious food, leading to a higher prevalence of diet-related illnesses such as obesity, hypertension, and chronic conditions. 
+Individuals who are food insecure have approximately 59.3% lower odds (OR = 0.407, 95% CI: 0.357–0.465) of having good health compared to those who are not food insecure, holding all else constant. This suggests that food insecurity is significantly associated with worse general health outcomes. Food insecurity emerges as a strong risk factor for poor general health. This could be due to the limited availability of nutritious food, leading to a higher prevalence of diet-related illnesses such as obesity, hypertension, and chronic conditions. 
 
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
@@ -274,7 +275,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_physical
 ```
 
-Individuals who are food insecure have approximately 44.7% lower odds (OR = 0.553, 95% CI: 0.496–0.615) of having good physical health compared to those who are not food insecure, holding all else constant. The results are statistically significant, indicating a robust relationship between food insecurity and physical health. Poor physical health among food-insecure individuals may result from inadequate nutrition, increased stress levels, or reduced access to healthcare resources.
+Individuals who are food insecure have approximately 46.1% lower odds (OR = 0.539, 95% CI: 0.488–0.596) of having good physical health compared to those who are not food insecure, holding all else constant. The results are statistically significant, indicating a robust relationship between food insecurity and physical health. Poor physical health among food-insecure individuals may result from inadequate nutrition, increased stress levels, or reduced access to healthcare resources.
 
 ### Is Food Insecure Associated With Mental Health?
 #### Odds Ratio
@@ -307,7 +308,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_mental
 ```
 
-Individuals who are food insecure have approximately 59.7% lower odds (OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared to those who are not food insecure, holding all else constant. This strong association highlights the significant mental health burden food insecurity places on individuals.
+Individuals who are food insecure have approximately 58.6% lower odds (OR = 0.414, 95% CI: 0.375–0.458) of having good mental health compared to those who are not food insecure, holding all else constant. This strong association highlights the significant mental health burden food insecurity places on individuals.
 
 The stress of uncertain food access likely exacerbates mental health conditions, including anxiety and depression. Food insecurity could also interact with other socioeconomic stressors, amplifying its effects on mental health. Results show that food insecure have impacts on both individuals’ physical and mental health, separately. Then we move on to explore how food insecure affects diabetes which is a main outcome of malnutrition.
 
@@ -342,4 +343,4 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_diabete
 ```
 
-Individuals who are food insecure have approximately 31.2% higher odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to those who are not food insecure, holding all else constant. This association indicates a notable link between food insecurity and diet-related chronic diseases. Food insecurity often leads to reliance on low-cost, calorie-dense but nutrient-poor foods, increasing the risk of diabetes and other metabolic conditions.
+Individuals who are food insecure have approximately 34.5% higher odds (OR = 1.345, 95% CI: 1.164–1.554) of having diabetes compared to those who are not food insecure, holding all else constant. This association indicates a notable link between food insecurity and diet-related chronic diseases. Food insecurity often leads to reliance on low-cost, calorie-dense but nutrient-poor foods, increasing the risk of diabetes and other metabolic conditions.
