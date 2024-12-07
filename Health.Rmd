@@ -186,7 +186,7 @@ ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
 
 We categorized mental health into a binary variable, adopting a similar approach to the coding of physical health. Individuals who reported **zero days when mental health was not good** were classified as "healthy," while those reporting **1-13 days when mental health was not good** or **14+ days when mental health was not good** were grouped as "unhealthy." The blue bar (healthy mental health) is taller than the pink bar, indicating the majority of individuals reported 0 days of poor mental health.
 
-#### Diabetes (a binary variable)
+### Diabetes (a binary variable)
 ```{r}
 cleaned_df |>
 ggplot(aes(x = "", fill = factor(diabete))) +
@@ -206,7 +206,7 @@ ggplot(aes(x = "", fill = factor(diabete))) +
 The chart clearly shows a significant imbalance, with a much larger proportion of participants being free from diabetes compared to those who have diabetes. This highlights that the prevalence of diabetes in this dataset is relatively low.
 
 
-
+## Regression Analysis
 ### Is Food Insecure Associated With General Health?
 #### Odds Ratio
 ```{r}

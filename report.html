@@ -1471,13 +1471,12 @@ indicating variability in these associations.</p>
 </div>
 <div id="regression-analysis---health" class="section level2">
 <h2>Regression Analysis - Health</h2>
-</div>
-<div id="key-health-factors-distribution" class="section level2">
-<h2>Key Health Factors Distribution</h2>
-<div id="general-health" class="section level3">
-<h3>General Health</h3>
-<div id="using-original-genhlth-variable" class="section level4">
-<h4>Using Original <strong><code>genhlth</code></strong> Variable</h4>
+<div id="key-health-factors-distribution" class="section level3">
+<h3>Key Health Factors Distribution</h3>
+<div id="general-health" class="section level4">
+<h4>General Health</h4>
+<div id="using-original-genhlth-variable" class="section level5">
+<h5>Using Original <strong><code>genhlth</code></strong> Variable</h5>
 <pre class="r"><code>cleaned_df |&gt;
   mutate(genhlth = factor(genhlth, levels = c(&quot;Poor&quot;, &quot;Fair&quot;, &quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;))) |&gt;
   ggplot(aes(x = genhlth, fill = genhlth))+
@@ -1504,8 +1503,8 @@ individuals perceive their health positively, with the majority
 clustering around “Very Good” and “Good” ratings, and relatively fewer
 reporting “Fair” or “Poor” health.</p>
 </div>
-<div id="using-binary-variable-health" class="section level4">
-<h4>Using Binary Variable <strong><code>health</code></strong></h4>
+<div id="using-binary-variable-health" class="section level5">
+<h5>Using Binary Variable <strong><code>health</code></strong></h5>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(health), fill = factor(health))) +
   geom_bar() +
@@ -1531,10 +1530,10 @@ taller blue bar. Conversely, fewer individuals are categorized as having
 predominantly healthy population in the dataset.</p>
 </div>
 </div>
-<div id="physical-health" class="section level3">
-<h3>Physical Health</h3>
-<div id="using-original-phys14d-variable" class="section level4">
-<h4>Using Original <strong><code>phys14d</code></strong> Variable</h4>
+<div id="physical-health" class="section level4">
+<h4>Physical Health</h4>
+<div id="using-original-phys14d-variable" class="section level5">
+<h5>Using Original <strong><code>phys14d</code></strong> Variable</h5>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = phys14d, fill = phys14d))+
   geom_bar() +
@@ -1557,9 +1556,9 @@ or more days of poor physical health, suggesting chronic physical health
 challenges. This distribution highlights the varying degrees of physical
 health within the population.</p>
 </div>
-<div id="using-binary-variable-physical_health" class="section level4">
-<h4>Using Binary Variable
-<strong><code>physical_health</code></strong></h4>
+<div id="using-binary-variable-physical_health" class="section level5">
+<h5>Using Binary Variable
+<strong><code>physical_health</code></strong></h5>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
   geom_bar() +
@@ -1587,10 +1586,10 @@ physical health, with only a smaller fraction reporting significant
 physical health challenges.</p>
 </div>
 </div>
-<div id="mental-health" class="section level3">
-<h3>Mental Health</h3>
-<div id="using-original-ment14d-variable" class="section level4">
-<h4>Using Original <strong><code>ment14d</code></strong> Variable</h4>
+<div id="mental-health" class="section level4">
+<h4>Mental Health</h4>
+<div id="using-original-ment14d-variable" class="section level5">
+<h5>Using Original <strong><code>ment14d</code></strong> Variable</h5>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = ment14d, fill = ment14d))+
   geom_bar() +
@@ -1615,9 +1614,9 @@ challenges. This distribution emphasizes the prevalence of good mental
 health among the population, while also highlighting a smaller group
 with significant mental health difficulties.</p>
 </div>
-<div id="using-binary-variable-mental_health" class="section level4">
-<h4>Using Binary Variable
-<strong><code>mental_health</code></strong></h4>
+<div id="using-binary-variable-mental_health" class="section level5">
+<h5>Using Binary Variable
+<strong><code>mental_health</code></strong></h5>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
   geom_bar() +
@@ -1640,6 +1639,7 @@ mental health was not good</strong> or <strong>14+ days when mental
 health was not good</strong> were grouped as “unhealthy.” The blue bar
 (healthy mental health) is taller than the pink bar, indicating the
 majority of individuals reported 0 days of poor mental health.</p>
+</div>
 </div>
 <div id="diabetes-a-binary-variable" class="section level4">
 <h4>Diabetes (a binary variable)</h4>
