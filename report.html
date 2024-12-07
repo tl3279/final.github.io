@@ -606,7 +606,7 @@ cleaned_df =
     
     mental_health = case_when(
       ment14d %in% c(&quot;Zero days when mental health not good&quot;) ~ 1,
-      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when physical health not good&quot;) ~ 0),
+      ment14d %in% c(&quot;1-13 days when mental health not good&quot;, &quot;14+ days when mental health not good&quot;) ~ 0),
     
     diabete = case_when(
       diabete4 %in% c(&quot;No&quot;) ~0,
@@ -1011,21 +1011,21 @@ knitr::kable(exp_income)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.9407745</td>
-<td align="right">0.8554560</td>
-<td align="right">1.0345070</td>
+<td align="right">1.1328527</td>
+<td align="right">1.0392494</td>
+<td align="right">1.2350781</td>
 </tr>
 <tr class="even">
 <td align="left">&gt;100,000</td>
-<td align="right">0.1805600</td>
-<td align="right">0.1542593</td>
-<td align="right">0.2108665</td>
+<td align="right">0.1712968</td>
+<td align="right">0.1484454</td>
+<td align="right">0.1972953</td>
 </tr>
 <tr class="odd">
 <td align="left">50,000 ~ 100,000</td>
-<td align="right">0.3826311</td>
-<td align="right">0.3319298</td>
-<td align="right">0.4406738</td>
+<td align="right">0.3579278</td>
+<td align="right">0.3145710</td>
+<td align="right">0.4069432</td>
 </tr>
 </tbody>
 </table>
@@ -1087,39 +1087,39 @@ knitr::kable(exp_race)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.2500000</td>
-<td align="right">0.5860610</td>
-<td align="right">2.7244906</td>
+<td align="right">1.7500000</td>
+<td align="right">0.8744733</td>
+<td align="right">3.6681253</td>
 </tr>
 <tr class="even">
 <td align="left">Asian, Non-Hispanic</td>
-<td align="right">0.3440860</td>
-<td align="right">0.1513817</td>
-<td align="right">0.7663176</td>
+<td align="right">0.2814919</td>
+<td align="right">0.1294988</td>
+<td align="right">0.5864757</td>
 </tr>
 <tr class="odd">
 <td align="left">Black, Non-Hispanic</td>
-<td align="right">0.5534247</td>
-<td align="right">0.2489528</td>
-<td align="right">1.2050943</td>
+<td align="right">0.4749773</td>
+<td align="right">0.2227487</td>
+<td align="right">0.9691129</td>
 </tr>
 <tr class="even">
 <td align="left">Hispanic</td>
-<td align="right">0.9055556</td>
-<td align="right">0.4091241</td>
-<td align="right">1.9631240</td>
+<td align="right">0.7116564</td>
+<td align="right">0.3349581</td>
+<td align="right">1.4461908</td>
 </tr>
 <tr class="odd">
 <td align="left">Other race, Non-Hispanic</td>
-<td align="right">0.3924528</td>
-<td align="right">0.1580104</td>
-<td align="right">0.9530085</td>
+<td align="right">0.3809524</td>
+<td align="right">0.1654258</td>
+<td align="right">0.8444651</td>
 </tr>
 <tr class="even">
 <td align="left">White, Non-Hispanic</td>
-<td align="right">0.2446753</td>
-<td align="right">0.1118886</td>
-<td align="right">0.5236777</td>
+<td align="right">0.2074678</td>
+<td align="right">0.0987074</td>
+<td align="right">0.4164822</td>
 </tr>
 </tbody>
 </table>
@@ -1195,27 +1195,27 @@ knitr::kable(exp_edu)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.2621277</td>
-<td align="right">0.239686</td>
-<td align="right">0.2862304</td>
+<td align="right">0.3052714</td>
+<td align="right">0.2815279</td>
+<td align="right">0.3306375</td>
 </tr>
 <tr class="even">
 <td align="left">High school or GED</td>
-<td align="right">2.3769980</td>
-<td align="right">2.040390</td>
-<td align="right">2.7683872</td>
+<td align="right">2.3832043</td>
+<td align="right">2.0756547</td>
+<td align="right">2.7361844</td>
 </tr>
 <tr class="odd">
 <td align="left">Less than high school</td>
-<td align="right">5.6031859</td>
-<td align="right">4.267012</td>
-<td align="right">7.3871530</td>
+<td align="right">5.1645073</td>
+<td align="right">4.0248338</td>
+<td align="right">6.6528969</td>
 </tr>
 <tr class="even">
 <td align="left">Some post-high school</td>
-<td align="right">2.0081069</td>
-<td align="right">1.733660</td>
-<td align="right">2.3252143</td>
+<td align="right">2.0776727</td>
+<td align="right">1.8208116</td>
+<td align="right">2.3705616</td>
 </tr>
 </tbody>
 </table>
@@ -1282,69 +1282,69 @@ knitr::kable(exp_all)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">1.4303769</td>
-<td align="right">0.6371197</td>
-<td align="right">3.2931323</td>
+<td align="right">2.0249203</td>
+<td align="right">0.9622511</td>
+<td align="right">4.4627609</td>
 </tr>
 <tr class="even">
 <td align="left">High school or GED</td>
-<td align="right">1.3773323</td>
-<td align="right">1.1623269</td>
-<td align="right">1.6307099</td>
+<td align="right">1.3826951</td>
+<td align="right">1.1858796</td>
+<td align="right">1.6112223</td>
 </tr>
 <tr class="odd">
 <td align="left">Less than high school</td>
-<td align="right">1.8501182</td>
-<td align="right">1.3635504</td>
-<td align="right">2.5152535</td>
+<td align="right">1.6950363</td>
+<td align="right">1.2832960</td>
+<td align="right">2.2438699</td>
 </tr>
 <tr class="even">
 <td align="left">Some post-high school</td>
-<td align="right">1.4469720</td>
-<td align="right">1.2354562</td>
-<td align="right">1.6934435</td>
+<td align="right">1.4763721</td>
+<td align="right">1.2801763</td>
+<td align="right">1.7018413</td>
 </tr>
 <tr class="odd">
 <td align="left">&gt;100,000</td>
-<td align="right">0.2507641</td>
-<td align="right">0.2109682</td>
-<td align="right">0.2975431</td>
+<td align="right">0.2317958</td>
+<td align="right">0.1982999</td>
+<td align="right">0.2705379</td>
 </tr>
 <tr class="even">
 <td align="left">50,000 ~ 100,000</td>
-<td align="right">0.4803511</td>
-<td align="right">0.4132031</td>
-<td align="right">0.5580876</td>
+<td align="right">0.4414774</td>
+<td align="right">0.3852649</td>
+<td align="right">0.5056176</td>
 </tr>
 <tr class="odd">
 <td align="left">Asian, Non-Hispanic</td>
-<td align="right">0.5300196</td>
-<td align="right">0.2220020</td>
-<td align="right">1.2365115</td>
+<td align="right">0.4421616</td>
+<td align="right">0.1942124</td>
+<td align="right">0.9649866</td>
 </tr>
 <tr class="even">
 <td align="left">Black, Non-Hispanic</td>
-<td align="right">0.6800957</td>
-<td align="right">0.2916735</td>
-<td align="right">1.5480065</td>
+<td align="right">0.5944904</td>
+<td align="right">0.2665895</td>
+<td align="right">1.2679984</td>
 </tr>
 <tr class="odd">
 <td align="left">Hispanic</td>
-<td align="right">0.9528634</td>
-<td align="right">0.4102917</td>
-<td align="right">2.1591852</td>
+<td align="right">0.7835159</td>
+<td align="right">0.3526618</td>
+<td align="right">1.6638462</td>
 </tr>
 <tr class="even">
 <td align="left">Other race, Non-Hispanic</td>
-<td align="right">0.5271048</td>
-<td align="right">0.2012528</td>
-<td align="right">1.3473011</td>
+<td align="right">0.5043174</td>
+<td align="right">0.2083413</td>
+<td align="right">1.1752719</td>
 </tr>
 <tr class="odd">
 <td align="left">White, Non-Hispanic</td>
-<td align="right">0.3702503</td>
-<td align="right">0.1614669</td>
-<td align="right">0.8282790</td>
+<td align="right">0.3203737</td>
+<td align="right">0.1458182</td>
+<td align="right">0.6722167</td>
 </tr>
 </tbody>
 </table>
@@ -1618,15 +1618,15 @@ knitr::kable(exp_health)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">11.0338462</td>
-<td align="right">9.866898</td>
-<td align="right">12.3831763</td>
+<td align="right">9.120567</td>
+<td align="right">8.2603859</td>
+<td align="right">10.0975500</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.4704308</td>
-<td align="right">0.394936</td>
-<td align="right">0.5608241</td>
+<td align="right">0.414545</td>
+<td align="right">0.3580959</td>
+<td align="right">0.4798409</td>
 </tr>
 </tbody>
 </table>
@@ -1687,15 +1687,15 @@ knitr::kable(exp_physical)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.242952</td>
-<td align="right">2.0963912</td>
-<td align="right">2.4011736</td>
+<td align="right">2.040483</td>
+<td align="right">1.9148756</td>
+<td align="right">2.1753398</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.624043</td>
-<td align="right">0.5532018</td>
-<td align="right">0.7040903</td>
+<td align="right">0.552611</td>
+<td align="right">0.4962017</td>
+<td align="right">0.6153929</td>
 </tr>
 </tbody>
 </table>
@@ -1751,15 +1751,15 @@ knitr::kable(exp_mental)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">2.7000946</td>
-<td align="right">2.517056</td>
-<td align="right">2.8986581</td>
+<td align="right">2.0000000</td>
+<td align="right">1.8772750</td>
+<td align="right">2.1317058</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">0.5012974</td>
-<td align="right">0.443774</td>
-<td align="right">0.5663188</td>
+<td align="right">0.4027289</td>
+<td align="right">0.3615144</td>
+<td align="right">0.4484921</td>
 </tr>
 </tbody>
 </table>
@@ -1820,15 +1820,15 @@ knitr::kable(exp_diabete)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">0.1187071</td>
-<td align="right">0.1070728</td>
-<td align="right">0.1312475</td>
+<td align="right">0.1209741</td>
+<td align="right">0.1097044</td>
+<td align="right">0.1330763</td>
 </tr>
 <tr class="even">
 <td align="left">food_insecure</td>
-<td align="right">1.2739769</td>
-<td align="right">1.0652717</td>
-<td align="right">1.5196077</td>
+<td align="right">1.3123230</td>
+<td align="right">1.1189138</td>
+<td align="right">1.5368343</td>
 </tr>
 </tbody>
 </table>

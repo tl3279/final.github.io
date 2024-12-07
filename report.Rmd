@@ -189,7 +189,7 @@ cleaned_df =
     
     mental_health = case_when(
       ment14d %in% c("Zero days when mental health not good") ~ 1,
-      ment14d %in% c("1-13 days when mental health not good", "14+ days when physical health not good") ~ 0),
+      ment14d %in% c("1-13 days when mental health not good", "14+ days when mental health not good") ~ 0),
     
     diabete = case_when(
       diabete4 %in% c("No") ~0,
