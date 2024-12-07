@@ -596,8 +596,9 @@ health was not good</strong> were grouped as “unhealthy.” The blue bar
 (healthy mental health) is taller than the pink bar, indicating the
 majority of individuals reported 0 days of poor mental health.</p>
 </div>
-<div id="diabetes-a-binary-variable" class="section level4">
-<h4>Diabetes (a binary variable)</h4>
+</div>
+<div id="diabetes-a-binary-variable" class="section level3">
+<h3>Diabetes (a binary variable)</h3>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
   geom_bar(width = 1, stat = &quot;count&quot;) +
@@ -616,7 +617,6 @@ ggplot(aes(x = &quot;&quot;, fill = factor(diabete))) +
 proportion of participants being free from diabetes compared to those
 who have diabetes. This highlights that the prevalence of diabetes in
 this dataset is relatively low.</p>
-</div>
 </div>
 </div>
 <div id="regression-analysis" class="section level2">
