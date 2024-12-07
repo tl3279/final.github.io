@@ -406,20 +406,28 @@ affordable and nutritious food within NYC.</p>
 </div>
 <div id="initial-questions" class="section level2">
 <h2>Initial Questions</h2>
-<p>Our initial questions are:<br />
-- Are there any food deserts in NYC?<br />
-- What socioeconomic factors impact food access? - How does food access
-affect nutrition and health outcomes?</p>
+<p>Our initial questions are：</p>
+<ul>
+<li>Are there any food deserts in NYC?<br />
+</li>
+<li>What socioeconomic factors impact food access?</li>
+<li>How does food access affect nutrition and health outcomes?</li>
+</ul>
 <p>After conducting exploratory analysis and gaining a better
-understanding of the datasets, we refined our questions as
-follows:<br />
-- Where are food deserts located in NYC, specifically at a more granular
-level?<br />
-- How does the spatial proximity to retail stores influence food access
-and availability for different communities?<br />
-- Which socioeconomic factors affects the food insecure the most?<br />
-- Does food insecurity increase the likelihood of other adverse health
-conditions, such as mental health or diabetes?</p>
+understanding of the datasets, we refined our questions as follows：</p>
+<ul>
+<li>Where are food deserts located in NYC, specifically at a more
+granular level?<br />
+</li>
+<li>How does the spatial proximity to retail stores influence food
+access and availability for different communities?<br />
+</li>
+<li>Which socioeconomic factors affects the food insecure the
+most?<br />
+</li>
+<li>Does food insecurity increase the likelihood of other adverse health
+conditions, such as mental health or diabetes?</li>
+</ul>
 </div>
 <div id="data-sources-and-cleaning" class="section level2">
 <h2>Data Sources and Cleaning</h2>
@@ -450,9 +458,9 @@ Census Bureau’s TIGER data products and have been geographically
 modified to align with the New York City base map. The Shapefile was
 imported using <code>st_read()</code> from the <code>sf</code> package.
 Population data, aggregated at the census tract level, was joined to the
-shapefile using the common <code>geoid</code> identifier. Census tracts
-were classified into population bins based on total population for
-improved visualization.</p>
+shapefile using the common <strong><code>geoid</code></strong>
+identifier. Census tracts were classified into population bins based on
+total population for improved visualization.</p>
 </div>
 <div id="nyc-2020-decennial-census-data" class="section level3">
 <h3>NYC 2020 Decennial Census Data</h3>
@@ -478,13 +486,14 @@ total population, race/ethnicity, age, housing tenure, and household
 composition for NYC’s census blocks.The dataset was imported using
 <code>read_excel()</code> and the first six rows, which contained
 summary population information for the five counties and NYC as a whole,
-were removed. A new variable, <code>geoid</code>, was created by
-combining borough codes and tract numbers to ensure compatibility with
-the NYC census tract dataset. Total population was aggregated across
-unique <code>geoid</code> values to calculate the total population for
-each census tract. The cleaned population dataset was then merged with
-the NYC census tract dataset using the <code>geoid</code> variable. We
-retained only the variables essential for our analysis:
+were removed. A new variable, <strong><code>geoid</code></strong>, was
+created by combining borough codes and tract numbers to ensure
+compatibility with the NYC census tract dataset. Total population was
+aggregated across unique <strong><code>geoid</code></strong> values to
+calculate the total population for each census tract. The cleaned
+population dataset was then merged with the NYC census tract dataset
+using the <strong><code>geoid</code></strong> variable. We retained only
+the variables essential for our analysis:
 <strong><code>boroname</code></strong>,
 <strong><code>total_population</code></strong>,
 <strong><code>geometry</code></strong>, and
@@ -528,16 +537,20 @@ dataset was imported using <code>read_csv()</code> and column names were
 cleaned using the <code>janitor::clean_names()</code> function. Only
 relevant counties (Bronx, Kings, New York, Richmond, and Queens) were
 selected for the analysis. Establishment types were filtered to include
-only type <code>B</code> (Bakery), <code>C</code> (Food Manufacturer),
-and <code>D</code> (Food Warehouse). County names were recoded for
-consistency with other datasets.Stores with square footage below 2,000
-sqft were excluded due to insufficent nutrition providance
-consideration.Stores were categorized into the following size
-groups:<br />
-- <strong>Small</strong>: Less than 5,000 sqft<br />
-- <strong>Medium</strong>: Between 5,000 and 9,000 sqft<br />
-- <strong>Large</strong>: Greater than 9,000 sqft<br />
-We retained only the variables essential for our analysis:
+only type <strong>B</strong> (Bakery), <strong>C</strong> (Food
+Manufacturer), and <strong>D</strong> (Food Warehouse). County names
+were recoded for consistency with other datasets.Stores with square
+footage below 2,000 sqft were excluded due to insufficent nutrition
+providance consideration.Stores were categorized into the following size
+groups:</p>
+<ul>
+<li><strong>Small</strong>: Less than 5,000 sqft<br />
+</li>
+<li><strong>Medium</strong>: Between 5,000 and 9,000 sqft<br />
+</li>
+<li><strong>Large</strong>: Greater than 9,000 sqft</li>
+</ul>
+<p>We retained only the variables essential for our analysis:
 <strong><code>county</code></strong>,
 <strong><code>geometry</code></strong>, and
 <strong><code>category</code></strong>.</p>
@@ -557,10 +570,14 @@ based on store size. The geometry was transform the CRS to
 <code>EPSG:2263</code> for accurate distance-based calculations.Coverage
 zones were created around store locations using
 <code>st_buffer()</code>. The coverage radii were categorized into the
-following size groups:<br />
-- <strong>Small</strong>: 0.15 miles (792 ft)<br />
-- <strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
-- <strong>Large</strong>: 0.35 miles (1,848 ft)</p>
+following size groups:</p>
+<ul>
+<li><strong>Small</strong>: 0.15 miles (792 ft)<br />
+</li>
+<li><strong>Medium</strong>: 0.25 miles (1,320 ft)<br />
+</li>
+<li><strong>Large</strong>: 0.35 miles (1,848 ft)</li>
+</ul>
 </div>
 <div id="behavioral-risk-factor-surveillance-system-2022-dataset"
 class="section level3">
@@ -623,21 +640,35 @@ causes of morbidity and mortality in the population. This dataset was
 imported using <code>read_csv()</code> and cleans the variable names for
 easier handling using <code>janitor::clean_names()</code>, and then
 processes the dataset to focus on relevant variables
-(<code>imprace</code>, <code>educag</code>, <code>incomg1</code>,
-<code>strsmeal_sa</code>, <code>genhlth</code>, <code>phys14d</code>,
-<code>ment14d</code>, and <code>diabete4</code>). It filters out rows
-with missing values in these variables and recodes the income and
-education variables into simplified categories. New categorical
-variables are <code>income</code>, <code>education</code>.</p>
-<p>We created several binary variables:<br />
-- <code>food_insecure</code> based on responses to food insecurity
-questions<br />
-- <code>health</code>, <code>physcial_health</code>, and
-<code>mental_health</code>based on responses of rated health.</p>
-<p>The cleaned dataset excludes the original incomg1, educag,
-strsmeal_sa, and diabete4 variables and keeps only the relevant and
-recoded columns, excluding those who are unsure or refused to
-answer.</p>
+(<strong><code>imprace</code></strong>,
+<strong><code>educag</code></strong>,
+<strong><code>incomg1</code></strong>,
+<strong><code>strsmeal_sa</code></strong>,
+<strong><code>genhlth</code></strong>,
+<strong><code>phys14d</code></strong>,
+<strong><code>ment14d</code></strong>, and
+<strong><code>diabete4</code></strong>). It filters out rows with
+missing values in these variables and recodes the income and education
+variables into simplified categories. New categorical variables are
+<strong><code>income</code></strong>,
+<strong><code>education</code></strong>.</p>
+<p>We created several binary variables:</p>
+<ul>
+<li><strong><code>food_insecure</code></strong> based on responses to
+food insecurity questions<br />
+</li>
+<li><strong><code>health</code></strong>,
+<strong><code>physcial_health</code></strong>, and
+<strong><code>mental_health</code></strong> based on responses of rated
+health.</li>
+</ul>
+<p>The cleaned dataset excludes the original
+<strong><code>incomg1</code></strong>,
+<strong><code>educag</code></strong>,
+<strong><code>strsmeal_sa</code></strong>, and
+<strong><code>diabete4</code></strong> variables and keeps only the
+relevant and recoded columns, excluding those who are unsure or refused
+to answer.</p>
 </div>
 </div>
 <div id="identifying-food-desert" class="section level2">
@@ -775,13 +806,17 @@ required to improve access to nutritious food.</p>
 <p><img src="report_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
 <p>This graph shows the retail store distribution and their respective
 coverage zones in Manhattan and the Bronx. The store categories are
-classified by square footage:<br />
-- Small stores: Represented in yellow with a coverage radius of 0.15
+classified by square footage:</p>
+<ul>
+<li>Small stores: Represented in yellow with a coverage radius of 0.15
 miles.<br />
-- Medium stores: Represented in green with a coverage radius of 0.25
+</li>
+<li>Medium stores: Represented in green with a coverage radius of 0.25
 miles.<br />
-- Large stores: Represented in blue with a coverage radius of 0.35
-miles.</p>
+</li>
+<li>Large stores: Represented in blue with a coverage radius of 0.35
+miles.</li>
+</ul>
 <p>A dense clustering of retail stores is evident in central and lower
 Manhattan. Overlapping coverage zones indicate high accessibility,
 suggesting these areas are well-served by retail options. Retail stores
@@ -900,24 +935,24 @@ access to retail stores offering fresh and nutritious food.</p>
 class="section level2">
 <h2>Regression Analysis - Socioeconomic Factors</h2>
 <p>In the regression analysis section, we explore the association
-between several socioeconomic factors, <code>income</code>,
-<code>education</code>, and <code>race</code> and
-<code>food insecure</code> separately. We also examined the association
-between <code>food insecure</code> and <code>general health</code>. Then
-we explored how each <code>physical health</code> and
-<code>mental health</code> are associated with
-<code>food insecure</code>. Lastly, we also examined how
-<code>food insecure</code> associated with <code>diabetes</code>. We ran
-this regression to emphasize how limited or uncertain access to adequate
-food impacts individuals’ physical, mental, and overall well-being. Food
-insecurity has been linked to poorer self-rated health, increased
-prevalence of chronic diseases, and higher stress levels, which can
-exacerbate health inequalities. Analyzing this relationship helps
-identify vulnerable populations and inform public health interventions
-aimed at improving food access and promoting better health outcomes. For
-all regression analyses, logistic regression was utilized, and the
-calculated odds ratios (ORs) were presented to interpret the
-relationships between variables.</p>
+between several socioeconomic factors, <strong>income</strong>,
+<strong>education</strong>, and <strong>race</strong> and <strong>food
+insecure</strong> separately. We also examined the association between
+<strong>food insecure</strong> and <strong>general health</strong>. Then
+we explored how each <strong>physical health</strong> and <strong>mental
+health</strong> are associated with <strong>food insecure</strong>.
+Lastly, we also examined how <strong>food insecure</strong> associated
+with <strong>diabetes</strong>. We ran this regression to emphasize how
+limited or uncertain access to adequate food impacts individuals’
+physical, mental, and overall well-being. Food insecurity has been
+linked to poorer self-rated health, increased prevalence of chronic
+diseases, and higher stress levels, which can exacerbate health
+inequalities. Analyzing this relationship helps identify vulnerable
+populations and inform public health interventions aimed at improving
+food access and promoting better health outcomes. For all regression
+analyses, logistic regression was utilized, and the calculated odds
+ratios (ORs) were presented to interpret the relationships between
+variables.</p>
 <div id="key-socioeconomic-factors-distribution" class="section level3">
 <h3>Key Socioeconomic Factors Distribution</h3>
 <div id="race" class="section level4">
@@ -1049,18 +1084,26 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_income</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Intercept: The odds ratio for the intercept (0.941) represents the
-baseline odds of being food insecure for income less than 50,000 when
-all predictors are 0. Since the 95% confidence interval (0.855, 1.035)
-does include 1, it is not statistically significant.</p>
-<p>OR: Income &gt; 100,000: Individuals with an income level of over
-100,000 are 82% less likely to experience food insecurity compared to
-the the reference group (income less than $50,000).</p>
-<p>Income 50,000–100,000: Individuals with an income level of
-50,000–100,000 are 62% less likely to experience food insecurity
-compared to the reference group (income less than $50,000).</p>
-<p>Statistical significance: Two ORs are significant because do not
-contain 1. Income is associated with food insecurity.</p>
+<p>Intercept:</p>
+<ul>
+<li>The odds ratio for the intercept (1.13) represents the baseline odds
+of being food insecure for income less than 50,000 when all predictors
+are 0. Since the 95% confidence interval (1.039, 1.235) does not include
+1, it is statistically significant. Individuals with income less than
+$50,000 are 13% more likely to experience food insecurity compared to
+individuals not in this category.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>Income &gt; 100,000: Individuals with an income level of over
+100,000 are 83% less likely to experience food insecurity compared to
+the the reference group (income less than $50,000).</li>
+<li>Income 50,000–100,000: Individuals with an income level of
+50,000–100,000 are 64% less likely to experience food insecurity
+compared to the reference group.</li>
+</ul>
+<p>Two ORs are significant because do not contain 1. Income is
+associated with food insecurity.</p>
 </div>
 </div>
 <div id="is-race-associated-with-food-insecure" class="section level3">
@@ -1143,31 +1186,33 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_race</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<p>Intercept: The intercept represents the baseline odds of food
-insecurity for the reference group (American Indian/Alaskan Native). It
-is not significant because the 95%CI contains 1.</p>
-<p>OR: Asian, Non-Hispanic: Non-Hispanic Asians have 66% lower odds of
+<p>Intercept:</p>
+<ul>
+<li>The intercept represents the baseline odds of food insecurity for
+the reference group (American Indian/Alaskan Native). It is not
+significant because the 95% CI contains 1.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>Asian, Non-Hispanic: Non-Hispanic Asians have 62% lower odds of
 experiencing food insecurity compared to the reference group (American
-Indian/Alaskan Native).</p>
-<p>Black, Non-Hispanic: Non-Hispanic Blacks have 45% lower odds of
-experiencing food insecurity compared to the reference group (American
-Indian/Alaskan Native). It is not significant because the 95%CI contains
-1.</p>
-<p>Hispanic: Hispanics have slightly lower odds (9% lower) of
-experiencing food insecurity compared to the reference group (American
-Indian/Alaskan Native). It is not significant because the 95%CI contains
-1.</p>
-<p>Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of
-other races have 61% lower odds of experiencing food insecurity compared
-to the reference group (American Indian/Alaskan Native).</p>
-<p>White, Non-Hispanic: Non-Hispanic Whites have 76% lower odds of
-experiencing food insecurity compared to the reference group (American
-Indian/Alaskan Native).</p>
-<p>Statistical significance: Race is associated with food insecurity in
-certain groups. Non-Hispanic Asians, Whites, and individuals of other
-races have significantly lower odds of food insecurity compared to the
-reference group. However, the association is not statistically
-significant for Non-Hispanic Blacks and Hispanics.</p>
+Indian/Alaskan Native).</li>
+<li>Black, Non-Hispanic: Non-Hispanic Blacks have 53% lower odds of
+experiencing food insecurity compared to the reference group.</li>
+<li>Hispanic: Hispanics have slightly lower odds (29% lower) of
+experiencing food insecurity compared to the reference group. It is not
+significant because the 95% CI contains 1.</li>
+<li>Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of
+other races have 62% lower odds of experiencing food insecurity compared
+to the reference group.</li>
+<li>White, Non-Hispanic: Non-Hispanic Whites have 79% lower odds of
+experiencing food insecurity compared to the reference group.</li>
+</ul>
+<p>Race is associated with food insecurity in certain groups.
+Non-Hispanic Asians, Whites, and individuals of other races have
+significantly lower odds of food insecurity compared to the reference
+group. However, the association is not statistically significant for
+Non-Hispanic Blacks and Hispanics.</p>
 </div>
 </div>
 <div id="is-education-associated-with-food-insecure"
@@ -1239,22 +1284,30 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_edu</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
-<p>Intercept: The intercept represents the baseline odds of food
-insecurity for the reference group (college graduates) when all
-predictors are zero.</p>
-<p>OR: High School or GED: Individuals with a high school diploma or GED
+<p>Intercept:</p>
+<ul>
+<li>The intercept represents the baseline odds of food insecurity for
+the reference group (college graduates) when all predictors are zero.
+Since the 95% confidence interval (0.282, 0.331) does not include 1, it
+is statistically significant. Individuals who are college graduates are
+69% less likely to experience food insecurity compared to individuals
+not in this category.</li>
+</ul>
+<p>OR:</p>
+<ul>
+<li>High School or GED: Individuals with a high school diploma or GED
 have 138% the odds of experiencing food insecurity compared to the
-reference group (college graduates).</p>
-<p>Less than High School: Individuals with less than a high school
-education have 460% higher odds of experiencing food insecurity compared
-to the reference group (college graduates).</p>
-<p>Some Post-High School: Individuals with some post-high school
-education have 101% higher odds of experiencing food insecurity compared
-to the reference group (college graduates).</p>
-<p>Statistical significance: The odds of food insecurity increase as the
-level of education decreases. Those with less than a high school
-education have the greatest increase in odds compared to the reference
-group.</p>
+reference group (college graduates).</li>
+<li>Less than High School: Individuals with less than a high school
+education have 416% higher odds of experiencing food insecurity compared
+to the reference group.</li>
+<li>Some Post-High School: Individuals with some post-high school
+education have 108% higher odds of experiencing food insecurity compared
+to the reference group.</li>
+</ul>
+<p>The odds of food insecurity increase as the level of education
+decreases. Those with less than a high school education have the
+greatest increase in odds compared to the reference group.</p>
 </div>
 </div>
 <div id="are-race-education-and-income-associated-with-food-insecure"
@@ -1369,32 +1422,44 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_all</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>Statistical Significant Predictors:</p>
-<p>Education:<br />
-Individuals with a high school diploma or GED have 38% higher odds of
-experiencing food insecurity compared to the reference group (college
-graduates).<br />
-Individuals with less than a high school education have 85% higher odds
+<p>Education:</p>
+<ul>
+<li>Individuals with a high school diploma or GED have 38.3% higher odds
 of experiencing food insecurity compared to the reference group (college
 graduates).<br />
-Individuals with some post-high school education have 45% higher odds of
-experiencing food insecurity compared to the reference group.</p>
-<p>Income:<br />
-Individuals with an income over $100,000 have 75% lower odds of
+</li>
+<li>Individuals with less than a high school education have 69.5% higher
+odds of experiencing food insecurity compared to the reference
+group.<br />
+</li>
+<li>Individuals with some post-high school education have 47.6% higher
+odds of experiencing food insecurity compared to the reference
+group.</li>
+</ul>
+<p>Income:</p>
+<ul>
+<li>Individuals with an income over $100,000 have 76.9% lower odds of
 experiencing food insecurity compared to the reference group (≤
 50,000).<br />
-Individuals with an income between $50,000 and $100,000 have 52% lower
-odds of experiencing food insecurity compared to the reference group (≤
-50,000).</p>
-<p>Race/Ethnicity:<br />
-Non-Hispanic Whites have 63% lower odds of experiencing food insecurity
-compared to the reference group (American Indian/Alaskan Native).</p>
-<p>Summary:<br />
-Higher education levels are protective against food insecurity, with
+</li>
+<li>Individuals with an income between $50,000 and $100,000 have 55.9%
+lower odds of experiencing food insecurity compared to the reference
+group.</li>
+</ul>
+<p>Race/Ethnicity:</p>
+<ul>
+<li>Non-Hispanic Asians have 55.8% lower odds of experiencing food
+insecurity compared to the reference group (American Indian/Alaskan
+Native).</li>
+<li>Non-Hispanic Whites have 68.0% lower odds of experiencing food
+insecurity compared to the reference group.</li>
+</ul>
+<p>Higher education levels are protective against food insecurity, with
 individuals who have less than a high school education facing the
-highest risk. Those with less than a high school education have 85%
+highest risk. Those with less than a high school education have 69.5%
 higher odds of experiencing food insecurity compared to those with a
 college education. Income also plays a significant role, as individuals
-earning more than $100,000 have 75% lower odds of food insecurity,
+earning more than $100,000 have 76.9% lower odds of food insecurity,
 highlighting the strong protective effect of higher income levels.
 Finally, race and ethnicity are associated with differences in food
 insecurity, with non-Hispanic Whites and Asians showing significantly
@@ -1412,7 +1477,7 @@ indicating variability in these associations.</p>
 <div id="general-health" class="section level3">
 <h3>General Health</h3>
 <div id="using-original-genhlth-variable" class="section level4">
-<h4>Using Original <code>genhlth</code> Variable</h4>
+<h4>Using Original <strong><code>genhlth</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   mutate(genhlth = factor(genhlth, levels = c(&quot;Poor&quot;, &quot;Fair&quot;, &quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;))) |&gt;
   ggplot(aes(x = genhlth, fill = genhlth))+
@@ -1424,22 +1489,23 @@ indicating variability in these associations.</p>
   ) +
   theme_minimal()</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p>Using the original <code>genhlth</code> variable defined in the BRFSS
-dataset, this bar chart visualizes the distribution of general health
-responses among individuals categorized into five levels:
-<strong>Poor</strong>, <strong>Fair</strong>, <strong>Good</strong>,
-<strong>Very Good</strong>, and <strong>Excellent</strong>. The largest
-group is those who reported their health as “Very Good,” comprising the
-highest count, followed closely by individuals reporting “Good” health.
-The category “Excellent” ranks third, with a moderate number of
-respondents. A smaller number of individuals rated their health as
-“Fair,” while “Poor” health is the least common category. The chart
-highlights a trend where most individuals perceive their health
-positively, with the majority clustering around “Very Good” and “Good”
-ratings, and relatively fewer reporting “Fair” or “Poor” health.</p>
+<p>Using the original <strong><code>genhlth</code></strong> variable
+defined in the BRFSS dataset, this bar chart visualizes the distribution
+of general health responses among individuals categorized into five
+levels: <strong>Poor</strong>, <strong>Fair</strong>,
+<strong>Good</strong>, <strong>Very Good</strong>, and
+<strong>Excellent</strong>. The largest group is those who reported
+their health as “Very Good,” comprising the highest count, followed
+closely by individuals reporting “Good” health. The category “Excellent”
+ranks third, with a moderate number of respondents. A smaller number of
+individuals rated their health as “Fair,” while “Poor” health is the
+least common category. The chart highlights a trend where most
+individuals perceive their health positively, with the majority
+clustering around “Very Good” and “Good” ratings, and relatively fewer
+reporting “Fair” or “Poor” health.</p>
 </div>
 <div id="using-binary-variable-health" class="section level4">
-<h4>Using Binary Variable <code>health</code></h4>
+<h4>Using Binary Variable <strong><code>health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(health), fill = factor(health))) +
   geom_bar() +
@@ -1455,7 +1521,7 @@ ggplot(aes(x = factor(health), fill = factor(health))) +
   theme_minimal()</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>We categorized general health into a binary variable for our
-regression analysis, with stauts <strong>Good</strong> + <strong>Very
+regression analysis, with status <strong>Good</strong> + <strong>Very
 good</strong> + <strong>Excellent</strong> as healthy, and
 <strong>Fair</strong> + <strong>Poor</strong> as unhealthy. The plot
 demonstrates levels of general health distribution. The majority of
@@ -1468,7 +1534,7 @@ predominantly healthy population in the dataset.</p>
 <div id="physical-health" class="section level3">
 <h3>Physical Health</h3>
 <div id="using-original-phys14d-variable" class="section level4">
-<h4>Using Original <code>phys14d</code> Variable</h4>
+<h4>Using Original <strong><code>phys14d</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = phys14d, fill = phys14d))+
   geom_bar() +
@@ -1480,19 +1546,20 @@ predominantly healthy population in the dataset.</p>
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
-<p>Using the original <code>genhlth</code> variable defined in the BRFSS
-dataset, this bar chart visualizes the distribution of physical health
-status based on self-reported days of poor physical health over the past
-14 days. The blue bar represents individuals who reported no days of
-poor physical health, indicating a significant majority. The red bar
-accounts for those who experienced 1 to 13 days of poor physical health,
-while the green bar represents individuals with 14 or more days of poor
-physical health, suggesting chronic physical health challenges. This
-distribution highlights the varying degrees of physical health within
-the population.</p>
+<p>Using the original <strong><code>phys14d</code></strong> variable
+defined in the BRFSS dataset, this bar chart visualizes the distribution
+of physical health status based on self-reported days of poor physical
+health over the past 14 days. The blue bar represents individuals who
+reported no days of poor physical health, indicating a significant
+majority. The red bar accounts for those who experienced 1 to 13 days of
+poor physical health, while the green bar represents individuals with 14
+or more days of poor physical health, suggesting chronic physical health
+challenges. This distribution highlights the varying degrees of physical
+health within the population.</p>
 </div>
 <div id="using-binary-variable-physical_health" class="section level4">
-<h4>Using Binary Variable <code>physical_health</code></h4>
+<h4>Using Binary Variable
+<strong><code>physical_health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
   geom_bar() +
@@ -1523,7 +1590,7 @@ physical health challenges.</p>
 <div id="mental-health" class="section level3">
 <h3>Mental Health</h3>
 <div id="using-original-ment14d-variable" class="section level4">
-<h4>Using Original <code>ment14d</code> Variable</h4>
+<h4>Using Original <strong><code>ment14d</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = ment14d, fill = ment14d))+
   geom_bar() +
@@ -1535,21 +1602,22 @@ physical health challenges.</p>
   theme_minimal() +
   theme(axis.text.x=element_blank())</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
-<p>Using the original <code>genhlth</code> variable defined in the BRFSS
-dataset, this bar chart illustrates the distribution of mental health
-status based on the number of days individuals reported poor mental
-health over the past 14 days. Similar to the pattern observed in
-physical health, the majority of individuals (blue bar) reported zero
-days of poor mental health. The red bar represents those who experienced
-1 to 13 days of poor mental health, while the green bar accounts for
-individuals with 14 or more days of poor mental health, indicating
-potential chronic mental health challenges. This distribution emphasizes
-the prevalence of good mental health among the population, while also
-highlighting a smaller group with significant mental health
-difficulties.</p>
+<p>Using the original <strong><code>ment14d</code></strong> variable
+defined in the BRFSS dataset, this bar chart illustrates the
+distribution of mental health status based on the number of days
+individuals reported poor mental health over the past 14 days. Similar
+to the pattern observed in physical health, the majority of individuals
+(blue bar) reported zero days of poor mental health. The red bar
+represents those who experienced 1 to 13 days of poor mental health,
+while the green bar accounts for individuals with 14 or more days of
+poor mental health, indicating potential chronic mental health
+challenges. This distribution emphasizes the prevalence of good mental
+health among the population, while also highlighting a smaller group
+with significant mental health difficulties.</p>
 </div>
-<div id="using-binary-variable-mentl_health" class="section level4">
-<h4>Using Binary Variable <code>mentl_health</code></h4>
+<div id="using-binary-variable-mental_health" class="section level4">
+<h4>Using Binary Variable
+<strong><code>mental_health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
   geom_bar() +
@@ -1650,13 +1718,13 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_general</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 53% lower odds
-(OR = 0.47, 95% CI: 0.39–0.56) of having good health compared to those
-who are not food insecure, holding all else constant. This suggests that
-food insecurity is significantly associated with worse general health
-outcomes. Food insecurity emerges as a strong risk factor for poor
-general health. This could be due to the limited availability of
-nutritious food, leading to a higher prevalence of diet-related
+<p>Individuals who are food insecure have approximately 58.5% lower odds
+(OR = 0.415, 95% CI: 0.358–0.480) of having good health compared to
+those who are not food insecure, holding all else constant. This
+suggests that food insecurity is significantly associated with worse
+general health outcomes. Food insecurity emerges as a strong risk factor
+for poor general health. This could be due to the limited availability
+of nutritious food, leading to a higher prevalence of diet-related
 illnesses such as obesity, hypertension, and chronic conditions.</p>
 <p>Because this result shows that food insecure is a potential risk
 factor for general health of individuals, we want to further explore the
@@ -1719,13 +1787,14 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_physical</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 37.7% lower odds
-(OR = 0.62, 95% CI: 0.55–0.70) of having good physical health compared
-to those who are not food insecure, holding all else constant. The
-results are statistically significant, indicating a robust relationship
-between food insecurity and physical health. Poor physical health among
-food-insecure individuals may result from inadequate nutrition,
-increased stress levels, or reduced access to healthcare resources.</p>
+<p>Individuals who are food insecure have approximately 44.7% lower odds
+(OR = 0.553, 95% CI: 0.496–0.615) of having good physical health
+compared to those who are not food insecure, holding all else constant.
+The results are statistically significant, indicating a robust
+relationship between food insecurity and physical health. Poor physical
+health among food-insecure individuals may result from inadequate
+nutrition, increased stress levels, or reduced access to healthcare
+resources.</p>
 </div>
 </div>
 <div id="is-food-insecure-associated-with-mental-health"
@@ -1784,9 +1853,9 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_mental</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
 <p>Individuals who are food insecure have approximately 59.7% lower odds
-(OR = 0.40, 95% CI: 0.36–0.45) of having good mental health compared to
-those who are not food insecure, holding all else constant. This strong
-association highlights the significant mental health burden food
+(OR = 0.403, 95% CI: 0.362–0.448) of having good mental health compared
+to those who are not food insecure, holding all else constant. This
+strong association highlights the significant mental health burden food
 insecurity places on individuals.</p>
 <p>The stress of uncertain food access likely exacerbates mental health
 conditions, including anxiety and depression. Food insecurity could also
@@ -1852,13 +1921,13 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
   theme(axis.text.y = element_text(size = 12))
 ci_diabete</code></pre>
 <p><img src="report_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
-<p>Individuals who are food insecure have approximately 27.4% higher
-odds (OR = 1.27, 95% CI: 1.07–1.52) of having diabetes compared to those
-who are not food insecure, holding all else constant. This association
-indicates a notable link between food insecurity and diet-related
-chronic diseases. Food insecurity often leads to reliance on low-cost,
-calorie-dense but nutrient-poor foods, increasing the risk of diabetes
-and other metabolic conditions.</p>
+<p>Individuals who are food insecure have approximately 31.2% higher
+odds (OR = 1.312, 95% CI: 1.119–1.537) of having diabetes compared to
+those who are not food insecure, holding all else constant. This
+association indicates a notable link between food insecurity and
+diet-related chronic diseases. Food insecurity often leads to reliance
+on low-cost, calorie-dense but nutrient-poor foods, increasing the risk
+of diabetes and other metabolic conditions.</p>
 </div>
 </div>
 </div>
@@ -1890,11 +1959,13 @@ buffers, but gaps exist in eastern Brooklyn and Queens. Staten Island
 has the most limited coverage, with southern tracts particularly
 underserved.</p>
 <p>The analysis underscores the need for tailored policies and
-interventions to address food deserts, focusing on areas with:<br />
-- High population density but sparse retail store coverage (e.g., parts
-of the Bronx, eastern Queens, and southern Staten Island).<br />
-- Limited presence of medium and large retail stores, which are more
-likely to offer fresh and nutritious food options.</p>
+interventions to address food deserts, focusing on areas with:</p>
+<ul>
+<li>High population density but sparse retail store coverage (e.g.,
+parts of the Bronx, eastern Queens, and southern Staten Island).</li>
+<li>Limited presence of medium and large retail stores, which are more
+likely to offer fresh and nutritious food options.</li>
+</ul>
 <p>Efforts could include incentivizing grocery stores to open in
 underserved areas, enhancing transportation options to food hubs, and
 supporting local farmers’ markets to improve accessibility to nutritious
@@ -1906,23 +1977,24 @@ gap and promote equitable food security across New York City.</p>
 <h3>Regression Analysis</h3>
 <div id="socioeconomic-factors" class="section level4">
 <h4>Socioeconomic Factors</h4>
-<p>The regression analysis highlights the significant associations
-between food insecurity and key predictors, including income,
-race/ethnicity, education, and self-rated health. Results indicate that
-higher income levels are associated with substantially lower odds of
-food insecurity. Individuals earning over $100,000 have 83.4% lower
-odds, and those earning between $50,000 and $100,000 have 65.1% lower
-odds of food insecurity compared to those earning less than $50,000.</p>
+<p>The multivariable regression analysis highlights the significant
+associations between food insecurity and key predictors, including
+income, race/ethnicity, and education.</p>
+<p>Results indicate that higher income levels are associated with
+substantially lower odds of food insecurity. Individuals earning over
+$100,000 have 76.9% lower odds, and those earning between $50,000 and
+$100,000 have 55.9% lower odds of food insecurity compared to those
+earning less than $50,000.</p>
 <p>Racial and ethnic disparities in food insecurity are evident. White,
-Non-Hispanic individuals have the lowest odds of food insecurity (77%
-lower), followed by Asian, Non-Hispanic individuals (68.2% lower), and
-Other Race, Non-Hispanic individuals (57.4% lower) compared to American
-Indians. Associations between levels of Black, Non-Hispanic and Hispanic
-individuals and food insecure are not significant.</p>
+Non-Hispanic individuals have 68.0% lower odds of food insecurity, and
+Asian, Non-Hispanic individuals have 55.8% lower odds compared to
+American Indians. Associations between levels of Black, Non-Hispanic,
+Hispanic, and Other race individuals and food insecure are not
+significant.</p>
 <p>Lower education levels are strongly associated with higher odds of
 food insecurity. Individuals with less than a high school education have
-424.1% higher odds, those with a high school diploma or GED have 144.4%
-higher odds, and those with some post-high school education have 111.9%
+69.5% higher odds, those with a high school diploma or GED have 38.3%
+higher odds, and those with some post-high school education have 47.6%
 higher odds of being food insecure compared to college graduates.</p>
 </div>
 <div id="health" class="section level4">
@@ -1931,12 +2003,12 @@ higher odds of being food insecure compared to college graduates.</p>
 on both physical and mental health, as well as its association with
 diabetes. The results suggest that individuals experiencing food
 insecurity have significantly lower odds of maintaining good physical
-and mental health, with 37.7% and 59.7% lower odds, respectively. This
+and mental health, with 44.7% and 59.7% lower odds, respectively. This
 emphasizes the detrimental effect of food insecurity on overall
 well-being, particularly its disproportionate impact on mental health.
 The mental strain associated with food insecurity, such as stress and
 anxiety over limited access to nutritious food, could be a key driver of
-this disparity. Additionally, the 27.4% higher odds of developing
+this disparity. Additionally, the 31.2% higher odds of developing
 diabetes among food-insecure individuals underscore the potential
 physiological consequences of inadequate nutrition. Food insecurity
 often limits access to healthy, nutrient-rich foods, forcing individuals
@@ -2044,6 +2116,13 @@ necessitate acquiring a more detailed and localized dataset. Such data
 should provide granular information on neighborhood-level demographics,
 health outcomes, and food access patterns to refine insights and better
 inform targeted interventions within the city.</p>
+<p>Lastly, limitations in data resolution, completeness, and
+representativeness may have influenced the results. Limited timeframes
+or self-reported data in health outcomes may not fully capture the
+complexities of food insecurity and its broader implications. Addressing
+these limitations in future research could involve integrating data from
+multiple sources, using time-series data, and validating results against
+independent datasets.</p>
 </div>
 
 

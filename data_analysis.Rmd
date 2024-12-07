@@ -176,12 +176,14 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_income
 ```
 
-Intercept: The odds ratio for the intercept (0.941) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (0.855, 1.035) does include 1, it is not statistically significant.
+Intercept:
 
-OR: 
-   Income > 100,000: Individuals with an income level of over 100,000 are 82% less likely to experience food insecurity compared to the the reference group (income less than $50,000).
+- The odds ratio for the intercept (1.13) represents the baseline odds of being food insecure for income less than 50,000 when all predictors are 0. Since the 95% confidence interval (1.039, 1.235) does not include 1, it is statistically significant. 
 
-   Income 50,000–100,000: Individuals with an income level of 50,000–100,000 are 62% less likely to experience food insecurity compared to the reference group (income less than $50,000).
+OR:
+
+- Income > 100,000: Individuals with an income level of over 100,000 are 83% less likely to experience food insecurity compared to the the reference group (income less than $50,000).
+- Income 50,000–100,000: Individuals with an income level of 50,000–100,000 are 64% less likely to experience food insecurity compared to the reference group.
    
 Statistical significance: Two ORs are significant because do not contain 1. Income is associated with food insecurity. 
 
@@ -220,18 +222,17 @@ ci_race
 ```
 
 
-Intercept: The intercept represents the baseline odds of food insecurity for the reference group (American Indian/Alaskan Native). It is not significant because the 95%CI contains 1.
+Intercept:
+
+- The intercept represents the baseline odds of food insecurity for the reference group (American Indian/Alaskan Native). It is not significant because the 95% CI contains 1.
 
 OR:
-   Asian, Non-Hispanic: Non-Hispanic Asians have 66% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
 
-   Black, Non-Hispanic: Non-Hispanic Blacks have 45% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native). It is not significant because the 95%CI contains 1.
-
-   Hispanic: Hispanics have slightly lower odds (9% lower) of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native). It is not significant because the 95%CI contains 1.
-
-   Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of other races have 61% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
-
-   White, Non-Hispanic: Non-Hispanic Whites have 76% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native). 
+- Asian, Non-Hispanic: Non-Hispanic Asians have 62% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
+- Black, Non-Hispanic: Non-Hispanic Blacks have 53% lower odds of experiencing food insecurity compared to the reference group. 
+- Hispanic: Hispanics have slightly lower odds (29% lower) of experiencing food insecurity compared to the reference group. It is not significant because the 95% CI contains 1.
+- Other Race, Non-Hispanic: Individuals identifying as Non-Hispanic of other races have 62% lower odds of experiencing food insecurity compared to the reference group.
+- White, Non-Hispanic: Non-Hispanic Whites have 79% lower odds of experiencing food insecurity compared to the reference group. 
 
 Statistical significance: Race is associated with food insecurity in certain groups. Non-Hispanic Asians, Whites, and individuals of other races have significantly lower odds of food insecurity compared to the reference group. However, the association is not statistically significant for Non-Hispanic Blacks and Hispanics. 
 
@@ -269,14 +270,15 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_edu
 ```
 
-Intercept: The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. 
+Intercept:  
+
+- The intercept represents the baseline odds of food insecurity for the reference group (college graduates) when all predictors are zero. Since the 95% confidence interval (0.282, 0.331) does not include 1, it is statistically significant.
 
 OR:
-   High School or GED: Individuals with a high school diploma or GED have 138% the odds of experiencing food insecurity compared to the reference group (college graduates).
 
-   Less than High School: Individuals with less than a high school education have 460% higher odds of experiencing food insecurity compared to the reference group (college graduates).
-
-   Some Post-High School: Individuals with some post-high school education have 101% higher odds of experiencing food insecurity compared to the reference group (college graduates).
+- High School or GED: Individuals with a high school diploma or GED have 138% the odds of experiencing food insecurity compared to the reference group (college graduates).
+- Less than High School: Individuals with less than a high school education have 416% higher odds of experiencing food insecurity compared to the reference group.
+- Some Post-High School: Individuals with some post-high school education have 108% higher odds of experiencing food insecurity compared to the reference group.
 
 Statistical significance: The odds of food insecurity increase as the level of education decreases. Those with less than a high school education have the greatest increase in odds compared to the reference group.
 
@@ -317,17 +319,20 @@ ci_all
 
 Statistical Significant Predictors: 
 
-Education:   
-   Individuals with a high school diploma or GED have 38% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
-   Individuals with less than a high school education have 85% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
-   Individuals with some post-high school education have 45% higher odds of experiencing food insecurity compared to the reference group.   
+Education:  
+
+- Individuals with a high school diploma or GED have 38.3% higher odds of experiencing food insecurity compared to the reference group (college graduates).    
+- Individuals with less than a high school education have 69.5% higher odds of experiencing food insecurity compared to the reference group.    
+- Individuals with some post-high school education have 47.6% higher odds of experiencing food insecurity compared to the reference group.   
     
 Income:   
-   Individuals with an income over $100,000 have 75% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
-   Individuals with an income between $50,000 and $100,000 have 52% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).    
+
+- Individuals with an income over $100,000 have 76.9% lower odds of experiencing food insecurity compared to the reference group (≤ 50,000).   
+- Individuals with an income between $50,000 and $100,000 have 55.9% lower odds of experiencing food insecurity compared to the reference group.    
     
 Race/Ethnicity:   
-   Non-Hispanic Whites have 63% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
-   
-Summary:    
-   Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 85% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 75% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites and Asians showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.
+
+- Non-Hispanic Asians have 55.8% lower odds of experiencing food insecurity compared to the reference group (American Indian/Alaskan Native).
+- Non-Hispanic Whites have 68.0% lower odds of experiencing food insecurity compared to the reference group.
+
+Summary: Higher education levels are protective against food insecurity, with individuals who have less than a high school education facing the highest risk. Those with less than a high school education have 69.5% higher odds of experiencing food insecurity compared to those with a college education. Income also plays a significant role, as individuals earning more than $100,000 have 76.9% lower odds of food insecurity, highlighting the strong protective effect of higher income levels. Finally, race and ethnicity are associated with differences in food insecurity, with non-Hispanic Whites and Asians showing significantly lower odds of food insecurity compared to other racial groups. However, results for other racial groups are not statistically significant, indicating variability in these associations.

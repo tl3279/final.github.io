@@ -430,7 +430,7 @@ diabetes.</p>
 <div id="general-health" class="section level3">
 <h3>General Health</h3>
 <div id="using-original-genhlth-variable" class="section level4">
-<h4>Using Original <code>genhlth</code> Variable</h4>
+<h4>Using Original <strong><code>genhlth</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   mutate(genhlth = factor(genhlth, levels = c(&quot;Poor&quot;, &quot;Fair&quot;, &quot;Good&quot;, &quot;Very good&quot;, &quot;Excellent&quot;))) |&gt;
   ggplot(aes(x = genhlth, fill = genhlth))+
@@ -443,8 +443,8 @@ diabetes.</p>
   theme_minimal()</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>This bar chart visualizes the distribution of general health
-responses among individuals categorized into five levels: “Poor,”
-“Fair,” “Good,” “Very Good,” and “Excellent.” The largest group is those
+responses among individuals categorized into five levels: “Poor”,
+“Fair”, “Good”, “Very Good”, and “Excellent”. The largest group is those
 who reported their health as “Very Good,” comprising the highest count,
 followed closely by individuals reporting “Good” health. The category
 “Excellent” ranks third, with a moderate number of respondents. A
@@ -452,7 +452,7 @@ smaller number of individuals rated their health as “Fair,” while “Poor”
 health is the least common category.</p>
 </div>
 <div id="using-binary-variable-health" class="section level4">
-<h4>Using Binary Variable <code>health</code></h4>
+<h4>Using Binary Variable <strong><code>health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(health), fill = factor(health))) +
   geom_bar() +
@@ -477,7 +477,7 @@ indicates a predominantly healthy population in the dataset.</p>
 <div id="physical-health" class="section level3">
 <h3>Physical Health</h3>
 <div id="using-original-phys14d-variable" class="section level4">
-<h4>Using Original <code>phys14d</code> Variable</h4>
+<h4>Using Original <strong><code>phys14d</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = phys14d, fill = phys14d))+
   geom_bar() +
@@ -498,7 +498,8 @@ the green bar represents individuals with 14 or more days of poor
 physical health, suggesting chronic physical health challenges.</p>
 </div>
 <div id="using-binary-variable-physical_health" class="section level4">
-<h4>Using Binary Variable <code>physical_health</code></h4>
+<h4>Using Binary Variable
+<strong><code>physical_health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
   geom_bar() +
@@ -524,7 +525,7 @@ smaller fraction reporting significant physical health challenges.</p>
 <div id="mental-health" class="section level3">
 <h3>Mental Health</h3>
 <div id="using-original-ment14d-variable" class="section level4">
-<h4>Using Original <code>ment14d</code> Variable</h4>
+<h4>Using Original <strong><code>ment14d</code></strong> Variable</h4>
 <pre class="r"><code>cleaned_df |&gt;
   ggplot(aes(x = ment14d, fill = ment14d))+
   geom_bar() +
@@ -545,8 +546,9 @@ poor mental health, while the green bar accounts for individuals with 14
 or more days of poor mental health, indicating potential chronic mental
 health challenges.</p>
 </div>
-<div id="using-binary-variable-mentl_health" class="section level4">
-<h4>Using Binary Variable <code>mentl_health</code></h4>
+<div id="using-binary-variable-mental_health" class="section level4">
+<h4>Using Binary Variable
+<strong><code>mental_health</code></strong></h4>
 <pre class="r"><code>cleaned_df |&gt;
 ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
   geom_bar() +
@@ -643,11 +645,12 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_general</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
-approximately 53% lower odds of having good health compared to those who
-are not food insecure, holding all else constant. Because this result
-shows that food insecure is a potential risk factor for general health
-of individuals, we want to further explore the association between food
-insecure with physical health and mental health, separately.</p>
+approximately 58.5% lower odds of having good health compared to those
+who are not food insecure, holding all else constant. Because this
+result shows that food insecure is a potential risk factor for general
+health of individuals, we want to further explore the association
+between food insecure with physical health and mental health,
+separately.</p>
 </div>
 </div>
 <div id="physical-health-1" class="section level2">
@@ -705,7 +708,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_physical</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
-approximately 37.7% lower odds of having good physical health compared
+approximately 44.7% lower odds of having good physical health compared
 to those who are not food insecure, holding all else constant.
 Therefore, food insecure is associated with physical health.</p>
 </div>
@@ -829,7 +832,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_diabete</code></pre>
 <p><img src="Health_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>OR interpretation: Individuals who are food insecure have
-approximately 27.4% higher odds of having diabetes compared to those who
+approximately 31.2% higher odds of having diabetes compared to those who
 are not food insecure, holding all else constant. Food insecure is
 associated with diabetes.</p>
 </div>

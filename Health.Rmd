@@ -76,7 +76,7 @@ We are interested in understanding the associations between food insecurity and 
 
 ## Key Health Factors Distribution
 ### General Health
-#### Using Original `genhlth` Variable
+#### Using Original **`genhlth`** Variable
 ```{r}
 cleaned_df |>
   mutate(genhlth = factor(genhlth, levels = c("Poor", "Fair", "Good", "Very good", "Excellent"))) |>
@@ -90,9 +90,9 @@ cleaned_df |>
   theme_minimal()
 ```
 
-This bar chart visualizes the distribution of general health responses among individuals categorized into five levels: "Poor," "Fair," "Good," "Very Good," and "Excellent." The largest group is those who reported their health as "Very Good," comprising the highest count, followed closely by individuals reporting "Good" health. The category "Excellent" ranks third, with a moderate number of respondents. A smaller number of individuals rated their health as "Fair," while "Poor" health is the least common category.
+This bar chart visualizes the distribution of general health responses among individuals categorized into five levels: "Poor", "Fair", "Good", "Very Good", and "Excellent". The largest group is those who reported their health as "Very Good," comprising the highest count, followed closely by individuals reporting "Good" health. The category "Excellent" ranks third, with a moderate number of respondents. A smaller number of individuals rated their health as "Fair," while "Poor" health is the least common category.
 
-#### Using Binary Variable `health`
+#### Using Binary Variable **`health`**
 ```{r}
 cleaned_df |>
 ggplot(aes(x = factor(health), fill = factor(health))) +
@@ -114,7 +114,7 @@ The plot demonstrates levels of general health distribution. The majority of ind
 
 
 ### Physical Health
-#### Using Original `phys14d` Variable
+#### Using Original **`phys14d`** Variable
 ```{r}
 cleaned_df |>
   ggplot(aes(x = phys14d, fill = phys14d))+
@@ -130,7 +130,7 @@ cleaned_df |>
 
 This bar chart visualizes the distribution of physical health status based on self-reported days of poor physical health over the past 14 days. The blue bar represents individuals who reported no days of poor physical health, indicating a significant majority. The red bar accounts for those who experienced 1 to 13 days of poor physical health, while the green bar represents individuals with 14 or more days of poor physical health, suggesting chronic physical health challenges.
 
-#### Using Binary Variable `physical_health`
+#### Using Binary Variable **`physical_health`**
 ```{r}
 cleaned_df |>
 ggplot(aes(x = factor(physical_health), fill = factor(physical_health))) +
@@ -151,7 +151,7 @@ The blue bar corresponds to individuals who reported having 0 days of poor physi
 
 
 ### Mental Health
-#### Using Original `ment14d` Variable
+#### Using Original **`ment14d`** Variable
 ```{r}
 cleaned_df |>
   ggplot(aes(x = ment14d, fill = ment14d))+
@@ -167,7 +167,7 @@ cleaned_df |>
 
 This bar chart illustrates the distribution of mental health status based on the number of days individuals reported poor mental health over the past 14 days. Similar to the pattern observed in physical health, the majority of individuals (blue bar) reported zero days of poor mental health. The red bar represents those who experienced 1 to 13 days of poor mental health, while the green bar accounts for individuals with 14 or more days of poor mental health, indicating potential chronic mental health challenges.
 
-#### Using Binary Variable `mentl_health`
+#### Using Binary Variable **`mental_health`**
 ```{r}
 cleaned_df |>
 ggplot(aes(x = factor(mental_health), fill = factor(mental_health))) +
@@ -238,7 +238,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_general
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 53% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
+OR interpretation: Individuals who are food insecure have approximately 58.5% lower odds of having good health compared to those who are not food insecure, holding all else constant. 
 Because this result shows that food insecure is a potential risk factor for general health of individuals, we want to further explore the association between food insecure with physical health and mental health, separately. 
 
 
@@ -273,7 +273,7 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_physical
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 37.7% lower odds of having good physical health compared to those who are not food insecure, holding all else constant.
+OR interpretation: Individuals who are food insecure have approximately 44.7% lower odds of having good physical health compared to those who are not food insecure, holding all else constant.
 Therefore, food insecure is associated with physical health.
 
 
@@ -347,5 +347,5 @@ ggplot(aes(y = Variable, x = OR, xmin = `2.5 %`, xmax = `97.5 %`)) +
 ci_diabete
 ```
 
-OR interpretation: Individuals who are food insecure have approximately 27.4% higher odds of having diabetes compared to those who are not food insecure, holding all else constant.
+OR interpretation: Individuals who are food insecure have approximately 31.2% higher odds of having diabetes compared to those who are not food insecure, holding all else constant.
 Food insecure is associated with diabetes. 
